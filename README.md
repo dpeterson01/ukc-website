@@ -43,6 +43,21 @@ cd site && python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
+## Updating the site from a new Claude Design export
+
+When you re-export the project from Claude Design (`Export → project archive .zip`):
+
+1. Refresh `site/` and `source/` from the new archive (replace their contents).
+2. Re-run the font optimization (the export ships ~11 MB of `.ttf`; this converts them
+   to woff2, ~3 MB, and rewrites the `@font-face` rules):
+   ```sh
+   pip install fonttools brotli      # one-time
+   python3 scripts/optimize-site-fonts.py
+   ```
+3. `design-system/README.md` is maintained **here**, not in Claude Design — don't
+   overwrite it from the export.
+4. Commit and push — the GitHub Actions workflow redeploys automatically.
+
 ## Deploy (GitHub Pages)
 
 This repo is published with GitHub Pages serving the `site/` folder. See the deploy notes
