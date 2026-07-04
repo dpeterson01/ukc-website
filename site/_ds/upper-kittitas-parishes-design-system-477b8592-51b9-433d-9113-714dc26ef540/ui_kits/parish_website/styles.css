@@ -328,8 +328,9 @@ p  { margin: 0; }
 }
 .parish-card .address {
   font-family: var(--font-sans);
-  font-size: 13px;
-  color: var(--fg-muted);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-navy);
   letter-spacing: 0.02em;
   line-height: 1.5;
 }
@@ -604,12 +605,17 @@ p  { margin: 0; }
   padding-top: 22px;
   border-top: 1px solid rgba(255,255,255,.12);
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
+  gap: 10px 24px;
   font-family: var(--font-sans);
   font-size: 12px;
   letter-spacing: 0.04em;
   color: var(--fg-inverse-muted);
 }
+.footer__bottom a { color: var(--fg-inverse-muted); }
+.footer__bottom a:hover { color: var(--color-gold-screen); }
 
 /* ============================================================
    PAGE: MASS TIMES
@@ -628,8 +634,8 @@ p  { margin: 0; }
 }
 .page-header__eyebrow {
   font-family: var(--font-sans);
-  font-size: 12px;
-  letter-spacing: 0.22em;
+  font-size: 15px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-gold-screen);
   font-weight: 600;
@@ -697,6 +703,60 @@ p  { margin: 0; }
 .schedule__row:last-child { border-bottom: none; }
 .schedule__row .label { color: var(--color-charcoal); }
 .schedule__row .time { font-weight: 600; color: var(--color-navy); font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   MASS TIMES — weekly schedule (day | time + church)
+   ============================================================ */
+.mass-schedule {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+}
+.mass-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 20px;
+  align-items: baseline;
+  padding: 18px 32px;
+  border-bottom: 1px solid var(--border-hairline);
+}
+.mass-row:last-child { border-bottom: none; }
+.mass-row__day {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--color-navy);
+}
+.mass-row__note { color: var(--fg-muted); font-weight: 400; }
+.mass-row__times {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  text-align: right;
+}
+.mass-time {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  color: var(--color-charcoal);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.mass-time__hour {
+  font-weight: 600;
+  color: var(--color-navy);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-width: 74px;
+  text-align: right;
+}
+.mass-time__dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  display: inline-block; flex-shrink: 0;
+}
+.mass-time__dot--sjb { background: var(--color-sjb-green); }
+.mass-time__dot--ic  { background: var(--color-marian-blue); }
 
 /* ============================================================
    PAGE: BULLETIN — long-form list
@@ -1062,6 +1122,11 @@ p  { margin: 0; }
   .feature-grid { grid-template-columns: 1fr; gap: 18px; }
   .feature { padding: 20px 20px 22px; }
   .feature__title { font-size: 20px; }
+
+  /* Weekly Mass schedule: stack day / time+church */
+  .mass-row { grid-template-columns: 1fr; gap: 8px; padding: 16px 20px; }
+  .mass-row__times { align-items: flex-start; text-align: left; }
+  .mass-time__hour { min-width: 0; text-align: left; }
 
   /* Mass-times schedule: stack the two parish columns */
   .schedule { grid-template-columns: 1fr; }

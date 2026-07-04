@@ -191,7 +191,6 @@
         </p>
         <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
           <button class="btn btn--on-navy" onClick="{{ goGiving }}">Give online</button>
-          <button class="btn btn--secondary" style="color:var(--color-warm-white);border-color:var(--color-warm-white)" style-hover="background:rgba(250,248,245,0.16);color:var(--color-warm-white);border-color:var(--color-warm-white)" onClick="{{ goNew }}">New here?</button>
         </div>
       </div>
     </section>
@@ -202,7 +201,6 @@
   <sc-if value="{{ isNew }}">
   <main data-screen-label="02 New Here">
     <header class="page-header">
-      <button class="page-header__back" onClick="{{ goHome }}">← Home</button>
       <div class="page-header__eyebrow">New here?</div>
       <h1>You belong here</h1>
       <p class="page-header__lead">
@@ -280,7 +278,19 @@
           No need to print or mail anything. Tell us a little about your household and we'll take
           care of the rest, then reach out to welcome you.
         </p>
-        <dc-import name="ContactForm" reason="register" locked="true" hint-size="100%,620px"></dc-import>
+        <sc-if value="{{ showForms }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="ContactForm" reason="register" locked="true" hint-size="100%,620px"></dc-import>
+        </sc-if>
+        <sc-if value="{{ hideForms }}">
+          <div class="contact-card">
+            <p class="feature__body">
+              Online registration is coming soon. To register now, call
+              <a href="tel:+15096742531" style="color:var(--color-navy)">(509) 674-2531</a> or email
+              <a href="mailto:parish@ukccatholic.org" style="color:var(--color-navy)">parish@ukccatholic.org</a>
+              and we'll take care of the rest.
+            </p>
+          </div>
+        </sc-if>
       </div>
     </section>
   </main>
@@ -290,7 +300,6 @@
   <sc-if value="{{ isMass }}">
   <main data-screen-label="03 Mass Times">
     <header class="page-header">
-      <button class="page-header__back" onClick="{{ goHome }}">← Home</button>
       <div class="page-header__eyebrow">When we gather</div>
       <h1>Mass &amp; confession times</h1>
       <p class="page-header__lead">
@@ -306,33 +315,43 @@
         <span style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-sans);font-size:13px;color:var(--color-charcoal)"><span style="width:10px;height:10px;background:var(--color-marian-blue);border-radius:50%;display:inline-block"></span>Immaculate Conception, Roslyn</span>
       </div>
 
-      <div class="contact-card" style="padding:6px 32px 10px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:18px 0;border-bottom:1px solid var(--border-hairline)">
-          <span style="font-family:var(--font-sans);font-weight:600;font-size:15px;letter-spacing:0.04em;color:var(--color-navy)">Sunday</span>
-          <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;text-align:right">
-            <span style="font-family:var(--font-serif);font-size:17px;color:var(--color-charcoal);display:inline-flex;align-items:center;gap:9px"><span style="font-weight:600;color:var(--color-navy);font-variant-numeric:tabular-nums;white-space:nowrap">8:00 a.m.</span><span style="width:9px;height:9px;background:var(--color-marian-blue);border-radius:50%;display:inline-block"></span>Immaculate Conception</span>
-            <span style="font-family:var(--font-serif);font-size:17px;color:var(--color-charcoal);display:inline-flex;align-items:center;gap:9px"><span style="font-weight:600;color:var(--color-navy);font-variant-numeric:tabular-nums;white-space:nowrap">10:00 a.m.</span><span style="width:9px;height:9px;background:var(--color-sjb-green);border-radius:50%;display:inline-block"></span>St. John the Baptist</span>
+      <div class="mass-schedule">
+        <div class="mass-row">
+          <div class="mass-row__day">Sunday</div>
+          <div class="mass-row__times">
+            <span class="mass-time"><span class="mass-time__hour">8:00 a.m.</span><span class="mass-time__dot mass-time__dot--ic"></span>Immaculate Conception</span>
+            <span class="mass-time"><span class="mass-time__hour">10:00 a.m.</span><span class="mass-time__dot mass-time__dot--sjb"></span>St. John the Baptist</span>
           </div>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:18px 0;border-bottom:1px solid var(--border-hairline)">
-          <span style="font-family:var(--font-sans);font-weight:600;font-size:15px;letter-spacing:0.04em;color:var(--color-navy)">Tuesday</span>
-          <span style="font-family:var(--font-serif);font-size:17px;color:var(--color-charcoal);display:inline-flex;align-items:center;gap:9px"><span style="font-weight:600;color:var(--color-navy);font-variant-numeric:tabular-nums;white-space:nowrap">8:00 a.m.</span><span style="width:9px;height:9px;background:var(--color-sjb-green);border-radius:50%;display:inline-block"></span>St. John the Baptist</span>
+        <div class="mass-row">
+          <div class="mass-row__day">Tuesday</div>
+          <div class="mass-row__times">
+            <span class="mass-time"><span class="mass-time__hour">8:00 a.m.</span><span class="mass-time__dot mass-time__dot--sjb"></span>St. John the Baptist</span>
+          </div>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:18px 0;border-bottom:1px solid var(--border-hairline)">
-          <span style="font-family:var(--font-sans);font-weight:600;font-size:15px;letter-spacing:0.04em;color:var(--color-navy)">Wednesday</span>
-          <span style="font-family:var(--font-serif);font-size:17px;color:var(--color-charcoal);display:inline-flex;align-items:center;gap:9px"><span style="font-weight:600;color:var(--color-navy);font-variant-numeric:tabular-nums;white-space:nowrap">6:00 p.m.</span><span style="width:9px;height:9px;background:var(--color-marian-blue);border-radius:50%;display:inline-block"></span>Immaculate Conception</span>
+        <div class="mass-row">
+          <div class="mass-row__day">Wednesday</div>
+          <div class="mass-row__times">
+            <span class="mass-time"><span class="mass-time__hour">6:00 p.m.</span><span class="mass-time__dot mass-time__dot--ic"></span>Immaculate Conception</span>
+          </div>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:18px 0;border-bottom:1px solid var(--border-hairline)">
-          <span style="font-family:var(--font-sans);font-weight:600;font-size:15px;letter-spacing:0.04em;color:var(--color-navy)">Thursday</span>
-          <span style="font-family:var(--font-serif);font-size:17px;color:var(--color-charcoal);display:inline-flex;align-items:center;gap:9px"><span style="font-weight:600;color:var(--color-navy);font-variant-numeric:tabular-nums;white-space:nowrap">8:00 a.m.</span><span style="width:9px;height:9px;background:var(--color-sjb-green);border-radius:50%;display:inline-block"></span>St. John the Baptist</span>
+        <div class="mass-row">
+          <div class="mass-row__day">Thursday</div>
+          <div class="mass-row__times">
+            <span class="mass-time"><span class="mass-time__hour">8:00 a.m.</span><span class="mass-time__dot mass-time__dot--sjb"></span>St. John the Baptist</span>
+          </div>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:18px 0;border-bottom:1px solid var(--border-hairline)">
-          <span style="font-family:var(--font-sans);font-weight:600;font-size:15px;letter-spacing:0.04em;color:var(--color-navy)">Friday</span>
-          <span style="font-family:var(--font-serif);font-size:17px;color:var(--color-charcoal);display:inline-flex;align-items:center;gap:9px"><span style="font-weight:600;color:var(--color-navy);font-variant-numeric:tabular-nums;white-space:nowrap">8:00 a.m.</span><span style="width:9px;height:9px;background:var(--color-marian-blue);border-radius:50%;display:inline-block"></span>Immaculate Conception</span>
+        <div class="mass-row">
+          <div class="mass-row__day">Friday</div>
+          <div class="mass-row__times">
+            <span class="mass-time"><span class="mass-time__hour">8:00 a.m.</span><span class="mass-time__dot mass-time__dot--ic"></span>Immaculate Conception</span>
+          </div>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:18px 0">
-          <span style="font-family:var(--font-sans);font-weight:600;font-size:15px;letter-spacing:0.04em;color:var(--color-navy)">Saturday <span style="color:var(--fg-muted);font-weight:400">(Vigil)</span></span>
-          <span style="font-family:var(--font-serif);font-size:17px;color:var(--color-charcoal);display:inline-flex;align-items:center;gap:9px"><span style="font-weight:600;color:var(--color-navy);font-variant-numeric:tabular-nums;white-space:nowrap">5:00 p.m.</span><span style="width:9px;height:9px;background:var(--color-sjb-green);border-radius:50%;display:inline-block"></span>St. John the Baptist</span>
+        <div class="mass-row">
+          <div class="mass-row__day">Saturday <span class="mass-row__note">(Vigil)</span></div>
+          <div class="mass-row__times">
+            <span class="mass-time"><span class="mass-time__hour">5:00 p.m.</span><span class="mass-time__dot mass-time__dot--sjb"></span>St. John the Baptist</span>
+          </div>
         </div>
       </div>
 
@@ -359,7 +378,6 @@
   <sc-if value="{{ isAbout }}">
   <main data-screen-label="04 Our Parishes">
     <header class="page-header">
-      <button class="page-header__back" onClick="{{ goHome }}">← Home</button>
       <div class="page-header__eyebrow">Our story</div>
       <h1>Two places, one faith</h1>
       <p class="page-header__lead">
@@ -449,6 +467,23 @@
       </div>
     </section>
 
+    <section class="section section--narrow">
+      <div class="eyebrow" style="margin-bottom:8px">The wider Church</div>
+      <h2 style="margin-bottom:8px">Part of the Diocese of Yakima</h2>
+      <hr class="rule-gold" style="margin:0 0 28px">
+      <p class="about-history">
+        St. John the Baptist and Immaculate Conception are Roman Catholic parishes in full
+        communion with the Holy See and the Diocese of Yakima. We are not an independent or
+        breakaway congregation. This is the same Catholic Church you would find anywhere in the
+        world, led locally by the Most Reverend Joseph J. Tyson, Bishop of Yakima, and united with
+        our Holy Father, Pope Leo XIV, in Rome. The Diocese of Yakima serves central Washington and
+        the wider Church we belong to.
+      </p>
+      <div style="margin-top:8px">
+        <a class="btn btn--secondary" href="https://yakimadiocese.org" target="_blank" rel="noopener">Visit the Diocese of Yakima</a>
+      </div>
+    </section>
+
     <section class="section--cream">
       <div class="section">
         <div class="pastor">
@@ -488,6 +523,13 @@
       </div>
     </section>
 
+    <section class="section section--tight" style="padding-bottom:0;text-align:center">
+      <div style="font-family:var(--font-serif);font-size:28px;font-weight:600;color:var(--color-navy);margin-bottom:20px">
+        303 W. 2nd St., Cle Elum, WA 98922
+      </div>
+      <a class="btn btn--secondary" href="https://maps.google.com/?q=303+W+2nd+St+Cle+Elum+WA+98922" target="_blank" rel="noopener">Map &amp; directions</a>
+    </section>
+
     <section class="section section--tight">
       <div class="contact-grid">
         <div class="contact-card">
@@ -499,10 +541,8 @@
         </div>
         <div class="contact-card">
           <h3>Find us</h3>
-          <div class="line"><span class="label">Address</span><span class="val">303 W. 2nd St., Cle Elum</span></div>
           <div class="line"><span class="label">Parish office</span><span class="val">(509) 674-2531</span></div>
           <div class="line"><span class="label">Pastor</span><span class="val">Fr. Francisco Higuera</span></div>
-          <div style="margin-top:18px"><a class="btn btn--secondary" href="https://maps.google.com/?q=303+W+2nd+St+Cle+Elum+WA+98922" target="_blank" rel="noopener">Map &amp; directions</a></div>
         </div>
       </div>
     </section>
@@ -600,6 +640,13 @@
       </div>
     </section>
 
+    <section class="section section--tight" style="padding-bottom:0;text-align:center">
+      <div style="font-family:var(--font-serif);font-size:28px;font-weight:600;color:var(--color-navy);margin-bottom:20px">
+        211 N. B St., Roslyn, WA 98941
+      </div>
+      <a class="btn btn--secondary" href="https://maps.google.com/?q=211+N+B+St+Roslyn+WA+98941" target="_blank" rel="noopener">Map &amp; directions</a>
+    </section>
+
     <section class="section section--tight">
       <div class="contact-grid">
         <div class="contact-card">
@@ -611,10 +658,8 @@
         </div>
         <div class="contact-card">
           <h3>Find us</h3>
-          <div class="line"><span class="label">Address</span><span class="val">211 N. B St., Roslyn</span></div>
           <div class="line"><span class="label">Parish office</span><span class="val">(509) 674-2531</span></div>
           <div class="line"><span class="label">Pastor</span><span class="val">Fr. Francisco Higuera</span></div>
-          <div style="margin-top:18px"><a class="btn btn--secondary" href="https://maps.google.com/?q=211+N+B+St+Roslyn+WA+98941" target="_blank" rel="noopener">Map &amp; directions</a></div>
         </div>
       </div>
     </section>
@@ -700,7 +745,6 @@
   <sc-if value="{{ isSacraments }}">
   <main data-screen-label="05 Sacraments">
     <header class="page-header">
-      <button class="page-header__back" onClick="{{ goHome }}">← Home</button>
       <div class="page-header__eyebrow">The sacraments</div>
       <h1>Grace for every season</h1>
       <p class="page-header__lead">
@@ -763,7 +807,6 @@
   <sc-if value="{{ isFormation }}">
   <main data-screen-label="06 Faith Formation">
     <header class="page-header">
-      <button class="page-header__back" onClick="{{ goHome }}">← Home</button>
       <div class="page-header__eyebrow">Growing in faith</div>
       <h1>Faith formation</h1>
       <p class="page-header__lead">
@@ -820,7 +863,6 @@
   <sc-if value="{{ isGiving }}">
   <main data-screen-label="07 Giving">
     <header class="page-header">
-      <button class="page-header__back" onClick="{{ goHome }}">← Home</button>
       <div class="page-header__eyebrow">Stewardship</div>
       <h1>Give to our parishes</h1>
       <p class="page-header__lead">
@@ -889,7 +931,6 @@
   <sc-if value="{{ isWatch }}">
   <main data-screen-label="08 Watch Live">
     <header class="page-header">
-      <button class="page-header__back" onClick="{{ goHome }}">← Home</button>
       <div class="page-header__eyebrow">From home</div>
       <h1>Watch Mass live</h1>
       <p class="page-header__lead">
@@ -922,7 +963,6 @@
   <sc-if value="{{ isContact }}">
   <main data-screen-label="09 Contact">
     <header class="page-header">
-      <button class="page-header__back" onClick="{{ goHome }}">← Home</button>
       <div class="page-header__eyebrow">Reach us</div>
       <h1>Contact the parishes</h1>
       <p class="page-header__lead">
@@ -958,32 +998,26 @@
         <article class="feature">
           <div class="feature__title" style="font-size:20px">Holli Sullivan</div>
           <div class="feature__eyebrow">Pastoral Assistant</div>
-          <p class="feature__body">parish@ukccatholic.org · ext. 2</p>
         </article>
         <article class="feature">
           <div class="feature__title" style="font-size:20px">Wendy Hill</div>
           <div class="feature__eyebrow">Accounting</div>
-          <p class="feature__body">accounting@ukccatholic.org · ext. 3</p>
-        </article>
-        <article class="feature">
-          <div class="feature__title" style="font-size:20px">Deanna Duke</div>
-          <div class="feature__eyebrow">Communications &amp; Tech</div>
-          <p class="feature__body">tech@ukccatholic.org</p>
         </article>
         <article class="feature">
           <div class="feature__title" style="font-size:20px">Lisa Browitt</div>
           <div class="feature__eyebrow">Confirmation Coordinator</div>
-          <p class="feature__body">faithformation@ukccatholic.org</p>
+        </article>
+        <article class="feature">
+          <div class="feature__title" style="font-size:20px">Deanna Duke</div>
+          <div class="feature__eyebrow">Communications &amp; Tech</div>
         </article>
         <article class="feature">
           <div class="feature__title" style="font-size:20px">Trish Griswold</div>
           <div class="feature__eyebrow">Catechesis &amp; Religious Ed</div>
-          <p class="feature__body">Contact via the parish office</p>
         </article>
         <article class="feature">
           <div class="feature__title" style="font-size:20px">Michael Uribe</div>
           <div class="feature__eyebrow">Music Coordinator</div>
-          <p class="feature__body">music@ukccatholic.org</p>
         </article>
       </div>
     </section>
@@ -993,7 +1027,19 @@
         <div class="eyebrow" style="margin-bottom:8px">Send a message</div>
         <h2 style="margin-bottom:8px">Write to us</h2>
         <hr class="rule-gold" style="margin:0 0 28px">
-        <dc-import name="ContactForm" reason="hello" hint-size="100%,560px"></dc-import>
+        <sc-if value="{{ showForms }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="ContactForm" reason="hello" hint-size="100%,560px"></dc-import>
+        </sc-if>
+        <sc-if value="{{ hideForms }}">
+          <div class="contact-card">
+            <p class="feature__body">
+              Our online message form is coming soon. For now, email
+              <a href="mailto:parish@ukccatholic.org" style="color:var(--color-navy)">parish@ukccatholic.org</a>
+              or call <a href="tel:+15096742531" style="color:var(--color-navy)">(509) 674-2531</a>
+              during office hours.
+            </p>
+          </div>
+        </sc-if>
       </div>
     </section>
   </main>
@@ -1003,7 +1049,6 @@
   <sc-if value="{{ isPrayer }}">
   <main data-screen-label="10 Prayer requests">
     <header class="page-header">
-      <button class="page-header__back" onClick="{{ goHome }}">← Home</button>
       <div class="page-header__eyebrow">We pray with you</div>
       <h1>Prayer requests</h1>
       <p class="page-header__lead">
@@ -1013,7 +1058,19 @@
     </header>
     <section class="section--cream">
       <div class="section section--narrow">
-        <dc-import name="ContactForm" reason="prayer" locked="true" hint-size="100%,440px"></dc-import>
+        <sc-if value="{{ showForms }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="ContactForm" reason="prayer" locked="true" hint-size="100%,440px"></dc-import>
+        </sc-if>
+        <sc-if value="{{ hideForms }}">
+          <div class="contact-card">
+            <p class="feature__body">
+              Online prayer requests are coming soon. Share your intention by calling
+              <a href="tel:+15096742531" style="color:var(--color-navy)">(509) 674-2531</a> or emailing
+              <a href="mailto:parish@ukccatholic.org" style="color:var(--color-navy)">parish@ukccatholic.org</a>.
+              All requests are kept confidential.
+            </p>
+          </div>
+        </sc-if>
       </div>
     </section>
   </main>
@@ -1030,13 +1087,20 @@
           reminders. Unsubscribe any time.
         </p>
       </div>
-      <sc-if value="{{ submitted }}">
+      <sc-if value="{{ showSignupThanks }}">
         <div class="footer__signup-thanks" role="status">
           <div class="footer__signup-thanks-mark">✠</div>
           <div><strong>Thank you.</strong> Watch for a confirmation from <em>parish@ukccatholic.org</em>.</div>
         </div>
       </sc-if>
-      <sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+      <sc-if value="{{ showSignupNote }}" hint-placeholder-val="{{ true }}">
+        <p class="footer__signup-lead" style="color:var(--color-warm-white)">
+          Email and text sign-up is coming soon. To join the list now, email
+          <a href="mailto:parish@ukccatholic.org" style="color:var(--color-gold-screen)">parish@ukccatholic.org</a>
+          or call <a href="tel:+15096742531" style="color:var(--color-gold-screen)">(509) 674-2531</a>.
+        </p>
+      </sc-if>
+      <sc-if value="{{ showSignupForm }}">
         <form class="footer__signup-form" onSubmit="{{ onSubmit }}">
           <div class="footer__signup-prefs" role="group" aria-label="What would you like to receive">
             <label class="{{ chipBulletin }}">
@@ -1094,6 +1158,7 @@
     </div>
     <div class="footer__bottom">
       <div>© 2026 Catholic Parishes of Upper Kittitas County · Diocese of Yakima</div>
+      <div>To report abuse, contact the Diocese of Yakima Victim Assistance line at 1-888-276-4490. <a href="https://yakimadiocese.org" target="_blank" rel="noopener">Keeping Children Safe</a></div>
       <div>Built with reverence ✠</div>
     </div>
   </footer>
@@ -1101,6 +1166,10 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
+  // Forms aren't connected to a back end yet (Brevo for sign-ups; Microsoft Forms for
+  // registration, prayer requests, and contact). Flip this to true once they're wired up.
+  FORMS_ENABLED = false;
+
   state = {
     page: 'home',
     menuOpen: false,
@@ -1262,7 +1331,11 @@ class Component extends DCLogic {
       // footer signup
       email: this.state.email,
       submitted: this.state.submitted,
-      notSubmitted: !this.state.submitted,
+      showForms: this.FORMS_ENABLED,
+      hideForms: !this.FORMS_ENABLED,
+      showSignupForm: this.FORMS_ENABLED && !this.state.submitted,
+      showSignupThanks: this.FORMS_ENABLED && this.state.submitted,
+      showSignupNote: !this.FORMS_ENABLED,
       onEmail: (e) => this.setState({ email: e.target.value }),
       onSubmit: (e) => {
         e.preventDefault();

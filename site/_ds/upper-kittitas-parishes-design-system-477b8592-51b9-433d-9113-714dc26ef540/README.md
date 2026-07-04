@@ -18,7 +18,7 @@ This design system was built from these materials. Filed here so the system can 
 | Source | Where it lives | Notes |
 | --- | --- | --- |
 | `brand/` repo | Local mount, attached as a read-only directory (paths begin `brand/`) | Master asset folder. SVG / PNG / AI / PDF logo files, brand swatches (.ase), source Illustrator masters, and the brand-kit markdown. |
-| Logo SVG masters | `brand/logos/` (mirrored into `assets/logos/`) | Primary lockup, stacked lockup, three shields (combined / SJB / IC), three standalone icons (lamb / Marian M / circle), plus the cross element. Each comes in fullcolor / mono-navy / mono-white / reverse variants. |
+| Logo SVG masters | `brand/logos/` (the variants in active use are kept in the consuming project's `assets/logos/`) | Primary lockup, stacked lockup, three shields (combined / SJB / IC), three standalone icons (lamb / Marian M / circle), plus the cross element. Each comes in fullcolor / mono-navy / mono-white / reverse variants. |
 | Brand kit | `brand/BRAND-KIT.md` | The short, plain-language brand guide for volunteers — colors, fonts, logo choices, do's and don'ts. |
 | Asset audit | `brand/ASSET-AUDIT.md` | What's produced, what's missing (e.g. cascade ridgeline graphic, sized favicon exports). |
 | Illustrator builder | `brand/templates-source/build-brand-guidelines.jsx` | ExtendScript that builds the 15-page printed brand guide. Treated here as the canonical color + typography spec because it pins exact RGB values and font usage rules. |
@@ -32,19 +32,24 @@ This design system was built from these materials. Filed here so the system can 
 ```
 .
 ├── README.md                  ← this file
-├── SKILL.md                   ← Claude / agent skill entrypoint
 ├── colors_and_type.css        ← color + type + spacing tokens, semantic styles
+├── _ds_bundle.js              ← bundled component runtime loaded by every design
+├── _ds_manifest.json          ← design-system manifest
 ├── fonts/                     ← Cormorant SC, Source Sans 3, Source Serif 4 (.ttf, self-hosted)
-├── assets/
-│   ├── logos/                 ← every approved SVG logo variant
-│   └── parish-brand-assets.pdf
-├── preview/                   ← cards rendered in the Design System tab
-├── ui_kits/
-│   └── parish_website/        ← high-fidelity recreation of the parish website
-└── slides/                    ← 16:9 slide templates (title, scripture, mass times, …)
+├── preview/
+│   └── _card.css              ← shared styles for design-system specimen cards
+└── ui_kits/
+    ├── parish_website/        ← high-fidelity recreation of the parish website (styles.css)
+    ├── parish_bulletin/       ← weekly bulletin layout (bulletin.css)
+    └── parish_newsletter/     ← quarterly newsletter layout (newsletter.css)
 ```
 
-A parallel `brand/` mount holds the original AI/PDF source files and large raster exports. Pull from there when you need print masters or PNGs at specific pixel sizes.
+> **Brand masters live in a separate repository.** The original AI / PDF source files, brand
+> swatches (.ase), large raster exports, the printed brand guide, and the brand-kit / asset-audit
+> markdown are kept in the parallel `brand/` repo, not in this folder. The approved SVG logo
+> variants used by the products in this project are kept alongside the products that consume them
+> (see the project's own `assets/logos/`), not under this design-system folder. Pull from the
+> `brand/` repo when you need print masters or PNGs at specific pixel sizes.
 
 ---
 
@@ -235,23 +240,25 @@ If we need a "ministry icon" set (Liturgy, Music, Faith Formation, Outreach, Ste
 
 1. Drop `colors_and_type.css` in the document `<head>`.
 2. Use `var(--color-navy)`, `var(--font-serif)`, etc — never raw hex / font names.
-3. Pull a logo from `assets/logos/` rather than embedding inline SVG.
+3. Pull a logo from the project's `assets/logos/` rather than embedding inline SVG.
 4. For UI components, copy from `ui_kits/parish_website/`.
-5. To brief an agent (Claude or otherwise) on this brand, point it at `SKILL.md`.
+5. To brief an agent (Claude or otherwise) on this brand, point it at this `README.md`.
 
 ## Index — what each file is for
 
 | File / folder | What's in it |
 | --- | --- |
 | `README.md` | This file — brand context, voice, visual rules, iconography, caveats. |
-| `SKILL.md` | Agent skill entrypoint. Compatible with Claude Code's Agent Skills format. |
 | `colors_and_type.css` | All design tokens (color, type, spacing, radii, shadow, motion) + base semantic styles. The source of truth — never re-define hex codes elsewhere. |
+| `_ds_bundle.js` | Bundled component runtime that each design loads to compose with design-system components. |
+| `_ds_manifest.json` | Design-system manifest. |
 | `fonts/` | Cormorant SC (5 weights), Source Sans 3 (16 weight/italic combos), and Source Serif 4 (16 weight/italic combos) — all self-hosted as static TTF. |
-| `assets/logos/` | Full SVG logo system: primary lockup, stacked lockup, circle icon, SJB lamb, IC Marian M, cross, combined shield, individual shields — each in `fullcolor` / `mono-navy` / `mono-white` / `reverse` variants where applicable. |
-| `assets/parish-brand-assets.pdf` | Print-ready brand asset reference sheet from the parish brand book. |
-| `preview/` | 29 design-system specimen cards rendered in the Design System tab — colors, type, spacing, brand marks, and components. |
-| `preview/_card.css` | Shared card styles. Imports `colors_and_type.css`. |
-| `ui_kits/parish_website/` | High-fidelity React recreation of the parish marketing website — `Home`, `Mass Times`, `About`, `Bulletin`, `Contact`. Open `index.html` and click the top nav. |
+| `preview/_card.css` | Shared card styles for design-system specimen cards. Imports `colors_and_type.css`. |
+| `ui_kits/parish_website/styles.css` | Styles for the high-fidelity recreation of the parish marketing website. |
+| `ui_kits/parish_bulletin/bulletin.css` | Styles for the weekly parish bulletin layout. |
+| `ui_kits/parish_newsletter/newsletter.css` | Styles for the quarterly parish newsletter layout. |
+
+The approved SVG logo variants (primary lockup, circle icon, SJB lamb, IC Marian M, combined shield, mono / reverse variants) are stored with the products that consume them — see the project's own `assets/logos/` — and the print masters live in the separate `brand/` repository.
 
 ## Caveats and open items
 
