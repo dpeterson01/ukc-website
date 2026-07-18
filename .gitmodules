@@ -1,0 +1,3 @@
+[submodule "design-system"]
+	path = design-system
+	url = git@github-personal:dpeterson01/ukc-design-system.git
