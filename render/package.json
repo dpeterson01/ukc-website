@@ -1,0 +1,20 @@
+{
+  "name": "ukcc-bulletin-render",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Render a weekly issue.json into the on-brand bulletin (PDF) + email (HTML) using the design-system templates.",
+  "bin": {
+    "render-issue": "render.js"
+  },
+  "scripts": {
+    "render": "node render.js",
+    "render:html": "node render.js --no-pdf",
+    "postinstall": "playwright install chromium"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "pdf-lib": "^1.17.1",
+    "playwright": "^1.48.0"
+  }
+}

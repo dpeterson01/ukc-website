@@ -1,0 +1,106 @@
+{
+  "issue_date": "2026-06-14",
+  "liturgical": {
+    "season": "ordinary",
+    "title": "Eleventh Sunday in Ordinary Time",
+    "date_line": "June 14, 2026 · Ordinary Time",
+    "readings": [
+      { "label": "First Reading", "ref": "2 Sm 12:7-10, 13" },
+      { "label": "Psalm", "ref": "Ps 32" },
+      { "label": "Second Reading", "ref": "Gal 2:16, 19-21" },
+      { "label": "Gospel", "ref": "Lk 7:36 — 8:3" }
+    ],
+    "gospel_preview": "Listen this Sunday for the moment Simon the Pharisee judges in silence — and how Jesus answers the thought he never spoke aloud.",
+    "reflect_q": "Before Mass: where in my life am I keeping score instead of keeping mercy?"
+  },
+  "hero": {
+    "variant": "scripture",
+    "quote": "Her many sins have been forgiven; hence, she has shown great love.",
+    "cite": "Luke 7:47",
+    "photo_url": ""
+  },
+  "reflection": {
+    "head": "From Fr. Francisco",
+    "body": [
+      "Friends, this Sunday’s Gospel finds Jesus at dinner in the home of a Pharisee, where an uninvited woman weeps at his feet. The room is quick to judge her. Jesus is not. He sees her love, and he names it out loud.",
+      "It is easy, in a small town, to know each other’s histories — who stumbled, who drifted, who came back. The Lord asks us to see one another the way he saw that woman: not by the worst day, but by the love that brings us through the door of the church at all.",
+      "This week, when you pass the peace at Mass, look the person in the eye. You may be looking at someone the rest of the world wrote off, whom God has forgiven and set free."
+    ],
+    "question": "Who is the one person this week I find hardest to forgive — and what would it cost me to begin?"
+  },
+  "one_thing": {
+    "copy": "Join us for Coffee & Donuts after the 10 a.m. Mass this Sunday at St. John the Baptist — bring a neighbor.",
+    "qr_url": "https://ukccatholic.org/welcome"
+  },
+  "feature": {
+    "variant": "saint",
+    "eyebrow": "Saint of the Week",
+    "title": "St. Anthony of Padua",
+    "body": [
+      "A Franciscan friar and gifted preacher, Anthony (1195–1231) was so steeped in Scripture that he could quote it from memory at length. He is the patron of lost things — though he himself sought only to find souls for Christ.",
+      "His feast falls on June 13. Ask his prayers this week for whatever, or whomever, feels lost to you."
+    ],
+    "meta": "Feast · June 13 · Patron of the lost",
+    "kids_note": "St. Anthony loved to read God’s word. Ask a grown-up to help you find one Bible verse this week and learn it by heart."
+  },
+  "kids": {
+    "layout": "side-by-side",
+    "variant": "short-story"
+  },
+  "intentions": [
+    { "when": "Sat 5 PM", "for": "✝ Robert Kowalski", "by": "req. the Kowalski family" },
+    { "when": "Sun 8 AM", "for": "For the People of the Parishes", "by": "" },
+    { "when": "Sun 10 AM", "for": "✝ Maria Russo", "by": "req. the Altar Society" },
+    { "when": "Tue 8 AM", "for": "In thanksgiving", "by": "req. M. Hill" },
+    { "when": "Wed 6 PM", "for": "✝ Holy Souls in Purgatory", "by": "" },
+    { "when": "Fri 8 AM", "for": "Health of the Griswold family", "by": "" }
+  ],
+  "calendar": [
+    { "day": "Mon 16", "event": "Rosary Group", "where": "IC" },
+    { "day": "Tue 17", "event": "Bible Study, 6 PM", "where": "SJB Hall" },
+    { "day": "Wed 18", "event": "Faith Formation", "where": "SJB" },
+    { "day": "Thu 19", "event": "Food Bank, 9 AM", "where": "Cle Elum" },
+    { "day": "Sat 21", "event": "Confessions, 3:30", "where": "SJB" }
+  ],
+  "announcements": [
+    {
+      "title": "Parish Picnic — Save the Date",
+      "body": "Our annual parish picnic returns Sunday, July 12, after the 10 a.m. Mass at SJB. Burgers provided; bring a side or dessert to share.",
+      "contact": "Sign up at the office · (509) 674-2531"
+    },
+    {
+      "title": "Lectors & Eucharistic Ministers Needed",
+      "body": "Both parishes are building the summer schedule. If you feel called to serve at the ambo or the altar, we would love to train you.",
+      "contact": "Contact Holli in the parish office"
+    },
+    {
+      "title": "Second Collection — Peter’s Pence",
+      "body": "Next weekend’s second collection supports the Holy Father’s charitable works around the world.",
+      "contact": ""
+    }
+  ],
+  "stewardship": {
+    "cells": [
+      { "label": "SJB Offertory", "amount": "$2,140", "sub": "42 envelopes" },
+      { "label": "IC Offertory", "amount": "$1,315", "sub": "28 envelopes" },
+      { "label": "Weekly Need", "amount": "$3,800", "sub": "combined budget" },
+      { "label": "Online Giving", "amount": "$640", "sub": "12 households" }
+    ],
+    "note": "“Each must give as he has decided in his heart.” — 2 Cor 9:7"
+  },
+  "house_card": {
+    "variant": "email-signup"
+  },
+  "email": {
+    "subject_options": [
+      "Forgiven, and set free",
+      "What Jesus saw that the room missed",
+      "This Sunday: mercy over scorekeeping"
+    ],
+    "subject_chosen": "Forgiven, and set free",
+    "feature_ref": "reflection",
+    "cta": { "label": "Sign Up for the Picnic", "url": "https://ukccatholic.org/picnic" }
+  },
+  "status": "draft",
+  "review": { "preview_url": null, "revision": 0, "feedback_log": [] }
+}

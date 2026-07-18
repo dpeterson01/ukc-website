@@ -3,3 +3,6 @@
 .thumbnail
 node_modules/
 Thumbs.db
+
+# Generated weekly render outputs (the issues/<date>.json source is kept)
+issues/*/
