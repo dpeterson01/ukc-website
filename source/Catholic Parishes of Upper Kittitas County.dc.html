@@ -46,7 +46,12 @@
   <header class="{{ navCls }}">
     <div class="nav__inner">
       <button class="nav__logo" onClick="{{ goHome }}" style="background:none;border:0;cursor:pointer;padding:0" aria-label="Home">
-        <img src="assets/logos/parish-fullcolor_circle-icon.svg" alt="Catholic Parishes of Upper Kittitas County">
+        <img class="nav__logo-mark" src="assets/logos/parish-fullcolor_circle-icon.svg" alt="">
+        <span class="nav__logo-words">
+          <span class="nav__logo-parish">St. John the Baptist</span>
+          <span class="nav__logo-sep">◆</span>
+          <span class="nav__logo-parish">Immaculate Conception</span>
+        </span>
       </button>
       <nav class="nav__links">
         <sc-for list="{{ links }}" as="link" hint-placeholder-count="6">
@@ -148,26 +153,25 @@
           <div class="feature__title">Watch Mass live</div>
           <p class="feature__body">
             Can't be with us in person? We livestream Sunday Mass every week, alternating between
-            Cle Elum and Roslyn. Join us from home, or pray with a past Mass any time.
+            St. John the Baptist and Immaculate Conception. Join us from home, or pray with a past Mass any time.
           </p>
           <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goWatch }}">Watch live →</button>
         </article>
         <article class="feature">
-          <div class="feature__eyebrow">Becoming Catholic</div>
-          <div class="feature__title">OCIA &amp; the sacraments</div>
+          <div class="feature__eyebrow">Milestones of grace</div>
+          <div class="feature__title">The sacraments</div>
           <p class="feature__body">
-            Curious about the Catholic faith, or returning after time away? The Order of Christian
-            Initiation for Adults gathers Thursday evenings. No question is too small, and there's
-            no pressure, only welcome.
+            From Baptism to marriage to the anointing of the sick, the sacraments mark every season
+            of a life of faith. Learn what they are and how to prepare.
           </p>
-          <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goFormation }}">Faith formation →</button>
+          <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goSacraments }}">The sacraments →</button>
         </article>
         <article class="feature">
-          <div class="feature__eyebrow">For families</div>
-          <div class="feature__title">Religious education</div>
+          <div class="feature__eyebrow">For all ages</div>
+          <div class="feature__title">Faith formation</div>
           <p class="feature__body">
-            Children's faith formation meets after the 10:00 a.m. Sunday Mass in Cle Elum, October
-            through May. We walk with families from Baptism through First Communion and beyond.
+            Children's classes, OCIA for adults exploring the faith, and FORMED streaming for the
+            whole family. We walk with people at every stage.
           </p>
           <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goFormation }}">Learn more →</button>
         </article>
@@ -257,9 +261,9 @@
           <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goMass }}">Mass times →</button>
         </article>
         <article class="feature">
-          <div class="feature__title">Register as a parishioner</div>
-          <p class="feature__body">Make this your parish home. Reach out to the office and we'll help you get registered.</p>
-          <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goContact }}">Contact us →</button>
+          <div class="feature__title">Register with us</div>
+          <p class="feature__body">Make this your parish home. Tell us a little about your household and we'll take care of the rest.</p>
+          <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goRegisterSection }}">Register with us →</button>
         </article>
         <article class="feature">
           <div class="feature__title">Explore the faith</div>
@@ -269,7 +273,7 @@
       </div>
     </section>
 
-    <section class="section--cream">
+    <section class="section--cream" id="register-section">
       <div class="section section--narrow">
         <div class="eyebrow" style="margin-bottom:8px">Make this your parish home</div>
         <h2 style="margin-bottom:8px">Register with us</h2>
@@ -303,59 +307,65 @@
       <div class="page-header__eyebrow">When we gather</div>
       <h1>Mass &amp; confession times</h1>
       <p class="page-header__lead">
-        We share one pastor between two churches. Daily and Sunday Mass alternate between Cle Elum
-        and Roslyn, all are welcome at either.
+        We share one pastor between two churches. Daily and Sunday Mass alternate between St. John
+        the Baptist in Cle Elum and Immaculate Conception in Roslyn. All are welcome at either.
       </p>
     </header>
 
     <section class="section">
-      <div style="display:flex;align-items:center;gap:10px 24px;flex-wrap:wrap;margin-bottom:22px">
-        <span style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;color:var(--fg-muted)">Which church</span>
-        <span style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-sans);font-size:13px;color:var(--color-charcoal)"><span style="width:10px;height:10px;background:var(--color-sjb-green);border-radius:50%;display:inline-block"></span>St. John the Baptist, Cle Elum</span>
-        <span style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-sans);font-size:13px;color:var(--color-charcoal)"><span style="width:10px;height:10px;background:var(--color-marian-blue);border-radius:50%;display:inline-block"></span>Immaculate Conception, Roslyn</span>
+      <div class="mass-days">
+        <div class="mass-day">
+          <div class="mass-day__hd">Sunday</div>
+          <div class="mass-slot mass-slot--ic">
+            <div class="mass-slot__time">8:00 a.m.</div>
+            <div class="mass-slot__church">Immaculate Conception <span class="mass-slot__city">· Roslyn</span></div>
+          </div>
+          <div class="mass-slot mass-slot--sjb">
+            <div class="mass-slot__time">10:00 a.m.</div>
+            <div class="mass-slot__church">St. John the Baptist <span class="mass-slot__city">· Cle Elum</span></div>
+          </div>
+        </div>
+        <div class="mass-day">
+          <div class="mass-day__hd">Tuesday</div>
+          <div class="mass-slot mass-slot--sjb">
+            <div class="mass-slot__time">8:00 a.m.</div>
+            <div class="mass-slot__church">St. John the Baptist <span class="mass-slot__city">· Cle Elum</span></div>
+          </div>
+        </div>
+        <div class="mass-day">
+          <div class="mass-day__hd">Wednesday</div>
+          <div class="mass-slot mass-slot--ic">
+            <div class="mass-slot__time">6:00 p.m.</div>
+            <div class="mass-slot__church">Immaculate Conception <span class="mass-slot__city">· Roslyn</span></div>
+          </div>
+        </div>
+        <div class="mass-day">
+          <div class="mass-day__hd">Thursday</div>
+          <div class="mass-slot mass-slot--sjb">
+            <div class="mass-slot__time">8:00 a.m.</div>
+            <div class="mass-slot__church">St. John the Baptist <span class="mass-slot__city">· Cle Elum</span></div>
+          </div>
+        </div>
+        <div class="mass-day">
+          <div class="mass-day__hd">Friday</div>
+          <div class="mass-slot mass-slot--ic">
+            <div class="mass-slot__time">8:00 a.m.</div>
+            <div class="mass-slot__church">Immaculate Conception <span class="mass-slot__city">· Roslyn</span></div>
+          </div>
+        </div>
+        <div class="mass-day">
+          <div class="mass-day__hd">Saturday <span class="note">(Vigil)</span></div>
+          <div class="mass-slot mass-slot--sjb">
+            <div class="mass-slot__time">5:00 p.m.</div>
+            <div class="mass-slot__church">St. John the Baptist <span class="mass-slot__city">· Cle Elum</span></div>
+          </div>
+        </div>
       </div>
+      <p class="feature__body" style="max-width:760px;margin:16px auto 0;text-align:center">
+        Both churches are ten minutes apart. You are welcome at either, whichever Mass fits your week.
+      </p>
 
-      <div class="mass-schedule">
-        <div class="mass-row">
-          <div class="mass-row__day">Sunday</div>
-          <div class="mass-row__times">
-            <span class="mass-time"><span class="mass-time__hour">8:00 a.m.</span><span class="mass-time__dot mass-time__dot--ic"></span>Immaculate Conception</span>
-            <span class="mass-time"><span class="mass-time__hour">10:00 a.m.</span><span class="mass-time__dot mass-time__dot--sjb"></span>St. John the Baptist</span>
-          </div>
-        </div>
-        <div class="mass-row">
-          <div class="mass-row__day">Tuesday</div>
-          <div class="mass-row__times">
-            <span class="mass-time"><span class="mass-time__hour">8:00 a.m.</span><span class="mass-time__dot mass-time__dot--sjb"></span>St. John the Baptist</span>
-          </div>
-        </div>
-        <div class="mass-row">
-          <div class="mass-row__day">Wednesday</div>
-          <div class="mass-row__times">
-            <span class="mass-time"><span class="mass-time__hour">6:00 p.m.</span><span class="mass-time__dot mass-time__dot--ic"></span>Immaculate Conception</span>
-          </div>
-        </div>
-        <div class="mass-row">
-          <div class="mass-row__day">Thursday</div>
-          <div class="mass-row__times">
-            <span class="mass-time"><span class="mass-time__hour">8:00 a.m.</span><span class="mass-time__dot mass-time__dot--sjb"></span>St. John the Baptist</span>
-          </div>
-        </div>
-        <div class="mass-row">
-          <div class="mass-row__day">Friday</div>
-          <div class="mass-row__times">
-            <span class="mass-time"><span class="mass-time__hour">8:00 a.m.</span><span class="mass-time__dot mass-time__dot--ic"></span>Immaculate Conception</span>
-          </div>
-        </div>
-        <div class="mass-row">
-          <div class="mass-row__day">Saturday <span class="mass-row__note">(Vigil)</span></div>
-          <div class="mass-row__times">
-            <span class="mass-time"><span class="mass-time__hour">5:00 p.m.</span><span class="mass-time__dot mass-time__dot--sjb"></span>St. John the Baptist</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="holyday-grid" style="margin-top:28px">
+      <div class="contact-grid" style="margin-top:40px">
         <div class="contact-card">
           <h3>Confession</h3>
           <p class="feature__body" style="margin-bottom:10px">Saturdays, 3:30 to 4:30 p.m. at St. John the Baptist in Cle Elum.</p>
@@ -365,9 +375,53 @@
           <h3>Adoration</h3>
           <p class="feature__body">First Friday of each month, 8:30 a.m. to 12:00 p.m., alternating between the two churches. Check the parish calendar for the location.</p>
         </div>
-        <div class="contact-card">
-          <h3>Holy days</h3>
-          <p class="feature__body">Holy days of obligation follow a special schedule announced in the bulletin and at Mass. When in doubt, please call the parish office.</p>
+      </div>
+
+      <div class="contact-card" style="margin-top:20px">
+        <h3>Holy days of obligation</h3>
+        <p class="feature__body" style="margin-bottom:16px">Holy days of obligation in the United States:</p>
+        <ul class="holyday-list">
+          <li><span class="when">January 1</span><span class="what">Solemnity of Mary, Mother of God</span></li>
+          <li><span class="when">40 days after Easter</span><span class="what">Ascension of the Lord<small>Check the bulletin for the date.</small></span></li>
+          <li><span class="when">August 15</span><span class="what">Assumption of the Blessed Virgin Mary</span></li>
+          <li><span class="when">November 1</span><span class="what">All Saints</span></li>
+          <li><span class="when">December 8</span><span class="what">Immaculate Conception of the Blessed Virgin Mary</span></li>
+          <li><span class="when">December 25</span><span class="what">The Nativity of the Lord (Christmas)</span></li>
+        </ul>
+        <p class="feature__body">
+          When a holy day (other than Christmas or the Immaculate Conception) falls on a Saturday or
+          Monday, the obligation to attend Mass is dispensed in the United States, though Mass is
+          still celebrated. Check the bulletin for times.
+        </p>
+      </div>
+    </section>
+
+    <section class="section--cream">
+      <div class="section">
+        <div class="eyebrow" style="margin-bottom:8px">Other Masses</div>
+        <h2 style="margin-bottom:8px">Funerals and Mass intentions</h2>
+        <hr class="rule-gold" style="margin:0 0 32px">
+        <div class="contact-grid">
+          <div class="contact-card">
+            <h3>Funeral Mass</h3>
+            <p class="feature__body">
+              When a loved one dies, the Church walks with you. A funeral Mass commends the faithful
+              departed to God's mercy and offers the hope of the Resurrection to those who grieve. To
+              plan a funeral Mass, contact the parish office as soon as possible; Father Higuera will
+              guide you through every step.
+            </p>
+          </div>
+          <div class="contact-card">
+            <h3>Mass of Intention</h3>
+            <p class="feature__body">
+              Any parishioner may request that a Mass be offered for a specific intention: for the
+              repose of a loved one's soul, in thanksgiving, for healing, or for any need. Father
+              announces the intention at Mass. To request a Mass of Intention, call the parish office.
+            </p>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:28px">
+          <a class="btn btn--primary" href="tel:+15096742531">Call the parish office · (509) 674-2531</a>
         </div>
       </div>
     </section>
@@ -510,14 +564,13 @@
     <section class="hero">
       <div class="hero__inner">
         <img class="hero__shield" src="assets/logos/parish-mono-white_sjb-standalone.svg" alt="" style="width:88px">
-        <div class="hero__parish-city" style="margin-bottom:8px">Cle Elum, Washington</div>
+        <div class="hero__parish-city hero__city--lead" style="margin-bottom:10px">Cle Elum, Washington</div>
         <h1>St. John the Baptist</h1>
         <p class="hero__lead">
           The larger of our two parishes, first built in 1902 by the immigrant families who came to
           mine the coal seams of the upper valley.
         </p>
         <div class="hero__ctas">
-          <a class="btn btn--on-navy" href="https://giving.parishsoft.com/App/Form/dd200bd9-02ce-473a-8921-004501ab1a85" target="_blank" rel="noopener">Give to this parish</a>
           <button class="btn btn--secondary" style="color:var(--color-warm-white);border-color:var(--color-warm-white)" style-hover="background:rgba(250,248,245,0.16);color:var(--color-warm-white);border-color:var(--color-warm-white)" onClick="{{ goHome }}">Both parishes</button>
         </div>
       </div>
@@ -531,19 +584,25 @@
     </section>
 
     <section class="section section--tight">
-      <div class="contact-grid">
-        <div class="contact-card">
-          <h3>When we gather</h3>
-          <div class="line"><span class="label">Saturday vigil</span><span class="val">5:00 p.m.</span></div>
-          <div class="line"><span class="label">Sunday</span><span class="val">10:00 a.m.</span></div>
-          <div class="line"><span class="label">Tuesday &amp; Thursday</span><span class="val">8:00 a.m.</span></div>
-          <div class="line"><span class="label">Confessions, Saturday</span><span class="val">3:30 to 4:30 p.m.</span></div>
+      <div class="parish-info-grid">
+        <div class="parish-info-grid__col">
+          <div class="contact-card">
+            <h3>When we gather</h3>
+            <div class="line"><span class="label">Saturday vigil</span><span class="val">5:00 p.m.</span></div>
+            <div class="line"><span class="label">Sunday</span><span class="val">10:00 a.m.</span></div>
+            <div class="line"><span class="label">Tuesday &amp; Thursday</span><span class="val">8:00 a.m.</span></div>
+            <div class="line"><span class="label">Confessions, Saturday</span><span class="val">3:30 to 4:30 p.m.</span></div>
+          </div>
+          <div class="contact-card">
+            <h3>Find us</h3>
+            <div class="line"><span class="label">Parish office</span><span class="val">(509) 674-2531</span></div>
+            <div class="line"><span class="label">Pastor</span><span class="val">Fr. Francisco Higuera</span></div>
+          </div>
         </div>
-        <div class="contact-card">
-          <h3>Find us</h3>
-          <div class="line"><span class="label">Parish office</span><span class="val">(509) 674-2531</span></div>
-          <div class="line"><span class="label">Pastor</span><span class="val">Fr. Francisco Higuera</span></div>
-        </div>
+        <figure class="parish-photo" style="margin:0">
+          <img src="assets/photos/sjb-exterior-placeholder.svg" alt="St. John the Baptist Church in Cle Elum">
+          <figcaption>St. John the Baptist, built in 1921 · 303 W. 2nd St., Cle Elum</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -562,6 +621,7 @@
         rectory along with much of the city. The present brick church, with its distinctive wooden
         belfry, was built in 1921 and has served the parish ever since.
       </p>
+      <button class="btn btn--ghost" style="padding-left:0" onClick="{{ goSjbHistory }}">Read the full history →</button>
     </section>
 
     <section class="section--cream">
@@ -627,14 +687,13 @@
     <section class="hero">
       <div class="hero__inner">
         <img class="hero__shield" src="assets/logos/parish-mono-white_ic-standalone.svg" alt="" style="width:88px">
-        <div class="hero__parish-city" style="margin-bottom:8px">Roslyn, Washington</div>
+        <div class="hero__parish-city hero__city--lead" style="margin-bottom:10px">Roslyn, Washington</div>
         <h1>Immaculate Conception</h1>
         <p class="hero__lead">
           The older of our two parishes, established in 1887 and among the oldest in the Diocese of
           Yakima. Named for the Mother of God, who keeps watch over this corner of the valley.
         </p>
         <div class="hero__ctas">
-          <a class="btn btn--on-navy" href="https://giving.parishsoft.com/App/Form/6063fea9-d6fc-486a-bed3-1150431d3666" target="_blank" rel="noopener">Give to this parish</a>
           <button class="btn btn--secondary" style="color:var(--color-warm-white);border-color:var(--color-warm-white)" style-hover="background:rgba(250,248,245,0.16);color:var(--color-warm-white);border-color:var(--color-warm-white)" onClick="{{ goHome }}">Both parishes</button>
         </div>
       </div>
@@ -648,19 +707,25 @@
     </section>
 
     <section class="section section--tight">
-      <div class="contact-grid">
-        <div class="contact-card">
-          <h3>When we gather</h3>
-          <div class="line"><span class="label">Sunday</span><span class="val">8:00 a.m.</span></div>
-          <div class="line"><span class="label">Wednesday</span><span class="val">6:00 p.m.</span></div>
-          <div class="line"><span class="label">Friday</span><span class="val">8:00 a.m.</span></div>
-          <div class="line"><span class="label">Adoration, 1st Friday</span><span class="val">8:30 a.m. to noon</span></div>
+      <div class="parish-info-grid">
+        <div class="parish-info-grid__col">
+          <div class="contact-card">
+            <h3>When we gather</h3>
+            <div class="line"><span class="label">Sunday</span><span class="val">8:00 a.m.</span></div>
+            <div class="line"><span class="label">Wednesday</span><span class="val">6:00 p.m.</span></div>
+            <div class="line"><span class="label">Friday</span><span class="val">8:00 a.m.</span></div>
+            <div class="line"><span class="label">Adoration, 1st Friday</span><span class="val">8:30 a.m. to noon</span></div>
+          </div>
+          <div class="contact-card">
+            <h3>Find us</h3>
+            <div class="line"><span class="label">Parish office</span><span class="val">(509) 674-2531</span></div>
+            <div class="line"><span class="label">Pastor</span><span class="val">Fr. Francisco Higuera</span></div>
+          </div>
         </div>
-        <div class="contact-card">
-          <h3>Find us</h3>
-          <div class="line"><span class="label">Parish office</span><span class="val">(509) 674-2531</span></div>
-          <div class="line"><span class="label">Pastor</span><span class="val">Fr. Francisco Higuera</span></div>
-        </div>
+        <figure class="parish-photo" style="margin:0">
+          <img src="assets/photos/ic-exterior-placeholder.svg" alt="Immaculate Conception Church in Roslyn">
+          <figcaption>Immaculate Conception, completed in 1888 · 211 N. B St., Roslyn</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -682,6 +747,7 @@
         church in time for Christmas, preserving Roslyn's Catholic and immigrant heritage for the
         next generation.
       </p>
+      <button class="btn btn--ghost" style="padding-left:0" onClick="{{ goIcHistory }}">Read the full history →</button>
     </section>
 
     <section class="section--cream">
@@ -756,44 +822,39 @@
     <section class="section">
       <div class="feature-grid">
         <article class="feature">
-          <div class="feature__eyebrow">Contact · Holli Sullivan</div>
+          <div class="feature__eyebrow">New life in Christ</div>
           <div class="feature__title">Baptism</div>
-          <p class="feature__body">The beginning of new life in Christ. Baptisms are celebrated on the second and fourth weekends. Reach out to the office to begin preparation.</p>
+          <p class="feature__body">The gateway to life in the Spirit and the door to all other sacraments. Through water and the Holy Spirit, we die to sin and rise to new life in Christ. Baptisms are celebrated on the second and fourth weekends of the month. Parents and godparents attend a brief preparation session beforehand.</p>
         </article>
         <article class="feature">
-          <div class="feature__eyebrow">Contact · Trish Griswold</div>
+          <div class="feature__eyebrow">Bread of life</div>
           <div class="feature__title">First Communion</div>
-          <p class="feature__body">Children receive the Eucharist for the first time after a two-year preparation, walked alongside their families through our Religious Education program.</p>
+          <p class="feature__body">After two years of preparation alongside their families, children receive the Body and Blood of Christ for the first time. They have learned what the Eucharist is, who Christ is, and why He gives Himself to us. That first &ldquo;Amen&rdquo; at the altar stays with them for life.</p>
         </article>
         <article class="feature">
-          <div class="feature__eyebrow">Contact · Lisa Browitt</div>
+          <div class="feature__eyebrow">Sealed in the Spirit</div>
           <div class="feature__title">Confirmation</div>
-          <p class="feature__body">Sealed with the gift of the Holy Spirit. We prepare young people and adults to be confirmed and sent out as witnesses of the faith.</p>
+          <p class="feature__body">The sacrament that completes Baptism and strengthens the baptized with the gifts of the Holy Spirit. We prepare young people and adults to be sent out as witnesses of Christ in the world. Preparation begins in the fall and culminates at the bishop's visit.</p>
         </article>
         <article class="feature">
-          <div class="feature__eyebrow">Saturdays · 3:30 p.m. at SJB</div>
+          <div class="feature__eyebrow">Mercy, always available</div>
           <div class="feature__title">Reconciliation</div>
-          <p class="feature__body">No questions, no judgment, just the mercy of God. Confessions are heard Saturday afternoons at St. John the Baptist, or any time by appointment.</p>
+          <p class="feature__body">No appointment needed, no questions asked. Confessions are heard every Saturday from 3:30 to 4:30 p.m. at St. John the Baptist. You can also request a time with Father any day. God's mercy never runs out, and neither does our welcome.</p>
         </article>
         <article class="feature">
-          <div class="feature__eyebrow">Contact · Fr. Higuera</div>
+          <div class="feature__eyebrow">A covenant for life</div>
           <div class="feature__title">Holy Matrimony</div>
-          <p class="feature__body">Marriage is a covenant and a vocation. Couples begin a six-step preparation process with Father at least six months before the wedding date.</p>
+          <p class="feature__body">Marriage is a covenant and a vocation, lived in the daily gift of self. Couples begin a six-step preparation process with Father at least six months before the wedding date. Start the conversation early; we'll walk with you through every step.</p>
         </article>
         <article class="feature">
-          <div class="feature__eyebrow">Contact · Fr. Higuera</div>
+          <div class="feature__eyebrow">Strength in suffering</div>
           <div class="feature__title">Anointing of the Sick</div>
-          <p class="feature__body">For those facing serious illness, surgery, or the frailty of age. Call the office any time, day or night in an emergency, to arrange anointing.</p>
+          <p class="feature__body">For those facing serious illness, surgery, or the frailty of age. This sacrament brings the comfort and strength of Christ to those who suffer. Available any time, day or night in emergencies. No one should face illness alone.</p>
         </article>
         <article class="feature">
-          <div class="feature__eyebrow">Diocese of Yakima</div>
+          <div class="feature__eyebrow">Called to serve</div>
           <div class="feature__title">Holy Orders</div>
-          <p class="feature__body">Is God calling you to the priesthood or diaconate? Speak with Father, and explore the vocations resources of the Diocese of Yakima.</p>
-        </article>
-        <article class="feature">
-          <div class="feature__eyebrow">Compassionate care</div>
-          <div class="feature__title">Funeral Mass</div>
-          <p class="feature__body">We accompany families in grief with the hope of the Resurrection. Contact the office to plan a funeral Mass and entrust your loved one to God's mercy.</p>
+          <p class="feature__body">The sacrament through which men are ordained as deacons, priests, or bishops to serve the Church. If you feel God may be calling you, speak with Father Higuera. The Diocese of Yakima accompanies men throughout discernment.</p>
         </article>
       </div>
       <div style="text-align:center;margin-top:40px">
@@ -840,11 +901,38 @@
           <div class="feature__title">FORMED</div>
           <p class="feature__body">
             FORMED is the &ldquo;Catholic Netflix&rdquo;, thousands of movies, studies, and books
-            for every age, in English and Spanish, free to our parishioners. Sign up with your
-            email and our parish zip code, 98922.
+            for every age, in English and Spanish, free to our parishioners.
           </p>
-          <a class="btn btn--ghost" style="align-self:flex-start" href="https://formed.org/signup" target="_blank" rel="noopener">Sign up on FORMED →</a>
+          <a class="btn btn--ghost" style="align-self:flex-start" href="https://formed.org/signup" target="_blank" rel="noopener">Go to FORMED →</a>
         </article>
+      </div>
+
+      <div style="margin-top:52px">
+        <div class="eyebrow" style="margin-bottom:8px">Sign up</div>
+        <h2 style="margin-bottom:8px">Registration forms</h2>
+        <hr class="rule-gold" style="margin:0 0 20px">
+        <p class="feature__body" style="max-width:70ch;margin-bottom:26px">
+          Online forms are on the way. In the meantime, call the parish office at
+          <a href="tel:+15096742531" style="color:var(--color-navy)">(509) 674-2531</a> and we'll get
+          you signed up.
+        </p>
+        <div class="contact-grid">
+          <div class="contact-card">
+            <h3>Parish registration</h3>
+            <p class="feature__body" style="margin-bottom:12px">Make one of our parishes your home.</p>
+            <span class="btn btn--ghost" aria-disabled="true" style="opacity:0.55;cursor:default">Form coming soon</span>
+          </div>
+          <div class="contact-card">
+            <h3>OCIA enrollment</h3>
+            <p class="feature__body" style="margin-bottom:12px">For adults exploring the faith or completing their sacraments.</p>
+            <span class="btn btn--ghost" aria-disabled="true" style="opacity:0.55;cursor:default">Form coming soon</span>
+          </div>
+          <div class="contact-card">
+            <h3>Children's faith formation</h3>
+            <p class="feature__body" style="margin-bottom:12px">Sunday classes, October through May.</p>
+            <span class="btn btn--ghost" aria-disabled="true" style="opacity:0.55;cursor:default">Form coming soon</span>
+          </div>
+        </div>
       </div>
 
       <div class="section--cream" style="margin-top:48px">
@@ -934,7 +1022,8 @@
       <div class="page-header__eyebrow">From home</div>
       <h1>Watch Mass live</h1>
       <p class="page-header__lead">
-        We livestream Sunday Mass every week, alternating between Cle Elum and Roslyn. Join us live,
+        We livestream Sunday Mass every week, alternating between St. John the Baptist and
+        Immaculate Conception. Join us live,
         or pray with a recent Mass any time.
       </p>
     </header>
@@ -977,7 +1066,8 @@
           <h3>Parish office</h3>
           <div class="line"><span class="label">Phone</span><span class="val"><a href="tel:+15096742531" style="color:var(--color-charcoal)">(509) 674-2531</a></span></div>
           <div class="line"><span class="label">Email</span><span class="val"><a href="mailto:parish@ukccatholic.org" style="color:var(--color-charcoal)">parish@ukccatholic.org</a></span></div>
-          <div class="line"><span class="label">Mailing</span><span class="val">303 W. 2nd St., Cle Elum, WA 98922</span></div>
+          <div class="line"><span class="label">Address</span><span class="val">303 W. 2nd St., Cle Elum</span></div>
+          <div class="line"><span class="label">Mailing</span><span class="val">PO Box 630, Cle Elum, WA 98922</span></div>
           <div class="line"><span class="label">Tue &amp; Thu</span><span class="val">10:00 a.m. – 3:00 p.m.</span></div>
           <div class="line"><span class="label">Wed &amp; Fri</span><span class="val">10:00 a.m. – 4:00 p.m.</span></div>
           <div class="line"><span class="label">Mon · Sat · Sun</span><span class="val">Closed</span></div>
@@ -996,28 +1086,16 @@
       <hr class="rule-gold" style="margin:0 0 28px">
       <div class="feature-grid">
         <article class="feature">
+          <div class="feature__title" style="font-size:20px">Very Rev. Francisco Higuera</div>
+          <div class="feature__eyebrow">Pastor</div>
+        </article>
+        <article class="feature">
           <div class="feature__title" style="font-size:20px">Holli Sullivan</div>
           <div class="feature__eyebrow">Pastoral Assistant</div>
         </article>
         <article class="feature">
           <div class="feature__title" style="font-size:20px">Wendy Hill</div>
           <div class="feature__eyebrow">Accounting</div>
-        </article>
-        <article class="feature">
-          <div class="feature__title" style="font-size:20px">Lisa Browitt</div>
-          <div class="feature__eyebrow">Confirmation Coordinator</div>
-        </article>
-        <article class="feature">
-          <div class="feature__title" style="font-size:20px">Deanna Duke</div>
-          <div class="feature__eyebrow">Communications &amp; Tech</div>
-        </article>
-        <article class="feature">
-          <div class="feature__title" style="font-size:20px">Trish Griswold</div>
-          <div class="feature__eyebrow">Catechesis &amp; Religious Ed</div>
-        </article>
-        <article class="feature">
-          <div class="feature__title" style="font-size:20px">Michael Uribe</div>
-          <div class="feature__eyebrow">Music Coordinator</div>
         </article>
       </div>
     </section>
@@ -1071,6 +1149,175 @@
             </p>
           </div>
         </sc-if>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+
+  <!-- ===================== SJB HISTORY ===================== -->
+  <sc-if value="{{ isSjbHistory }}">
+  <main data-screen-label="04a-1 SJB history">
+    <header class="page-header">
+      <div class="page-header__eyebrow">St. John the Baptist · Cle Elum</div>
+      <h1>Our history</h1>
+      <p class="page-header__lead">From a mission served out of Ellensburg to the brick church on Second Street, a parish shaped by coal, fire, and perseverance.</p>
+    </header>
+
+    <section class="section section--narrow">
+      <div class="timeline">
+        <div class="timeline__era">
+          <div class="timeline__era-label">1880s–1901</div>
+          <h2 class="timeline__era-title">Mission years</h2>
+          <ul class="timeline__items">
+            <li class="timeline__item">
+              <div class="timeline__year">1886</div>
+              <p class="timeline__text">The Northern Pacific Railway reaches the upper Kittitas Valley and the coal seams open. Catholic families from Italy, Croatia, Poland, and Ireland arrive to work the mines.</p>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__year">1890s</div>
+              <p class="timeline__text">Cle Elum’s Catholics gather as a mission of St. Andrew in Ellensburg, worshipping in homes and rented halls whenever a priest could make the journey up the valley.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="timeline__era">
+          <div class="timeline__era-label">1902–1920</div>
+          <h2 class="timeline__era-title">A church of their own</h2>
+          <ul class="timeline__items">
+            <li class="timeline__item">
+              <div class="timeline__year">1902</div>
+              <p class="timeline__text">The first Catholic church in Cle Elum is built, a frame building raised largely by the labor of mining families.</p>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__year">1914</div>
+              <p class="timeline__text">The mission becomes an independent parish under the patronage of St. John the Baptist, with its own resident pastor.</p>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__year">June 25, 1918</div>
+              <p class="timeline__text">A catastrophic fire sweeps through Cle Elum, destroying much of the city along with the church and the rectory. The parish is left to begin again.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="timeline__era">
+          <div class="timeline__era-label">1921–1999</div>
+          <h2 class="timeline__era-title">The brick church</h2>
+          <ul class="timeline__items">
+            <li class="timeline__item">
+              <div class="timeline__year">1921</div>
+              <p class="timeline__text">The present brick church, with its distinctive wooden belfry, is completed. It has served the parish ever since.</p>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__year">Mid-century</div>
+              <p class="timeline__text">Generations of mining families, ranchers, and railroad workers are baptized, married, and buried from this church as the coal industry winds down and the valley reinvents itself.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="timeline__era">
+          <div class="timeline__era-label">2000–today</div>
+          <h2 class="timeline__era-title">One pastor, two parishes</h2>
+          <ul class="timeline__items">
+            <li class="timeline__item">
+              <div class="timeline__year">2000s</div>
+              <p class="timeline__text">Retirees, remote workers, and young families join the longtime residents in the pews. The parish shares a pastor with Immaculate Conception in Roslyn.</p>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__year">2026</div>
+              <p class="timeline__text">Both parishes adopt a single shared visual identity: two places, one faith, one future in Christ.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <hr class="rule-gold" style="width:56px;margin:48px 0 24px">
+      <p class="feature__body" style="margin-bottom:24px">
+        Our history is still being written by the families who fill these pews. If you have
+        photographs, documents, or stories from the parish's past, the office would love to hear
+        from you.
+      </p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <button class="btn btn--secondary" onClick="{{ goSJB }}">← Back to St. John the Baptist</button>
+        <button class="btn btn--ghost" onClick="{{ goIcHistory }}">The other parish's history →</button>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <!-- ===================== IC HISTORY ===================== -->
+  <sc-if value="{{ isIcHistory }}">
+  <main data-screen-label="04b-1 IC history">
+    <header class="page-header">
+      <div class="page-header__eyebrow">Immaculate Conception · Roslyn</div>
+      <h1>Our history</h1>
+      <p class="page-header__lead">One of the oldest parishes in the Diocese of Yakima, built by Roslyn’s immigrant miners and lovingly restored for the next generation.</p>
+    </header>
+
+    <section class="section section--narrow">
+      <div class="timeline">
+        <div class="timeline__era">
+          <div class="timeline__era-label">1886–1900</div>
+          <h2 class="timeline__era-title">Roslyn’s first Catholics</h2>
+          <ul class="timeline__items">
+            <li class="timeline__item">
+              <div class="timeline__year">1886</div>
+              <p class="timeline__text">Roslyn is founded as a coal-mining company town. Catholic families are among its earliest settlers.</p>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__year">1887</div>
+              <p class="timeline__text">The parish of Immaculate Conception is established, among the oldest in what would become the Diocese of Yakima.</p>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__year">October 1888</div>
+              <p class="timeline__text">The church is completed, its steeple rising above a town of miners drawn from across Europe.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="timeline__era">
+          <div class="timeline__era-label">1900–1978</div>
+          <h2 class="timeline__era-title">A parish and a landmark</h2>
+          <ul class="timeline__items">
+            <li class="timeline__item">
+              <div class="timeline__year">Early 1900s</div>
+              <p class="timeline__text">The parish serves a town of more than twenty nationalities. Baptismal and burial records read like a map of Europe.</p>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__year">1978</div>
+              <p class="timeline__text">The Roslyn Historic District is placed on the National Register of Historic Places. Immaculate Conception Church and Rectory are contributing buildings.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="timeline__era">
+          <div class="timeline__era-label">2001–2025</div>
+          <h2 class="timeline__era-title">Damage and restoration</h2>
+          <ul class="timeline__items">
+            <li class="timeline__item">
+              <div class="timeline__year">2001</div>
+              <p class="timeline__text">The Nisqually earthquake badly damages the church. Careful repairs follow, and the parish keeps gathering.</p>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__year">2025</div>
+              <p class="timeline__text">Under Fr. Francisco Higuera, the parish completes a major historic restoration, renewing plaster, decorative painting, original artwork, woodwork, and lighting, and reopens the church in time for Christmas.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="timeline__era">
+          <div class="timeline__era-label">Today</div>
+          <h2 class="timeline__era-title">Held in trust</h2>
+          <ul class="timeline__items">
+            <li class="timeline__item">
+              <div class="timeline__year">2026</div>
+              <p class="timeline__text">Immaculate Conception shares a pastor and a single visual identity with St. John the Baptist in Cle Elum, preserving Roslyn’s Catholic and immigrant heritage for the next generation.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <hr class="rule-gold" style="width:56px;margin:48px 0 24px">
+      <p class="feature__body" style="margin-bottom:24px">
+        Our history is still being written by the families who fill these pews. If you have
+        photographs, documents, or stories from the parish's past, the office would love to hear
+        from you.
+      </p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <button class="btn btn--secondary" onClick="{{ goIC }}">← Back to Immaculate Conception</button>
+        <button class="btn btn--ghost" onClick="{{ goSjbHistory }}">The other parish's history →</button>
       </div>
     </section>
   </main>
@@ -1179,7 +1426,7 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
-    this._validPages = ['home','new','mass','about','sjb','ic','sacraments','formation','giving','watch','contact','prayer'];
+    this._validPages = ['home','new','mass','about','sjb','ic','sjb-history','ic-history','sacraments','formation','giving','watch','contact','prayer'];
     const SITE = 'Catholic Parishes of Upper Kittitas County';
     this._pageMeta = {
       home: {
@@ -1205,6 +1452,14 @@ class Component extends DCLogic {
       ic: {
         title: 'Immaculate Conception, Roslyn | ' + SITE,
         desc: 'Immaculate Conception in Roslyn — Mass times, our story since 1887, and the lovingly restored historic church in the Cascade foothills. Welcome home.',
+      },
+      'sjb-history': {
+        title: 'History of St. John the Baptist | ' + SITE,
+        desc: 'A timeline of St. John the Baptist in Cle Elum — from a mission of St. Andrew in Ellensburg to the brick church built after the fire of 1918.',
+      },
+      'ic-history': {
+        title: 'History of Immaculate Conception | ' + SITE,
+        desc: 'A timeline of Immaculate Conception in Roslyn — established 1887, listed on the National Register, and fully restored in 2025.',
       },
       sacraments: {
         title: 'Sacraments | ' + SITE,
@@ -1307,6 +1562,8 @@ class Component extends DCLogic {
       isContact: page === 'contact',
       isSJB: page === 'sjb',
       isIC: page === 'ic',
+      isSjbHistory: page === 'sjb-history',
+      isIcHistory: page === 'ic-history',
       isPrayer: page === 'prayer',
 
       links: this.navLinks(),
@@ -1325,6 +1582,15 @@ class Component extends DCLogic {
       goContact: () => this.go('contact'),
       goSJB: () => this.go('sjb'),
       goIC: () => this.go('ic'),
+      goSjbHistory: () => this.go('sjb-history'),
+      goIcHistory: () => this.go('ic-history'),
+      goRegisterSection: () => {
+        const el = typeof document !== 'undefined' && document.getElementById('register-section');
+        if (el && window.scrollTo) {
+          const y = el.getBoundingClientRect().top + window.pageYOffset - 90;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      },
       goPrayer: () => this.go('prayer'),
       give: () => this.go('giving'),
 

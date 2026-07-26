@@ -79,7 +79,7 @@ button { cursor: pointer; font-family: inherit; }
   gap: 32px;
 }
 .nav__logo {
-  height: 56px;
+  height: 62px;
   display: flex;
   align-items: center;
 }
@@ -246,16 +246,22 @@ p  { margin: 0; }
 }
 .hero__parish-name {
   font-family: var(--font-display);
-  font-size: 20px;
-  letter-spacing: 0.08em;
+  font-size: 34px;
+  letter-spacing: 0.06em;
   color: var(--color-warm-white);
   line-height: 1.05;
 }
 .hero__parish-city {
   font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 0.22em;
+  font-size: 25px;
+  letter-spacing: 0.16em;
   color: var(--color-gold-screen);
+  line-height: 1.15;
+}
+/* Parish landing pages: city sits above the church-name h1 (64px) */
+.hero__city--lead {
+  font-size: 36px;
+  letter-spacing: 0.18em;
 }
 .hero__parish-divider {
   color: var(--color-gold-screen);
@@ -996,6 +1002,9 @@ p  { margin: 0; }
   .about-grid__media { aspect-ratio: 5/3; max-width: 480px; margin: 0 auto; }
 
   h1 { font-size: 44px; }
+  .hero__parish-name { font-size: 27px; }
+  .hero__parish-city { font-size: 20px; }
+  .hero__city--lead { font-size: 26px; letter-spacing: 0.16em; }
   h2 { font-size: 30px; }
 }
 
@@ -1027,7 +1036,7 @@ p  { margin: 0; }
 
   /* Main nav: collapse to logo + hamburger; hide inline links. */
   .nav__inner { padding: 12px 16px; gap: 12px; }
-  .nav__logo { height: 44px; }
+  .nav__logo { height: 46px; }
   .nav__links { display: none; }
   .nav__toggle { display: flex; }
 
@@ -1204,4 +1213,244 @@ p  { margin: 0; }
   .hero h1 { font-size: 34px; }
   .page-header h1 { font-size: 30px; }
   .utility-bar__contact a:last-child { display: none; }
+}
+
+
+/* ============================================================
+   MASS SCHEDULE v2 — day cards, text-labelled churches
+   Colour is a secondary cue only (tinted band + left border);
+   the parish name is always spelled out.
+   ============================================================ */
+.mass-days {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.mass-day {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+}
+.mass-day__hd {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 11px 20px;
+  background: var(--color-warm-cream, #F4EFE6);
+  border-bottom: 1px solid var(--border-hairline);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-navy);
+}
+.mass-day__hd .note {
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: var(--fg-muted);
+}
+.mass-slot {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 4px 20px;
+  padding: 15px 20px 15px 16px;
+  border-left: 4px solid transparent;
+  border-top: 1px solid var(--border-hairline);
+}
+.mass-day__hd + .mass-slot { border-top: none; }
+.mass-slot--sjb { border-left-color: var(--color-sjb-green); background: rgba(46, 125, 50, 0.05); }
+.mass-slot--ic  { border-left-color: var(--color-marian-blue); background: rgba(42, 82, 152, 0.05); }
+.mass-slot__time {
+  font-family: var(--font-serif);
+  font-size: 23px;
+  font-weight: 600;
+  color: var(--color-navy);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  white-space: nowrap;
+}
+.mass-slot__church {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  line-height: 1.35;
+}
+.mass-slot__city {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--fg-muted);
+}
+
+/* Holy-day list */
+.holyday-list {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.holyday-list li {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 4px 18px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+.holyday-list li:last-child { border-bottom: none; }
+.holyday-list .when {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-navy);
+  padding-top: 3px;
+}
+.holyday-list .what {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--color-charcoal);
+  line-height: 1.45;
+}
+.holyday-list .what small {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   PARISH INFO + PHOTO (parish landing pages)
+   ============================================================ */
+.parish-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 28px;
+  align-items: start;
+}
+.parish-info-grid__col {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.parish-photo {
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+.parish-photo img { display: block; width: 100%; height: auto; }
+.parish-photo figcaption {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--fg-muted);
+  padding: 10px 14px;
+  border-top: 1px solid var(--border-hairline);
+}
+
+/* ============================================================
+   HISTORY TIMELINE
+   ============================================================ */
+.timeline { margin: 0; }
+.timeline__era { margin-bottom: 44px; }
+.timeline__era:last-child { margin-bottom: 0; }
+.timeline__era-label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold-print, #B8945F);
+  margin-bottom: 6px;
+}
+.timeline__era-title {
+  font-family: var(--font-serif);
+  font-size: 27px;
+  font-weight: 600;
+  color: var(--color-navy);
+  margin: 0 0 20px;
+}
+.timeline__items {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 30px;
+  border-left: 2px solid var(--color-gold-screen);
+}
+.timeline__item { position: relative; padding-bottom: 26px; }
+.timeline__item:last-child { padding-bottom: 0; }
+.timeline__item::before {
+  content: "";
+  position: absolute;
+  left: -37px;
+  top: 7px;
+  width: 12px;
+  height: 12px;
+  background: var(--color-navy);
+  transform: rotate(45deg);
+}
+.timeline__year {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--color-navy);
+  margin-bottom: 5px;
+}
+.timeline__text {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--color-charcoal);
+  margin: 0;
+  max-width: 62ch;
+}
+
+@media (max-width: 860px) {
+  .parish-info-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .mass-slot { grid-template-columns: 1fr; padding: 14px 18px 14px 14px; }
+  .mass-slot__time { font-size: 21px; }
+  .holyday-list li { grid-template-columns: 1fr; }
+  .timeline__era-title { font-size: 23px; }
+}
+
+/* Nav lockup: brand mark + live text (the shipped primary-lockup SVG sets its
+   wordmark far too small to be legible at nav scale). */
+.nav__logo { gap: 14px; }
+.nav__logo img { height: auto; }
+.nav__logo-mark { height: 100% !important; width: auto; flex-shrink: 0; }
+.nav__logo-words {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+}
+.nav__logo-parish {
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  color: var(--color-navy);
+  white-space: nowrap;
+}
+.nav__logo-sep {
+  font-size: 7px;
+  line-height: 1;
+  color: var(--color-gold-screen);
+  margin: 1px 0;
+}
+@media (max-width: 900px) {
+  .nav__logo { gap: 10px; }
+  .nav__logo-parish { font-size: 15px; }
+}
+@media (max-width: 420px) {
+  .nav__logo-words { display: none; }
 }

@@ -1,7 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
-  <rect width="800" height="600" fill="#1B2A4A"/>
-  <rect x="40" y="40" width="720" height="520" rx="8" fill="none" stroke="#C4A856" stroke-width="2" stroke-dasharray="8 4"/>
-  <text x="400" y="270" font-family="Georgia, serif" font-size="28" fill="#FAF8F5" text-anchor="middle">Immaculate Conception</text>
-  <text x="400" y="310" font-family="Arial, sans-serif" font-size="16" fill="#C4A856" text-anchor="middle" letter-spacing="0.15em">ROSLYN, WASHINGTON</text>
-  <text x="400" y="370" font-family="Arial, sans-serif" font-size="14" fill="#8A8A8A" text-anchor="middle">Photo placeholder — waiting on Ron</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Immaculate Conception — photograph coming soon">
+  <rect width="800" height="600" fill="#F4EFE6"></rect>
+  <rect x="0.5" y="0.5" width="799" height="599" fill="none" stroke="#E5DFD3"></rect>
+  <g fill="none" stroke="#2A5298" stroke-width="6" opacity="0.5">
+    <path d="M300 400V270l100-70 100 70v130"></path>
+    <path d="M400 200v-46M377 176h46"></path>
+    <rect x="345" y="320" width="110" height="80"></rect>
+    <path d="M270 400h260"></path>
+  </g>
+  <text x="400" y="466" text-anchor="middle" font-family="&#39;Source Sans 3&#39;,system-ui,sans-serif" font-size="21" letter-spacing="3.2" fill="#8A8378">PHOTOGRAPH COMING SOON</text>
+  <text x="400" y="504" text-anchor="middle" font-family="Georgia,&#39;Source Serif 4&#39;,serif" font-size="25" fill="#2E5E8A">Immaculate Conception · Roslyn</text>
 </svg>
