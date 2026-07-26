@@ -46,7 +46,7 @@
   <header class="{{ navCls }}">
     <div class="nav__inner">
       <button class="nav__logo" onClick="{{ goHome }}" style="background:none;border:0;cursor:pointer;padding:0" aria-label="Home">
-        <img src="assets/logos/parish-fullcolor_circle-icon.svg" alt="Catholic Parishes of Upper Kittitas County">
+        <img src="assets/logos/parish-fullcolor_primary-lockup.svg" alt="Catholic Parishes of Upper Kittitas County">
       </button>
       <nav class="nav__links">
         <sc-for list="{{ links }}" as="link" hint-placeholder-count="6">
@@ -148,26 +148,25 @@
           <div class="feature__title">Watch Mass live</div>
           <p class="feature__body">
             Can't be with us in person? We livestream Sunday Mass every week, alternating between
-            Cle Elum and Roslyn. Join us from home, or pray with a past Mass any time.
+            St. John the Baptist and Immaculate Conception. Join us from home, or pray with a past Mass any time.
           </p>
           <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goWatch }}">Watch live →</button>
         </article>
         <article class="feature">
-          <div class="feature__eyebrow">Becoming Catholic</div>
-          <div class="feature__title">OCIA &amp; the sacraments</div>
+          <div class="feature__eyebrow">Milestones of grace</div>
+          <div class="feature__title">The sacraments</div>
           <p class="feature__body">
-            Curious about the Catholic faith, or returning after time away? The Order of Christian
-            Initiation for Adults gathers Thursday evenings. No question is too small, and there's
-            no pressure, only welcome.
+            From Baptism to marriage to the anointing of the sick, the sacraments mark every
+            season of a life of faith. Learn what they are and how to prepare.
           </p>
-          <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goFormation }}">Faith formation →</button>
+          <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goSacraments }}">The sacraments →</button>
         </article>
         <article class="feature">
-          <div class="feature__eyebrow">For families</div>
-          <div class="feature__title">Religious education</div>
+          <div class="feature__eyebrow">For all ages</div>
+          <div class="feature__title">Faith formation</div>
           <p class="feature__body">
-            Children's faith formation meets after the 10:00 a.m. Sunday Mass in Cle Elum, October
-            through May. We walk with families from Baptism through First Communion and beyond.
+            Children's classes, OCIA for adults exploring the faith, and FORMED streaming for
+            the whole family. We walk with people at every stage.
           </p>
           <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goFormation }}">Learn more →</button>
         </article>
@@ -257,9 +256,9 @@
           <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goMass }}">Mass times →</button>
         </article>
         <article class="feature">
-          <div class="feature__title">Register as a parishioner</div>
-          <p class="feature__body">Make this your parish home. Reach out to the office and we'll help you get registered.</p>
-          <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ goContact }}">Contact us →</button>
+          <div class="feature__title">Register with us</div>
+          <p class="feature__body">Make this your parish home. Tell us a little about your household and we'll take care of the rest.</p>
+          <button class="btn btn--ghost" style="align-self:flex-start" onClick="{{ scrollRegister }}">Register below ↓</button>
         </article>
         <article class="feature">
           <div class="feature__title">Explore the faith</div>
@@ -303,8 +302,8 @@
       <div class="page-header__eyebrow">When we gather</div>
       <h1>Mass &amp; confession times</h1>
       <p class="page-header__lead">
-        We share one pastor between two churches. Daily and Sunday Mass alternate between Cle Elum
-        and Roslyn, all are welcome at either.
+        We share one pastor between two churches. Daily and Sunday Mass alternate between
+        St. John the Baptist in Cle Elum and Immaculate Conception in Roslyn. All are welcome at either.
       </p>
     </header>
 
@@ -517,7 +516,6 @@
           mine the coal seams of the upper valley.
         </p>
         <div class="hero__ctas">
-          <a class="btn btn--on-navy" href="https://giving.parishsoft.com/App/Form/dd200bd9-02ce-473a-8921-004501ab1a85" target="_blank" rel="noopener">Give to this parish</a>
           <button class="btn btn--secondary" style="color:var(--color-warm-white);border-color:var(--color-warm-white)" style-hover="background:rgba(250,248,245,0.16);color:var(--color-warm-white);border-color:var(--color-warm-white)" onClick="{{ goHome }}">Both parishes</button>
         </div>
       </div>
@@ -634,7 +632,6 @@
           Yakima. Named for the Mother of God, who keeps watch over this corner of the valley.
         </p>
         <div class="hero__ctas">
-          <a class="btn btn--on-navy" href="https://giving.parishsoft.com/App/Form/6063fea9-d6fc-486a-bed3-1150431d3666" target="_blank" rel="noopener">Give to this parish</a>
           <button class="btn btn--secondary" style="color:var(--color-warm-white);border-color:var(--color-warm-white)" style-hover="background:rgba(250,248,245,0.16);color:var(--color-warm-white);border-color:var(--color-warm-white)" onClick="{{ goHome }}">Both parishes</button>
         </div>
       </div>
@@ -790,11 +787,6 @@
           <div class="feature__title">Holy Orders</div>
           <p class="feature__body">Is God calling you to the priesthood or diaconate? Speak with Father, and explore the vocations resources of the Diocese of Yakima.</p>
         </article>
-        <article class="feature">
-          <div class="feature__eyebrow">Compassionate care</div>
-          <div class="feature__title">Funeral Mass</div>
-          <p class="feature__body">We accompany families in grief with the hope of the Resurrection. Contact the office to plan a funeral Mass and entrust your loved one to God's mercy.</p>
-        </article>
       </div>
       <div style="text-align:center;margin-top:40px">
         <button class="btn btn--primary" onClick="{{ goContact }}">Contact the parish office</button>
@@ -840,10 +832,9 @@
           <div class="feature__title">FORMED</div>
           <p class="feature__body">
             FORMED is the &ldquo;Catholic Netflix&rdquo;, thousands of movies, studies, and books
-            for every age, in English and Spanish, free to our parishioners. Sign up with your
-            email and our parish zip code, 98922.
+            for every age, in English and Spanish, free to our parishioners.
           </p>
-          <a class="btn btn--ghost" style="align-self:flex-start" href="https://formed.org/signup" target="_blank" rel="noopener">Sign up on FORMED →</a>
+          <a class="btn btn--ghost" style="align-self:flex-start" href="https://formed.org/signup" target="_blank" rel="noopener">Go to FORMED →</a>
         </article>
       </div>
 
@@ -934,8 +925,8 @@
       <div class="page-header__eyebrow">From home</div>
       <h1>Watch Mass live</h1>
       <p class="page-header__lead">
-        We livestream Sunday Mass every week, alternating between Cle Elum and Roslyn. Join us live,
-        or pray with a recent Mass any time.
+        We livestream Sunday Mass every week, alternating between St. John the Baptist and
+        Immaculate Conception. Join us live, or pray with a recent Mass any time.
       </p>
     </header>
 
@@ -977,7 +968,8 @@
           <h3>Parish office</h3>
           <div class="line"><span class="label">Phone</span><span class="val"><a href="tel:+15096742531" style="color:var(--color-charcoal)">(509) 674-2531</a></span></div>
           <div class="line"><span class="label">Email</span><span class="val"><a href="mailto:parish@ukccatholic.org" style="color:var(--color-charcoal)">parish@ukccatholic.org</a></span></div>
-          <div class="line"><span class="label">Mailing</span><span class="val">303 W. 2nd St., Cle Elum, WA 98922</span></div>
+          <div class="line"><span class="label">Address</span><span class="val">303 W. 2nd St., Cle Elum</span></div>
+          <div class="line"><span class="label">Mailing</span><span class="val">PO Box 630, Cle Elum, WA 98922</span></div>
           <div class="line"><span class="label">Tue &amp; Thu</span><span class="val">10:00 a.m. – 3:00 p.m.</span></div>
           <div class="line"><span class="label">Wed &amp; Fri</span><span class="val">10:00 a.m. – 4:00 p.m.</span></div>
           <div class="line"><span class="label">Mon · Sat · Sun</span><span class="val">Closed</span></div>
@@ -996,28 +988,16 @@
       <hr class="rule-gold" style="margin:0 0 28px">
       <div class="feature-grid">
         <article class="feature">
+          <div class="feature__title" style="font-size:20px">Very Rev. Francisco Higuera</div>
+          <div class="feature__eyebrow">Pastor</div>
+        </article>
+        <article class="feature">
           <div class="feature__title" style="font-size:20px">Holli Sullivan</div>
           <div class="feature__eyebrow">Pastoral Assistant</div>
         </article>
         <article class="feature">
           <div class="feature__title" style="font-size:20px">Wendy Hill</div>
           <div class="feature__eyebrow">Accounting</div>
-        </article>
-        <article class="feature">
-          <div class="feature__title" style="font-size:20px">Lisa Browitt</div>
-          <div class="feature__eyebrow">Confirmation Coordinator</div>
-        </article>
-        <article class="feature">
-          <div class="feature__title" style="font-size:20px">Deanna Duke</div>
-          <div class="feature__eyebrow">Communications &amp; Tech</div>
-        </article>
-        <article class="feature">
-          <div class="feature__title" style="font-size:20px">Trish Griswold</div>
-          <div class="feature__eyebrow">Catechesis &amp; Religious Ed</div>
-        </article>
-        <article class="feature">
-          <div class="feature__title" style="font-size:20px">Michael Uribe</div>
-          <div class="feature__eyebrow">Music Coordinator</div>
         </article>
       </div>
     </section>
@@ -1166,9 +1146,9 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  // Forms aren't connected to a back end yet (Brevo for sign-ups; Microsoft Forms for
-  // registration, prayer requests, and contact). Flip this to true once they're wired up.
-  FORMS_ENABLED = false;
+  // Forms are wired to Formspree (contact, prayer requests).
+  // Registration forms will use Microsoft Forms once M365 nonprofit is approved.
+  FORMS_ENABLED = true;
 
   state = {
     page: 'home',

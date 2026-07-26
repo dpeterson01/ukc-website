@@ -193,7 +193,25 @@ class Component extends DCLogic {
         if (!this.validEmail(this.state.email)) errs.email = true;
         if (!this.state.message.trim()) errs.message = true;
         if (Object.keys(errs).length) { this.setState({ errors: errs, tried: true }); return; }
-        this.setState({ sent: true });
+
+        const body = {
+          name: this.state.name.trim(),
+          email: this.state.email.trim(),
+          reason: this.reasonVal,
+          message: this.state.message.trim(),
+        };
+        if (this.reasonVal === 'register') {
+          body.parish = this.state.parish;
+          body.preferences = Object.keys(this.state.prefs).filter(k => this.state.prefs[k]).join(', ');
+        }
+
+        fetch('https://formspree.io/f/mjgnpjyr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(body),
+        })
+          .then(r => { if (r.ok) this.setState({ sent: true }); else throw new Error('Form submission failed'); })
+          .catch(() => { alert('Something went wrong. Please call (509) 674-2531 instead.'); });
       },
     };
   }
