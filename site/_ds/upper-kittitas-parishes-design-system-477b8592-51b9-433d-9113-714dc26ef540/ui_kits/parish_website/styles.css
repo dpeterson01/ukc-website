@@ -1222,7 +1222,7 @@ p  { margin: 0; }
    the parish name is always spelled out.
    ============================================================ */
 .mass-days {
-  max-width: 760px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
