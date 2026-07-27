@@ -274,7 +274,7 @@ p  { margin: 0; }
   font-size: 22px;
   line-height: 1.5;
   color: var(--fg-inverse-muted);
-  max-width: 620px;
+  max-width: 760px;
   margin: 0 auto 36px;
 }
 .hero__ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
@@ -395,7 +395,7 @@ p  { margin: 0; }
   font-size: 30px;
   line-height: 1.35;
   color: var(--color-navy);
-  max-width: 780px;
+  max-width: 760px;
   margin: 0 auto 20px;
 }
 .scripture__cite {
@@ -652,7 +652,7 @@ p  { margin: 0; }
   font-style: italic;
   font-size: 20px;
   color: var(--fg-inverse-muted);
-  max-width: 620px;
+  max-width: 760px;
   margin: 0 auto;
 }
 .page-header__back {
@@ -814,7 +814,7 @@ p  { margin: 0; }
   line-height: 1.6;
   color: var(--color-charcoal);
   margin-bottom: 14px;
-  max-width: 60ch;
+  max-width: 760px;
 }
 
 /* ============================================================
@@ -875,7 +875,7 @@ p  { margin: 0; }
 }
 .pastor__name { font-family: var(--font-display); font-size: 26px; letter-spacing: 0.06em; color: var(--color-navy); margin-bottom: 6px; }
 .pastor__title { font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-gold-screen); font-weight: 600; margin-bottom: 14px; }
-.pastor__body { font-family: var(--font-serif); font-size: 16px; line-height: 1.65; color: var(--color-charcoal); max-width: 720px; }
+.pastor__body { font-family: var(--font-serif); font-size: 16px; line-height: 1.65; color: var(--color-charcoal); max-width: 760px; }
 
 /* ============================================================
    PAGE: CONTACT / GIVE
