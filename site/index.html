@@ -1432,9 +1432,9 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  // Forms aren't connected to a back end yet (Brevo for sign-ups; Microsoft Forms for
-  // registration, prayer requests, and contact). Flip this to true once they're wired up.
-  FORMS_ENABLED = false;
+  // Contact form wired to Formspree (https://formspree.io/f/mjgnpjyr).
+  // Registration forms will use Microsoft Forms once M365 nonprofit is approved.
+  FORMS_ENABLED = true;
 
   state = {
     page: 'home',
