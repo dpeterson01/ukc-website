@@ -283,19 +283,14 @@
           No need to print or mail anything. Tell us a little about your household and we'll take
           care of the rest, then reach out to welcome you.
         </p>
-        <sc-if value="{{ showForms }}" hint-placeholder-val="{{ true }}">
-          <dc-import name="ContactForm" reason="register" locked="true" hint-size="100%,620px"></dc-import>
-        </sc-if>
-        <sc-if value="{{ hideForms }}">
-          <div class="contact-card">
-            <p class="feature__body">
-              Online registration is coming soon. To register now, call
-              <a href="tel:+15096742531" style="color:var(--color-navy)">(509) 674-2531</a> or email
-              <a href="mailto:parish@ukccatholic.org" style="color:var(--color-navy)">parish@ukccatholic.org</a>
-              and we'll take care of the rest.
-            </p>
-          </div>
-        </sc-if>
+        <div class="contact-card">
+          <p class="feature__body">
+            Online registration is coming soon. To register now, call
+            <a href="tel:+15096742531" style="color:var(--color-navy)">(509) 674-2531</a> or email
+            <a href="mailto:parish@ukccatholic.org" style="color:var(--color-navy)">parish@ukccatholic.org</a>
+            and we'll take care of the rest.
+          </p>
+        </div>
       </div>
     </section>
   </main>
