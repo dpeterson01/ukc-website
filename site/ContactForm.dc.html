@@ -20,6 +20,7 @@
 </sc-if>
 <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
 <form class="form" onSubmit="{{ onSubmit }}" novalidate>
+  <input type="hidden" name="_subject" value="{{ subject }}">
   <div class="contact-form-grid">
     <div class="form__field">
       <label class="form__label" for="cf-name">Your name</label>
@@ -38,9 +39,9 @@
       <label class="form__label" for="cf-reason">Reason for reaching out</label>
       <select class="form__input" id="cf-reason" value="{{ reasonValue }}" onChange="{{ onReason }}">
         <option value="hello">Just saying hello</option>
-        <option value="register">I'd like to register as a parishioner</option>
+        <option value="register">Register as a parishioner</option>
         <option value="prayer">Prayer request</option>
-        <option value="sacrament">Planning a sacrament (baptism, marriage, funeral)</option>
+        <option value="sacrament">Planning a sacrament</option>
         <option value="other">Something else</option>
       </select>
     </div>
@@ -52,19 +53,64 @@
   <sc-if value="{{ isRegister }}">
     <div class="form__field">
       <label class="form__label" for="cf-parish">Which parish?</label>
-      <select class="form__input" id="cf-parish" value="{{ parish }}" onChange="{{ onParish }}">
+      <select class="form__input" id="cf-parish" name="parish" value="{{ parish }}" onChange="{{ onParish }}">
         <option value="">Choose a parish…</option>
-        <option value="sjb">St. John the Baptist · Cle Elum</option>
-        <option value="ic">Immaculate Conception · Roslyn</option>
+        <option value="sjb">St. John the Baptist (Cle Elum)</option>
+        <option value="ic">Immaculate Conception (Roslyn)</option>
         <option value="unsure">Not sure yet</option>
       </select>
+    </div>
+    <div class="contact-form-grid">
+      <div class="form__field">
+        <label class="form__label" for="cf-phone">Phone number</label>
+        <input class="form__input" id="cf-phone" name="phone" type="text" value="{{ phone }}" onChange="{{ onPhone }}" placeholder="(509) 555-0123">
+      </div>
+      <div class="form__field">
+        <label class="form__label" for="cf-heard-about">How did you hear about us?</label>
+        <input class="form__input" id="cf-heard-about" name="heard_about_us" type="text" value="{{ heardAbout }}" onChange="{{ onHeardAbout }}" placeholder="A friend, online search, visiting Mass…">
+      </div>
     </div>
     <div class="form__field">
       <span class="form__label">While you're here, want emails too?</span>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
-        <label style="{{ bulletinPill }}"><input type="checkbox" checked="{{ prefBulletin }}" onChange="{{ toggleBulletin }}" style="position:absolute;opacity:0;width:0;height:0"><span style="{{ bulletinBox }}"></span><span>Weekly bulletin</span></label>
-        <label style="{{ newsletterPill }}"><input type="checkbox" checked="{{ prefNewsletter }}" onChange="{{ toggleNewsletter }}" style="position:absolute;opacity:0;width:0;height:0"><span style="{{ newsletterBox }}"></span><span>Quarterly newsletter</span></label>
-        <label style="{{ holydaysPill }}"><input type="checkbox" checked="{{ prefHolydays }}" onChange="{{ toggleHolydays }}" style="position:absolute;opacity:0;width:0;height:0"><span style="{{ holydaysBox }}"></span><span>Holy-day reminders</span></label>
+        <label style="{{ bulletinPill }}"><input name="weekly_bulletin" type="checkbox" checked="{{ prefBulletin }}" onChange="{{ toggleBulletin }}" style="position:absolute;opacity:0;width:0;height:0"><span style="{{ bulletinBox }}"></span><span>Weekly bulletin</span></label>
+        <label style="{{ newsletterPill }}"><input name="quarterly_newsletter" type="checkbox" checked="{{ prefNewsletter }}" onChange="{{ toggleNewsletter }}" style="position:absolute;opacity:0;width:0;height:0"><span style="{{ newsletterBox }}"></span><span>Quarterly newsletter</span></label>
+        <label style="{{ holydaysPill }}"><input name="holy_day_reminders" type="checkbox" checked="{{ prefHolydays }}" onChange="{{ toggleHolydays }}" style="position:absolute;opacity:0;width:0;height:0"><span style="{{ holydaysBox }}"></span><span>Holy-day reminders</span></label>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isPrayer }}">
+    <div class="contact-form-grid">
+      <div class="form__field">
+        <label class="form__label" for="cf-prayer-for">Name of person needing prayer</label>
+        <input class="form__input" id="cf-prayer-for" name="person_needing_prayer" type="text" value="{{ prayerFor }}" onChange="{{ onPrayerFor }}" placeholder="Name or initials">
+      </div>
+      <div class="form__field">
+        <label class="form__label" for="cf-requester-contact">Requester's contact info</label>
+        <input class="form__input" id="cf-requester-contact" name="requester_contact" type="text" value="{{ requesterContact }}" onChange="{{ onRequesterContact }}" placeholder="Email or phone for follow-up">
+      </div>
+    </div>
+    <p class="form__help" style="margin-top:-4px">Your request is kept confidential and shared only with Father and the parish office.</p>
+  </sc-if>
+
+  <sc-if value="{{ isSacrament }}">
+    <div class="contact-form-grid">
+      <div class="form__field">
+        <label class="form__label" for="cf-sacrament">Sacrament type</label>
+        <select class="form__input" id="cf-sacrament" name="sacrament_type" value="{{ sacramentType }}" onChange="{{ onSacramentType }}">
+          <option value="">Choose a sacrament…</option>
+          <option value="baptism">Baptism</option>
+          <option value="first-communion">First Communion</option>
+          <option value="confirmation">Confirmation</option>
+          <option value="marriage">Marriage</option>
+          <option value="funeral">Funeral</option>
+          <option value="anointing">Anointing of the Sick</option>
+        </select>
+      </div>
+      <div class="form__field">
+        <label class="form__label" for="cf-timeframe">Preferred date or timeframe</label>
+        <input class="form__input" id="cf-timeframe" name="preferred_timeframe" type="text" value="{{ timeframe }}" onChange="{{ onTimeframe }}" placeholder="A date, month, or general timeframe">
       </div>
     </div>
   </sc-if>
@@ -82,11 +128,12 @@
 </form>
 </sc-if>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:720,&quot;height&quot;:560},&quot;reason&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;hello&quot;,&quot;options&quot;:[&quot;hello&quot;,&quot;register&quot;,&quot;prayer&quot;,&quot;sacrament&quot;,&quot;other&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;locked&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:720,&quot;height&quot;:780},&quot;reason&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;hello&quot;,&quot;options&quot;:[&quot;hello&quot;,&quot;register&quot;,&quot;prayer&quot;,&quot;sacrament&quot;,&quot;other&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;locked&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
 class Component extends DCLogic {
   state = {
     reason: null,
-    name: '', email: '', message: '', parish: '',
+    name: '', email: '', message: '', parish: '', phone: '', heardAbout: '',
+    prayerFor: '', requesterContact: '', sacramentType: '', timeframe: '',
     prefs: { bulletin: false, newsletter: false, holydays: false },
     errors: {}, tried: false, sent: false,
   };
@@ -134,10 +181,17 @@ class Component extends DCLogic {
     const e = this.state.errors || {};
     const labels = {
       hello: 'Just saying hello',
-      register: "I'd like to register as a parishioner",
+      register: 'Register as a parishioner',
       prayer: 'Prayer request',
       sacrament: 'Planning a sacrament',
       other: 'Something else',
+    };
+    const subjectLabels = {
+      hello: 'Just Saying Hello',
+      register: 'Register as a Parishioner',
+      prayer: 'Prayer Request',
+      sacrament: 'Planning a Sacrament',
+      other: 'Something Else',
     };
     const ph = reason === 'register'
       ? 'Tell us a bit about your family, how you found us, or any questions…'
@@ -160,14 +214,26 @@ class Component extends DCLogic {
       staticLabel: labels[reason] || labels.hello,
       reasonValue: reason,
       isRegister: reason === 'register',
+      isPrayer: reason === 'prayer',
+      isSacrament: reason === 'sacrament',
       placeholder: ph,
       onReason: (ev) => this.setState({ reason: ev.target.value }),
 
       name: this.state.name, email: this.state.email, message: this.state.message, parish: this.state.parish,
+      phone: this.state.phone, heardAbout: this.state.heardAbout,
+      prayerFor: this.state.prayerFor, requesterContact: this.state.requesterContact,
+      sacramentType: this.state.sacramentType, timeframe: this.state.timeframe,
+      subject: 'New contact: ' + (subjectLabels[reason] || subjectLabels.hello) + ' from ' + (this.state.name.trim() || 'Website visitor'),
       onName: (ev) => this.upd('name', 'name', ev.target.value),
       onEmail: (ev) => this.upd('email', 'email', ev.target.value),
       onMessage: (ev) => this.upd('message', 'message', ev.target.value),
       onParish: (ev) => this.setState({ parish: ev.target.value }),
+      onPhone: (ev) => this.setState({ phone: ev.target.value }),
+      onHeardAbout: (ev) => this.setState({ heardAbout: ev.target.value }),
+      onPrayerFor: (ev) => this.setState({ prayerFor: ev.target.value }),
+      onRequesterContact: (ev) => this.setState({ requesterContact: ev.target.value }),
+      onSacramentType: (ev) => this.setState({ sacramentType: ev.target.value }),
+      onTimeframe: (ev) => this.setState({ timeframe: ev.target.value }),
 
       nameError: !!e.name, emailError: !!e.email, messageError: !!e.message,
       nameInvalid: e.name ? 'true' : 'false',
@@ -195,14 +261,27 @@ class Component extends DCLogic {
         if (Object.keys(errs).length) { this.setState({ errors: errs, tried: true }); return; }
 
         const body = {
+          _subject: 'New contact: ' + (subjectLabels[reason] || subjectLabels.hello) + ' from ' + this.state.name.trim(),
           name: this.state.name.trim(),
           email: this.state.email.trim(),
-          reason: this.reasonVal,
+          reason: labels[reason] || labels.hello,
           message: this.state.message.trim(),
         };
-        if (this.reasonVal === 'register') {
-          body.parish = this.state.parish;
-          body.preferences = Object.keys(this.state.prefs).filter(k => this.state.prefs[k]).join(', ');
+        if (reason === 'register') {
+          const parishLabels = { sjb: 'St. John the Baptist (Cle Elum)', ic: 'Immaculate Conception (Roslyn)', unsure: 'Not sure yet' };
+          const preferenceLabels = { bulletin: 'Weekly bulletin', newsletter: 'Quarterly newsletter', holydays: 'Holy-day reminders' };
+          body.parish = parishLabels[this.state.parish] || '';
+          body.phone = this.state.phone.trim();
+          body.heard_about_us = this.state.heardAbout.trim();
+          body.newsletter_preferences = Object.keys(this.state.prefs).filter(k => this.state.prefs[k]).map(k => preferenceLabels[k]).join(', ');
+        } else if (reason === 'prayer') {
+          body.person_needing_prayer = this.state.prayerFor.trim();
+          body.requester_contact = this.state.requesterContact.trim();
+          body.confidentiality = 'Shared only with Father and the parish office';
+        } else if (reason === 'sacrament') {
+          const sacramentLabels = { baptism: 'Baptism', 'first-communion': 'First Communion', confirmation: 'Confirmation', marriage: 'Marriage', funeral: 'Funeral', anointing: 'Anointing of the Sick' };
+          body.sacrament_type = sacramentLabels[this.state.sacramentType] || '';
+          body.preferred_timeframe = this.state.timeframe.trim();
         }
 
         fetch('https://formspree.io/f/mjgnpjyr', {

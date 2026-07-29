@@ -283,14 +283,19 @@
           No need to print or mail anything. Tell us a little about your household and we'll take
           care of the rest, then reach out to welcome you.
         </p>
-        <div class="contact-card">
-          <p class="feature__body">
-            Online registration is coming soon. To register now, call
-            <a href="tel:+15096742531" style="color:var(--color-navy)">(509) 674-2531</a> or email
-            <a href="mailto:parish@ukccatholic.org" style="color:var(--color-navy)">parish@ukccatholic.org</a>
-            and we'll take care of the rest.
-          </p>
-        </div>
+        <sc-if value="{{ showForms }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="ContactForm" reason="register" locked="true" hint-size="100%,780px"></dc-import>
+        </sc-if>
+        <sc-if value="{{ hideForms }}">
+          <div class="contact-card">
+            <p class="feature__body">
+              Online registration is coming soon. To register now, call
+              <a href="tel:+15096742531" style="color:var(--color-navy)">(509) 674-2531</a> or email
+              <a href="mailto:parish@ukccatholic.org" style="color:var(--color-navy)">parish@ukccatholic.org</a>
+              and we'll take care of the rest.
+            </p>
+          </div>
+        </sc-if>
       </div>
     </section>
   </main>
@@ -1114,7 +1119,7 @@
         <h2 style="margin-bottom:8px">Write to us</h2>
         <hr class="rule-gold" style="margin:0 0 28px">
         <sc-if value="{{ showForms }}" hint-placeholder-val="{{ true }}">
-          <dc-import name="ContactForm" reason="hello" hint-size="100%,560px"></dc-import>
+          <dc-import name="ContactForm" reason="hello" hint-size="100%,780px"></dc-import>
         </sc-if>
         <sc-if value="{{ hideForms }}">
           <div class="contact-card">
@@ -1145,7 +1150,7 @@
     <section class="section--cream">
       <div class="section section--narrow">
         <sc-if value="{{ showForms }}" hint-placeholder-val="{{ true }}">
-          <dc-import name="ContactForm" reason="prayer" locked="true" hint-size="100%,440px"></dc-import>
+          <dc-import name="ContactForm" reason="prayer" locked="true" hint-size="100%,620px"></dc-import>
         </sc-if>
         <sc-if value="{{ hideForms }}">
           <div class="contact-card">
