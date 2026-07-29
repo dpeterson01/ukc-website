@@ -1422,6 +1422,42 @@ p  { margin: 0; }
   max-width: 62ch;
 }
 
+/* Pastor roster — dense multi-column reference list */
+.roster {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 48px;
+}
+.roster__item {
+  break-inside: avoid;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+.roster__name {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--color-charcoal);
+}
+.roster__years {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  text-align: right;
+}
+.roster__item--current .roster__name { font-weight: 600; color: var(--color-navy); }
+@media (max-width: 720px) {
+  .roster { columns: 1; }
+}
+
+
 @media (max-width: 860px) {
   .parish-info-grid { grid-template-columns: 1fr; }
 }
