@@ -24,35 +24,69 @@ Edit `source/data/parish-facts.md` when parish facts change (Mass times, clergy,
 and keep its YAML frontmatter in sync with the prose below it. Moving this folder to a tidier path
 means updating `ukc-bulletin` in the same change.
 
-## The `<x-dc>` runtime is load-bearing — don't delete it
+## Fourteen static pages, no runtime
 
-`site/index.html` looks like a static file but is a **React single-page app**. Verified in a
-browser 2026-07-29:
+`site/index.html` used to be a React single-page app: the whole body sat inside an `<x-dc>`
+template that `support.js` hydrated, pulling React 18.3.1 from `unpkg.com` at runtime, with all
+fourteen pages behind a hash router. That was flattened on 2026-07-29.
 
-- The whole page body sits inside one `<x-dc>` template that `support.js` hydrates into React.
-  After load there are zero `<x-dc>` elements left in the DOM.
-- `support.js` pulls React 18.3.1 and ReactDOM from `unpkg.com` at runtime.
-- All fourteen pages (`home`, `new`, `mass`, `about`, `sjb`, `ic`, `sjb-history`, `ic-history`,
-  `sacraments`, `formation`, `giving`, `watch`, `contact`, `prayer`) live in that one file behind
-  a hash router, with `<title>` and meta description swapped per route.
+Each page is now its own file at its own URL:
 
-So `site/support.js` and `site/_ds/*/_ds_bundle.js` render the entire site. Removing them blanks
-it. Page content and layout are edited inside the `<x-dc>` template; behavior is edited in the
-`<script type="text/x-dc" data-dc-script>` component class near the bottom of the file.
+```
+site/index.html          site/sacraments/index.html
+site/new/index.html      site/formation/index.html
+site/mass/index.html     site/giving/index.html
+site/about/index.html    site/watch/index.html
+site/sjb/index.html      site/contact/index.html
+site/ic/index.html       site/prayer/index.html
+site/sjb-history/index.html
+site/ic-history/index.html
+```
 
-Two known consequences, both worth fixing in their own change rather than piecemeal:
+These fourteen files **are the source**. Edit them directly. `support.js`, `_ds_bundle.js`, and
+`ContactForm.dc.html` are gone, so the site no longer depends on `unpkg.com`, and every page has
+its own indexable URL and canonical link.
 
-1. Every page view depends on `unpkg.com` being reachable.
-2. Hash routes mean search engines index one URL, so thirteen pages are invisible.
+The interactivity React used to provide now lives in two hand-written files:
 
-The fix is to flatten the hydrated DOM into real static pages at real URLs, reimplement the small
-amount of interactivity in plain JS, and then drop the runtime. Not started.
+- `site/assets/site.js` — mobile nav drawer, the contact form's reason-driven conditional fields,
+  chip toggles, validation, and the Formspree submissions for both the contact form and the
+  footer signup.
+- `site/assets/site.css` — the handful of rules the design system doesn't cover (`.form__error`,
+  `.form__success`, and link-styling resets for elements that used to be `<button>`s).
+
+### The tradeoff
+
+Nav and footer markup is duplicated across all fourteen files. That is deliberate. A parish site
+that changes a few times a year is better served by files a volunteer can open and edit than by a
+build step, and a build step is exactly what this repo just removed. When chrome changes, change
+it in all fourteen files.
+
+### Regenerating (historical)
+
+`scripts/migrate-buttons-to-anchors.py` and `scripts/prerender.mjs` produced the flatten from the
+pre-flatten template. They are kept for the record, not for routine use, and running them now
+would overwrite hand-edits. Recovering the old template means checking out a commit before the
+flatten.
+
+`scripts/verify-pages.mjs` and `scripts/verify-behavior.mjs` are still worth running after edits
+to the chrome or to `site/assets/site.js`. Both need Playwright, which is deliberately not
+installed in this repo; copy them to a scratch directory that has it:
+
+```sh
+mkdir -p /tmp/ukc-verify && cd /tmp/ukc-verify && npm i playwright
+cp ~/projects/personal/ukc-website/scripts/verify-*.mjs .
+node verify-pages.mjs && node verify-behavior.mjs
+```
+
+`verify-pages.mjs` loads every page and reports console errors, 404s, and leftover runtime markup,
+writing full-page screenshots to `/tmp/ukc-shots`. Look at them. `verify-behavior.mjs` exercises
+the drawer, the conditional fields, and validation.
 
 ## New work is plain static files
 
 Anything added from here on (for example `site/forms/`) should be ordinary HTML, CSS, and
-vanilla JS that does not touch the Claude Design runtime. That keeps new work unaffected by the
-flattening project above.
+vanilla JS. No build step, no `package.json`, no `node_modules` in this repo.
 
 ## Fonts
 
