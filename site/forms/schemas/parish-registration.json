@@ -1,0 +1,272 @@
+{
+  "formId": "parish-registration",
+  "version": "1.0.0",
+  "title": "Parish Registration",
+  "subjectPrefix": "Parish Registration",
+  "submitLabel": "Sign and submit",
+  "successTitle": "Welcome. We have your registration.",
+  "successBody": "The parish office will follow up with you. Watch for a copy of this form in your email.",
+
+  "steps": [
+    {
+      "id": "getting-started",
+      "title": "Getting started",
+      "help": "This takes about ten minutes. We save your progress as you go, so you can close this and come back.",
+      "fields": [
+        {
+          "id": "intent",
+          "type": "radio",
+          "label": "What would you like to do?",
+          "required": true,
+          "options": [
+            { "value": "new", "label": "Register with the parish", "help": "You are new to us, or you have never filled this out." },
+            { "value": "update", "label": "Update information we already have", "help": "You are already registered and something changed." }
+          ]
+        },
+        {
+          "id": "parish",
+          "type": "radio",
+          "label": "Which parish?",
+          "required": true,
+          "options": [
+            { "value": "ic", "label": "Immaculate Conception", "help": "Roslyn" },
+            { "value": "sjb", "label": "St. John the Baptist", "help": "Cle Elum" }
+          ]
+        },
+        {
+          "type": "static",
+          "id": "privacyNotice",
+          "html": "<p>This information is used for the purposes of the Church Office only and will not be given out without consent.</p>"
+        }
+      ]
+    },
+
+    {
+      "id": "head",
+      "title": "Head of household",
+      "help": "Start with the adult the parish office should contact first.",
+      "fields": [
+        {
+          "type": "block",
+          "block": "adult",
+          "id": "head"
+        }
+      ]
+    },
+
+    {
+      "id": "head-sacraments",
+      "title": "Sacramental record",
+      "help": "Answer for yourself. If you are not sure of a date, say so and leave it blank. We can look it up together later.",
+      "fields": [
+        {
+          "type": "block",
+          "block": "adult-sacraments",
+          "id": "head"
+        }
+      ],
+      "checks": [
+        { "type": "person", "scope": "head" }
+      ]
+    },
+
+    {
+      "id": "household",
+      "title": "How we reach you",
+      "fields": [
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email address",
+          "width": "full",
+          "autocomplete": "email",
+          "placeholder": "you@example.com",
+          "help": "Most parish communication goes out by email."
+        },
+        {
+          "id": "primaryPhone",
+          "type": "tel",
+          "label": "Primary phone",
+          "width": "half",
+          "autocomplete": "tel"
+        },
+        {
+          "id": "mobilePhone",
+          "type": "tel",
+          "label": "Mobile phone",
+          "width": "half",
+          "autocomplete": "tel"
+        },
+        {
+          "type": "block",
+          "block": "address",
+          "id": "mailing",
+          "label": "Mailing address"
+        },
+        {
+          "type": "block",
+          "block": "address",
+          "id": "home",
+          "label": "Home address",
+          "options": { "sameAs": true, "sameAsLabel": "the mailing address" }
+        }
+      ],
+      "checks": [
+        {
+          "type": "contactMethods",
+          "paths": ["email", "primaryPhone", "mobilePhone"],
+          "message": "Please give us at least one way to reach you: an email address or a phone number."
+        }
+      ]
+    },
+
+    {
+      "id": "spouse",
+      "title": "Spouse or second adult",
+      "fields": [
+        {
+          "id": "hasSpouse",
+          "type": "radio",
+          "label": "Is there a spouse or second adult in the household?",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        },
+        {
+          "type": "block",
+          "block": "adult",
+          "id": "spouse",
+          "label": "Spouse or second adult",
+          "options": { "maidenName": true },
+          "showIf": { "field": "hasSpouse", "equals": "yes" }
+        },
+        {
+          "type": "block",
+          "block": "contact",
+          "id": "spouse",
+          "label": "How we reach them",
+          "showIf": { "field": "hasSpouse", "equals": "yes" }
+        },
+        {
+          "type": "block",
+          "block": "address",
+          "id": "spouseAddress",
+          "label": "Their address",
+          "options": { "sameAs": true, "sameAsLabel": "the household mailing address" },
+          "showIf": { "field": "hasSpouse", "equals": "yes" }
+        }
+      ]
+    },
+
+    {
+      "id": "spouse-sacraments",
+      "title": "Their sacramental record",
+      "help": "Same questions, for the second adult in the household.",
+      "showIf": { "field": "hasSpouse", "equals": "yes" },
+      "fields": [
+        {
+          "type": "block",
+          "block": "adult-sacraments",
+          "id": "spouse"
+        }
+      ],
+      "checks": [
+        { "type": "person", "scope": "spouse" }
+      ]
+    },
+
+    {
+      "id": "children",
+      "title": "Children",
+      "fields": [
+        {
+          "id": "hasChildren",
+          "type": "radio",
+          "label": "Are there children in the household?",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        },
+        {
+          "type": "repeat",
+          "id": "children",
+          "block": "child",
+          "label": "Children",
+          "help": "Add one for each child. There is no limit.",
+          "itemLabel": "Child",
+          "addLabel": "Add another child",
+          "min": 1,
+          "showIf": { "field": "hasChildren", "equals": "yes" }
+        }
+      ],
+      "checks": [
+        {
+          "type": "personEach",
+          "repeat": "children",
+          "showIf": { "field": "hasChildren", "equals": "yes" }
+        }
+      ]
+    },
+
+    {
+      "_comment": [
+        "The paper registration form carries no photo release, so this wording is",
+        "not reproduced from an original. It follows the publication list used on",
+        "the paper faith formation form. Changes are the pastor's call.",
+        "Asked as an explicit choice rather than an opt-out box so the answer is",
+        "recorded either way. A blank checkbox would leave no record of consent."
+      ],
+      "id": "photos",
+      "title": "Photographs",
+      "help": "Parish life gets photographed. Tell us how you would like your household handled.",
+      "fields": [
+        {
+          "type": "static",
+          "id": "photoNotice",
+          "html": "<p>Photographs taken at Mass, sacraments, and parish events are sometimes used in the bulletin, in faith formation materials, and on the parish website. Your answer applies to everyone listed on this form and you can change it at any time by calling the parish office.</p>"
+        },
+        {
+          "id": "photoConsent",
+          "type": "radio",
+          "label": "May we use photographs of your household in parish publications?",
+          "required": true,
+          "width": "full",
+          "options": [
+            { "value": "yes", "label": "Yes, our household's photographs may be used." },
+            { "value": "no", "label": "No, please do not use our household's photographs." }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "review",
+      "title": "Check your answers",
+      "help": "Everything you entered is below. Use Back to change anything.",
+      "fields": [
+        { "type": "review", "id": "review" }
+      ]
+    },
+
+    {
+      "id": "sign",
+      "title": "Sign and send",
+      "fields": [
+        {
+          "type": "static",
+          "id": "signNotice",
+          "html": "<p>This information is used for the purposes of the Church Office only and will not be given out without consent.</p>"
+        },
+        {
+          "type": "signature",
+          "id": "signature",
+          "label": "Your signature"
+        }
+      ]
+    }
+  ]
+}

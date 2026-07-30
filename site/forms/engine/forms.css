@@ -1,0 +1,601 @@
+/* Styles for the parish forms engine.
+ *
+ * Everything here is namespaced `ukcf-` so it can sit on the same page as the
+ * design system without either one reaching into the other. Colors, type, and
+ * spacing all come from the design system tokens, so the forms restyle for free
+ * whenever the site does.
+ *
+ * The layout is deliberately generous. These forms get filled out on a phone in
+ * a church parking lot, so touch targets are large and nothing depends on hover.
+ */
+
+.ukcf {
+  font-family: var(--font-sans);
+  color: var(--color-charcoal);
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* --- progress ------------------------------------------------------------ */
+
+.ukcf-progress {
+  margin-bottom: var(--space-5);
+}
+
+.ukcf-progress-text {
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-navy-mid);
+  margin: 0 0 var(--space-2);
+}
+
+.ukcf-progress-bar {
+  height: 4px;
+  background: var(--color-ic-tint);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.ukcf-progress-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--color-gold-screen);
+  transition: width 240ms ease;
+}
+
+/* --- resume notice ------------------------------------------------------- */
+
+.ukcf-resume {
+  background: var(--color-warm-cream);
+  border-left: 3px solid var(--color-gold-screen);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-5);
+  font-size: 15px;
+}
+
+.ukcf-resume p { margin: 0; }
+
+.ukcf-linkbtn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--color-navy);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* --- steps --------------------------------------------------------------- */
+
+.ukcf-step[hidden] { display: none; }
+
+.ukcf-step-title {
+  font-family: var(--font-display);
+  color: var(--color-navy);
+  margin: 0 0 var(--space-2);
+  outline: none;
+}
+
+.ukcf-step-help {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--color-navy-mid);
+  margin: 0 0 var(--space-5);
+  max-width: 60ch;
+}
+
+.ukcf-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* --- fields -------------------------------------------------------------- */
+
+.ukcf-field[hidden],
+.ukcf-fieldset[hidden],
+.ukcf-static[hidden] { display: none; }
+
+.ukcf-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ukcf-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-navy);
+  line-height: 1.3;
+}
+
+.ukcf-req { color: var(--color-lit-red); }
+
+.ukcf-help {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-navy-mid);
+  margin: 0;
+  max-width: 62ch;
+}
+
+.ukcf-input {
+  font-family: var(--font-sans);
+  font-size: 16px; /* anything under 16px makes iOS zoom the viewport on focus */
+  line-height: 1.4;
+  padding: var(--space-3);
+  border: 1px solid var(--color-ic-light);
+  border-radius: var(--radius-1);
+  background: var(--color-white);
+  color: var(--color-charcoal);
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.ukcf-input:focus {
+  outline: none;
+  border-color: var(--color-marian-blue);
+  box-shadow: 0 0 0 3px rgba(46, 91, 160, 0.18);
+}
+
+.ukcf-input[aria-invalid='true'] {
+  border-color: var(--color-lit-red);
+}
+
+.ukcf-textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+select.ukcf-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%231a3a52' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  background-size: 12px 8px;
+  padding-right: var(--space-6);
+}
+
+/* --- two-up grid --------------------------------------------------------- */
+
+.ukcf-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.ukcf-field--full,
+.ukcf-fieldset .ukcf-fieldset,
+.ukcf-grid > .ukcf-fieldset,
+.ukcf-grid > .ukcf-blockgroup { grid-column: 1 / -1; }
+
+/* An unlabelled block is pure composition, so it gets no box of its own. It
+   still spans the parent grid, because its own fields lay themselves out. */
+.ukcf-blockgroup { grid-column: 1 / -1; }
+.ukcf-blockgroup[hidden] { display: none; }
+
+.ukcf-field--half { grid-column: span 1; }
+
+@media (max-width: 640px) {
+  .ukcf-grid { grid-template-columns: 1fr; }
+  .ukcf-field--half { grid-column: 1 / -1; }
+}
+
+/* --- fieldsets ----------------------------------------------------------- */
+
+.ukcf-fieldset {
+  border: 1px solid var(--color-ic-light);
+  border-radius: var(--radius-1);
+  padding: var(--space-5);
+  margin: 0;
+  background: var(--color-warm-white);
+}
+
+.ukcf-legend {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--color-navy);
+  padding: 0 var(--space-2);
+  margin-left: calc(var(--space-2) * -1);
+}
+
+.ukcf-fieldset > .ukcf-help { margin-bottom: var(--space-4); }
+
+/* --- choices ------------------------------------------------------------- */
+
+.ukcf-choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ukcf-choice,
+.ukcf-check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-3);
+  border: 1px solid var(--color-ic-light);
+  border-radius: var(--radius-1);
+  background: var(--color-white);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.ukcf-choice small {
+  grid-column: 2;
+  display: block;
+  font-size: 14px;
+  color: var(--color-navy-mid);
+  margin-top: var(--space-1);
+}
+
+.ukcf-choice input,
+.ukcf-check input {
+  width: 20px;
+  height: 20px;
+  margin: 1px 0 0;
+  accent-color: var(--color-navy);
+  flex: none;
+}
+
+.ukcf-choice:has(input:checked),
+.ukcf-check:has(input:checked) {
+  border-color: var(--color-navy);
+  background: var(--color-ic-tint);
+}
+
+.ukcf-choice:has(input:focus-visible),
+.ukcf-check:has(input:focus-visible) {
+  box-shadow: 0 0 0 3px rgba(46, 91, 160, 0.18);
+}
+
+/* --- dates --------------------------------------------------------------- */
+
+.ukcf-date {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-end;
+}
+
+.ukcf-date-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.ukcf-date-cell:nth-child(3) { flex: 0 0 84px; }
+
+.ukcf-date-label {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-navy-mid);
+}
+
+.ukcf-date-part {
+  width: 64px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.ukcf-date-cell:nth-child(3) .ukcf-date-part { width: 84px; }
+
+/* --- messages ------------------------------------------------------------ */
+
+/* Empty message nodes stay in the DOM for aria-live, so they must not take up
+   space until they have something to announce. */
+.ukcf-msg:empty { display: none; }
+
+.ukcf-msg {
+  font-size: 14px;
+  line-height: 1.45;
+  padding-left: var(--space-3);
+  border-left: 2px solid transparent;
+}
+
+.ukcf-msg.is-error {
+  color: var(--color-lit-red);
+  border-left-color: var(--color-lit-red);
+}
+
+.ukcf-msg.is-warning {
+  color: var(--color-navy);
+  border-left-color: var(--color-gold-screen);
+}
+
+/* --- error summary ------------------------------------------------------- */
+
+.ukcf-summary {
+  border: 1px solid var(--color-lit-red);
+  border-left-width: 4px;
+  background: var(--color-white);
+  padding: var(--space-4) var(--space-5);
+  margin-top: var(--space-5);
+  outline: none;
+}
+
+.ukcf-summary h3 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--color-lit-red);
+}
+
+.ukcf-summary ul { margin: 0; padding-left: var(--space-5); }
+.ukcf-summary li { margin-bottom: var(--space-1); }
+.ukcf-summary a { color: var(--color-navy); }
+
+/* --- repeatables --------------------------------------------------------- */
+
+.ukcf-repeat-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ukcf-repeat-item {
+  border: 1px solid var(--color-ic-light);
+  border-left: 3px solid var(--color-gold-screen);
+  border-radius: var(--radius-1);
+  padding: var(--space-4);
+  background: var(--color-white);
+}
+
+.ukcf-repeat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.ukcf-repeat-legend {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--color-navy);
+  margin: 0;
+}
+
+.ukcf-repeat-remove {
+  background: none;
+  border: 0;
+  padding: var(--space-1) var(--space-2);
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-navy-mid);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ukcf-repeat-remove:hover { color: var(--color-lit-red); }
+.ukcf-repeat-remove[hidden] { display: none; }
+
+.ukcf-repeat-add { margin-top: var(--space-4); }
+
+/* --- signature ----------------------------------------------------------- */
+
+.ukcf-signature {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  border-left: 3px solid var(--color-navy);
+}
+
+.ukcf-consent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ukcf-sigwrap {
+  position: relative;
+  border: 1px solid var(--color-ic-light);
+  border-bottom: 2px solid var(--color-navy);
+  border-radius: var(--radius-1);
+  background: var(--color-white);
+}
+
+.ukcf-sigpad {
+  display: block;
+  width: 100%;
+  height: 160px;
+  /* The pad owns the drag, so the page must not scroll under the stroke. */
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.ukcf-sigclear {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  background: var(--color-warm-cream);
+  border: 1px solid var(--color-ic-light);
+  border-radius: var(--radius-2);
+  padding: var(--space-1) var(--space-3);
+  font: inherit;
+  font-size: 13px;
+  color: var(--color-navy);
+  cursor: pointer;
+}
+
+/* --- review -------------------------------------------------------------- */
+
+.ukcf-review-section { margin-bottom: var(--space-5); }
+
+.ukcf-review-section h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--color-navy);
+  margin: 0 0 var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-ic-light);
+}
+
+.ukcf-review-list { margin: 0; }
+
+.ukcf-review-row {
+  display: grid;
+  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-warm-cream);
+}
+
+.ukcf-review-row dt {
+  font-size: 14px;
+  color: var(--color-navy-mid);
+}
+
+.ukcf-review-row dd {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-charcoal);
+}
+
+@media (max-width: 640px) {
+  .ukcf-review-row { grid-template-columns: 1fr; gap: var(--space-1); }
+}
+
+/* --- static content ------------------------------------------------------ */
+
+/* Consent and release paragraphs are reproduced word for word from the paper
+   forms, so they get reading-width type rather than form-control type. */
+.ukcf-static-body {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--color-charcoal);
+  max-width: 66ch;
+}
+
+.ukcf-static-body p { margin: 0 0 var(--space-3); }
+.ukcf-static-body p:last-child { margin-bottom: 0; }
+
+.ukcf-static-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--color-navy);
+  margin: 0 0 var(--space-2);
+}
+
+/* --- actions ------------------------------------------------------------- */
+
+.ukcf-actions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-ic-light);
+}
+
+.ukcf-btn {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-0);
+  border: 1px solid var(--color-navy);
+  cursor: pointer;
+  min-height: 48px;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.ukcf-btn--primary {
+  background: var(--color-navy);
+  color: var(--color-warm-white);
+}
+
+.ukcf-btn--primary:hover:not(:disabled) { background: var(--color-navy-dark); }
+
+.ukcf-btn--ghost {
+  background: transparent;
+  color: var(--color-navy);
+}
+
+.ukcf-btn--ghost:hover:not(:disabled) { background: var(--color-ic-tint); }
+
+.ukcf-btn:disabled { opacity: 0.55; cursor: default; }
+.ukcf-btn[hidden] { display: none; }
+
+/* Back sits to the right of Continue in source order for tab order, but reads
+   left in the layout, which is where people look for it. */
+.ukcf-actions .ukcf-btn--ghost { order: -1; }
+
+.ukcf-status {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-top: var(--space-4);
+}
+
+.ukcf-status.is-error {
+  color: var(--color-lit-red);
+  border-left: 3px solid var(--color-lit-red);
+  padding-left: var(--space-3);
+}
+
+.ukcf-loading {
+  font-size: 15px;
+  color: var(--color-navy-mid);
+}
+
+.ukcf-turnstile { margin-top: var(--space-5); }
+
+/* --- honeypot ------------------------------------------------------------ */
+
+/* Off-screen rather than display:none, because some bots skip anything the
+   CSS hides outright. */
+.ukcf-hp-wrap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* --- success ------------------------------------------------------------- */
+
+.ukcf-done {
+  background: var(--color-warm-cream);
+  border-top: 3px solid var(--color-gold-screen);
+  padding: var(--space-7) var(--space-6);
+  text-align: center;
+  outline: none;
+}
+
+.ukcf-done h2 {
+  font-family: var(--font-display);
+  color: var(--color-navy);
+  margin: 0 0 var(--space-3);
+}
+
+.ukcf-done p {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 0 auto var(--space-3);
+  max-width: 52ch;
+}
+
+.ukcf-ref strong { font-family: var(--font-mono); font-size: 15px; }
+
+/* --- print --------------------------------------------------------------- */
+
+/* Somebody will print the review step before signing. Let them. */
+@media print {
+  .ukcf-progress,
+  .ukcf-actions,
+  .ukcf-resume,
+  .ukcf-summary { display: none; }
+
+  .ukcf-step[hidden] { display: block; }
+  .ukcf-fieldset { break-inside: avoid; }
+}

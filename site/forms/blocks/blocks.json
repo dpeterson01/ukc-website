@@ -1,0 +1,363 @@
+{
+  "_comment": [
+    "Shared block definitions. A block is a named list of fields that more than",
+    "one form needs. Referenced from a schema as { \"type\": \"block\", \"block\": \"person-name\" }.",
+    "",
+    "Fields marked includeIf/excludeIf appear only when the reference passes that",
+    "option, which is how one name block covers a head of household (no maiden",
+    "name) and a spouse (maiden name) without duplicating either.",
+    "",
+    "Labels may interpolate options with {{doubleBraces}}."
+  ],
+
+  "person-name": {
+    "defaults": { "middleName": true, "nickname": true, "suffix": true, "maidenName": false },
+    "fields": [
+      {
+        "id": "first",
+        "type": "text",
+        "label": "First name",
+        "required": true,
+        "width": "half",
+        "autocomplete": "given-name"
+      },
+      {
+        "id": "middle",
+        "type": "text",
+        "label": "Middle name",
+        "width": "half",
+        "includeIf": "middleName",
+        "autocomplete": "additional-name"
+      },
+      {
+        "id": "last",
+        "type": "text",
+        "label": "Last name",
+        "required": true,
+        "width": "half",
+        "autocomplete": "family-name"
+      },
+      {
+        "id": "maiden",
+        "type": "text",
+        "label": "Maiden name",
+        "width": "half",
+        "includeIf": "maidenName",
+        "help": "If it differs from the last name above."
+      },
+      {
+        "id": "nickname",
+        "type": "text",
+        "label": "Nickname",
+        "width": "half",
+        "includeIf": "nickname",
+        "help": "What we should call you in person."
+      },
+      {
+        "id": "suffix",
+        "type": "text",
+        "label": "Suffix",
+        "width": "half",
+        "includeIf": "suffix",
+        "placeholder": "Jr., Sr., II",
+        "maxLength": 12
+      }
+    ]
+  },
+
+  "address": {
+    "defaults": { "sameAs": false, "sameAsLabel": "the address above" },
+    "fields": [
+      {
+        "id": "sameAs",
+        "type": "checkbox",
+        "label": "Same as {{sameAsLabel}}",
+        "width": "full",
+        "includeIf": "sameAs",
+        "default": true
+      },
+      {
+        "id": "street",
+        "type": "text",
+        "label": "Street or PO Box",
+        "required": true,
+        "width": "full",
+        "autocomplete": "street-address",
+        "showIf": { "field": "sameAs", "notEquals": true }
+      },
+      {
+        "id": "city",
+        "type": "text",
+        "label": "City",
+        "required": true,
+        "width": "half",
+        "autocomplete": "address-level2",
+        "showIf": { "field": "sameAs", "notEquals": true }
+      },
+      {
+        "id": "state",
+        "type": "state",
+        "label": "State",
+        "required": true,
+        "width": "half",
+        "placeholder": "Choose a state…",
+        "showIf": { "field": "sameAs", "notEquals": true }
+      },
+      {
+        "id": "zip",
+        "type": "zip",
+        "label": "ZIP code",
+        "required": true,
+        "width": "half",
+        "autocomplete": "postal-code",
+        "placeholder": "98922",
+        "showIf": { "field": "sameAs", "notEquals": true }
+      }
+    ]
+  },
+
+  "contact": {
+    "defaults": { "emailRequired": false },
+    "fields": [
+      {
+        "id": "email",
+        "type": "email",
+        "label": "Email address",
+        "width": "full",
+        "autocomplete": "email",
+        "placeholder": "you@example.com",
+        "help": "This is how the parish office reaches you for most things."
+      },
+      {
+        "id": "homePhone",
+        "type": "tel",
+        "label": "Home phone",
+        "width": "half",
+        "autocomplete": "tel"
+      },
+      {
+        "id": "mobilePhone",
+        "type": "tel",
+        "label": "Mobile phone",
+        "width": "half",
+        "autocomplete": "tel"
+      }
+    ]
+  },
+
+  "sacrament-record": {
+    "_comment": "Nothing past the first question is asked unless the answer is yes.",
+    "defaults": { "rite": "this sacrament" },
+    "fields": [
+      {
+        "id": "received",
+        "type": "radio",
+        "label": "Has {{rite}} been received?",
+        "required": true,
+        "width": "full",
+        "options": [
+          { "value": "yes", "label": "Yes" },
+          { "value": "no", "label": "No" },
+          { "value": "unsure", "label": "Not sure" }
+        ]
+      },
+      {
+        "id": "date",
+        "type": "date",
+        "label": "Date of {{rite}}",
+        "width": "full",
+        "isBirthdate": false,
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "parish",
+        "type": "text",
+        "label": "Parish name",
+        "width": "half",
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "celebrant",
+        "type": "text",
+        "label": "Celebrant's name",
+        "width": "half",
+        "help": "The priest or deacon. Leave it blank if you do not know.",
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "cityState",
+        "type": "text",
+        "label": "City and state",
+        "width": "half",
+        "placeholder": "Roslyn, WA",
+        "showIf": { "field": "received", "equals": "yes" }
+      }
+    ]
+  },
+
+  "marriage-record": {
+    "_comment": "Marriage carries a location that is often not a parish, so it gets its own block.",
+    "fields": [
+      {
+        "id": "received",
+        "type": "radio",
+        "label": "Has marriage been received?",
+        "required": true,
+        "width": "full",
+        "options": [
+          { "value": "yes", "label": "Yes" },
+          { "value": "no", "label": "No" },
+          { "value": "unsure", "label": "Not sure" }
+        ]
+      },
+      {
+        "id": "date",
+        "type": "date",
+        "label": "Date of marriage",
+        "width": "full",
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "parish",
+        "type": "text",
+        "label": "Parish married at",
+        "width": "half",
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "location",
+        "type": "text",
+        "label": "Place or location married at",
+        "width": "half",
+        "showIf": { "field": "received", "equals": "yes" }
+      }
+    ]
+  },
+
+  "adult": {
+    "_comment": "A named person plus the two facts every parish record needs about them.",
+    "fields": [
+      {
+        "type": "block",
+        "block": "person-name",
+        "id": null
+      },
+      {
+        "id": "birthdate",
+        "type": "date",
+        "label": "Date of birth",
+        "required": true,
+        "width": "full",
+        "isBirthdate": true
+      },
+      {
+        "id": "birthplace",
+        "type": "text",
+        "label": "Place of birth",
+        "width": "half",
+        "placeholder": "City and state"
+      }
+    ]
+  },
+
+  "adult-sacraments": {
+    "fields": [
+      {
+        "type": "block",
+        "block": "sacrament-record",
+        "id": "baptism",
+        "label": "Baptism",
+        "options": { "rite": "baptism" }
+      },
+      {
+        "type": "block",
+        "block": "sacrament-record",
+        "id": "eucharist",
+        "label": "First Eucharist",
+        "options": { "rite": "first Eucharist" }
+      },
+      {
+        "type": "block",
+        "block": "sacrament-record",
+        "id": "confirmation",
+        "label": "Confirmation",
+        "options": { "rite": "confirmation" }
+      },
+      {
+        "type": "block",
+        "block": "marriage-record",
+        "id": "marriage",
+        "label": "Marriage"
+      }
+    ]
+  },
+
+  "child": {
+    "_comment": "The paper form gives four fixed child slots. This repeats without a limit.",
+    "fields": [
+      {
+        "type": "block",
+        "block": "person-name",
+        "id": null,
+        "options": { "nickname": true, "suffix": true, "maidenName": false }
+      },
+      {
+        "id": "birthdate",
+        "type": "date",
+        "label": "Date of birth",
+        "required": true,
+        "width": "full",
+        "isBirthdate": true
+      },
+      {
+        "id": "birthplace",
+        "type": "text",
+        "label": "Place of birth",
+        "width": "half",
+        "placeholder": "City and state"
+      },
+      {
+        "type": "block",
+        "block": "sacrament-record",
+        "id": "baptism",
+        "label": "Baptism",
+        "options": { "rite": "baptism" }
+      },
+      {
+        "type": "block",
+        "block": "sacrament-record",
+        "id": "eucharist",
+        "label": "First Eucharist",
+        "options": { "rite": "first Eucharist" }
+      },
+      {
+        "type": "block",
+        "block": "sacrament-record",
+        "id": "confirmation",
+        "label": "Confirmation",
+        "options": { "rite": "confirmation" }
+      }
+    ]
+  },
+
+  "consent-photo": {
+    "_comment": [
+      "The opt-out wording is reproduced from the paper faith formation form.",
+      "Do not rewrite it. Changes are the pastor's call."
+    ],
+    "fields": [
+      {
+        "type": "static",
+        "id": "photoNotice",
+        "label": "Photo release",
+        "html": "<p>Please check the box if you do not wish to have your child's photo used in any publications (Bulletin, Faith Formation Program, website photos).</p>"
+      },
+      {
+        "id": "optOut",
+        "type": "checkbox",
+        "label": "Do not use my child's photo in parish publications.",
+        "width": "full"
+      }
+    ]
+  }
+}
