@@ -1202,7 +1202,8 @@ p  { margin: 0; }
   .footer__signup-title { font-size: 24px; }
   .footer__signup-prefs { justify-content: center; }
   .footer__signup-row { flex-direction: column; }
-  .footer__signup-input { width: 100%; }
+  /* flex: none, or the 240px basis inherited from the row layout becomes a height */
+  .footer__signup-input { width: 100%; flex: none; }
   .footer__signup-btn { width: 100%; }
   .footer__inner { grid-template-columns: 1fr; gap: 28px; text-align: center; }
   .footer__brand { grid-column: auto; }

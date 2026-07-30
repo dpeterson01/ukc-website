@@ -18,18 +18,18 @@ ukc-website/
 
 ### `site/` — the published website
 
-A self-contained static site, **hand-edited directly**. `index.html` is the home page; it loads
-its own copy of the design-system CSS/fonts under `_ds/` plus brand logos under `assets/logos/`.
-The `.nojekyll` file tells GitHub Pages to serve the files as-is.
+A self-contained static site, **hand-edited directly**. Each page is its own `index.html` at its
+own URL (`site/index.html`, `site/mass/index.html`, `site/contact/index.html`, and so on, fourteen
+in all). Pages load the design-system CSS and fonts from `_ds/`, brand logos from `assets/logos/`,
+and a small amount of hand-written behavior from `assets/site.js` and `assets/site.css`. The
+`.nojekyll` file tells GitHub Pages to serve the files as-is.
 
-One thing to know before editing: `index.html` is a React single-page app, not flat HTML. The
-page body sits inside an `<x-dc>` template that `support.js` hydrates at load, and all fourteen
-pages live in that one file behind a hash router. `site/support.js` and
-`site/_ds/*/_ds_bundle.js` are therefore load-bearing — deleting them blanks the site. See
-`CLAUDE.md` for the details and for the planned flattening work.
+There is no build step and no runtime dependency. `index.html` was a React single-page app behind
+a hash router until 2026-07-29; it was flattened so that every page is real HTML at a real,
+indexable URL. One consequence worth knowing before editing: nav and footer markup is duplicated
+across the fourteen files, so chrome changes have to be made in each. See `CLAUDE.md`.
 
-New additions (such as `site/forms/`) are written as ordinary HTML, CSS, and vanilla JS with no
-dependency on that runtime.
+New additions (such as `site/forms/`) are written as ordinary HTML, CSS, and vanilla JS.
 
 ### `design-system/` — the brand foundation
 The canonical, reusable design system, kept separate from the website's page-level

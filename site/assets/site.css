@@ -1,0 +1,57 @@
+/* Additions on top of the design system stylesheet.
+ *
+ * Covers the states the old React runtime produced at render time and that the
+ * design system therefore never needed a class for: form errors, form success,
+ * and the open/closed state of the mobile nav drawer.
+ */
+
+/* The logo and drawer links used to be <button>s, so the design system never gave
+   them link styling to suppress. As <a>s they now pick up the default underline. */
+.nav__logo,
+.nav__logo:hover,
+.nav__drawer-link,
+.nav__drawer-link:hover,
+.nav__drawer-cta,
+.nav__drawer-cta:hover {
+  text-decoration: none;
+}
+
+/* The drawer becomes display:flex at <=960px, so hiding it needs the extra weight. */
+.nav__drawer[hidden] {
+  display: none !important;
+}
+
+.form__error {
+  margin: 6px 0 0;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-lit-red);
+}
+
+.form__input[aria-invalid='true'],
+.form__textarea[aria-invalid='true'] {
+  border-color: var(--color-lit-red);
+}
+
+.form__success,
+.footer__signup-thanks[role='status'] {
+  margin: 0;
+  padding: 20px 24px;
+  border-radius: 4px;
+  background: var(--color-warm-cream);
+  border-left: 3px solid var(--color-gold-screen);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-charcoal);
+}
+
+.form__conditional:empty {
+  display: none;
+}
+
+/* The footer sits on navy, where the red error tone falls below contrast. */
+.footer__signup-form .form__error {
+  color: var(--color-gold-screen);
+}
