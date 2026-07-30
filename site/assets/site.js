@@ -352,7 +352,7 @@
       }).map(function (c) { return $('span', c).textContent.trim(); });
 
       var btn = $('.footer__signup-btn', form);
-      if (btn) { btn.disabled = true; btn.textContent = 'Signing up…'; }
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
 
       fetch(FORMSPREE, {
         method: 'POST',
@@ -368,10 +368,10 @@
         var note = document.createElement('p');
         note.className = 'footer__signup-thanks';
         note.setAttribute('role', 'status');
-        note.textContent = "You're on the list. Watch your inbox Sunday morning.";
+        note.textContent = "Thank you. We'll email you as soon as the bulletin is ready to send.";
         form.replaceWith(note);
       }).catch(function () {
-        if (btn) { btn.disabled = false; btn.textContent = 'Sign me up'; }
+        if (btn) { btn.disabled = false; btn.textContent = 'Keep me posted'; }
         setError(email, true);
       });
     });
