@@ -14,6 +14,11 @@
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
   function validEmail(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((v || '').trim()); }
 
+  var I18N = window.UKC_I18N;
+  if (!I18N) throw new Error('strings.js must load before site.js');
+  function t(key, vars) { return I18N.t(key, vars); }
+  function esc(value) { return I18N.esc(value); }
+
   /* ---------------------------------------------------------------- nav drawer */
 
   function initDrawer() {
@@ -43,6 +48,8 @@
     contact.className = 'nav__drawer-contact';
     contact.innerHTML = '<a href="tel:+15096742531">' + OFFICE_PHONE + '</a>'
       + '<a href="mailto:parish@ukccatholic.org">parish@ukccatholic.org</a>';
+    var lang = $('.utility-bar__lang');
+    if (lang) contact.appendChild(lang.cloneNode(true));
     drawer.appendChild(contact);
     header.appendChild(drawer);
 
@@ -103,6 +110,8 @@
 
   /* --------------------------------------------------------------- form fields */
 
+  /* Submission labels. These are what the parish office reads in the email, so they
+     stay English no matter which language the form was filled in. */
   var PARISH_LABELS = {
     sjb: 'St. John the Baptist (Cle Elum)',
     ic: 'Immaculate Conception (Roslyn)',
@@ -120,64 +129,83 @@
     hello: 'Just Saying Hello', register: 'Register as a Parishioner',
     prayer: 'Prayer Request', sacrament: 'Planning a Sacrament', other: 'Something Else',
   };
-  var PLACEHOLDERS = {
-    register: 'Tell us a bit about your family, how you found us, or any questions…',
-    prayer: 'Share your intention. All requests are kept confidential.',
-  };
-  var DEFAULT_PLACEHOLDER = 'Registering, planning a sacrament, a prayer request, or just saying hello…';
 
-  function chipMarkup(name, label) {
-    return '<label style="' + pillStyle(false) + '">'
-      + '<input name="' + name + '" type="checkbox" style="position:absolute;opacity:0;width:0;height:0">'
-      + '<span style="' + boxStyle(false) + '"></span><span>' + label + '</span></label>';
+  function placeholderFor(reason) {
+    if (reason === 'register') return t('message.placeholder.register');
+    if (reason === 'prayer') return t('message.placeholder.prayer');
+    return t('message.placeholder.default');
   }
 
-  var CONDITIONAL_GROUPS = {
-    register:
-      '<div class="form__field">'
-      + '<label class="form__label" for="cf-parish">Which parish?</label>'
-      + '<select class="form__input" id="cf-parish" name="parish">'
-      + '<option value="">Choose a parish…</option>'
-      + '<option value="sjb">St. John the Baptist (Cle Elum)</option>'
-      + '<option value="ic">Immaculate Conception (Roslyn)</option>'
-      + '<option value="unsure">Not sure yet</option>'
-      + '</select></div>'
-      + '<div class="contact-form-grid">'
-      + '<div class="form__field"><label class="form__label" for="cf-phone">Phone number</label>'
-      + '<input class="form__input" id="cf-phone" name="phone" type="text" placeholder="(509) 555-0123"></div>'
-      + '<div class="form__field"><label class="form__label" for="cf-heard-about">How did you hear about us?</label>'
-      + '<input class="form__input" id="cf-heard-about" name="heard_about_us" type="text" placeholder="A friend, online search, visiting Mass…"></div>'
-      + '</div>'
-      + '<div class="form__field"><span class="form__label">While you\'re here, want emails too?</span>'
-      + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">'
-      + chipMarkup('weekly_bulletin', 'Weekly bulletin')
-      + chipMarkup('quarterly_newsletter', 'Quarterly newsletter')
-      + chipMarkup('holy_day_reminders', 'Holy-day reminders')
-      + '</div></div>',
-    prayer:
-      '<div class="contact-form-grid">'
-      + '<div class="form__field"><label class="form__label" for="cf-prayer-for">Name of person needing prayer</label>'
-      + '<input class="form__input" id="cf-prayer-for" name="person_needing_prayer" type="text" placeholder="Name or initials"></div>'
-      + '<div class="form__field"><label class="form__label" for="cf-requester-contact">Requester\'s contact info</label>'
-      + '<input class="form__input" id="cf-requester-contact" name="requester_contact" type="text" placeholder="Email or phone for follow-up"></div>'
-      + '</div>'
-      + '<p class="form__help" style="margin-top:-4px">Your request is kept confidential and shared only with Father and the parish office.</p>',
-    sacrament:
-      '<div class="contact-form-grid">'
-      + '<div class="form__field"><label class="form__label" for="cf-sacrament">Sacrament type</label>'
-      + '<select class="form__input" id="cf-sacrament" name="sacrament_type">'
-      + '<option value="">Choose a sacrament…</option>'
-      + '<option value="baptism">Baptism</option>'
-      + '<option value="first-communion">First Communion</option>'
-      + '<option value="confirmation">Confirmation</option>'
-      + '<option value="marriage">Marriage</option>'
-      + '<option value="funeral">Funeral</option>'
-      + '<option value="anointing">Anointing of the Sick</option>'
-      + '</select></div>'
-      + '<div class="form__field"><label class="form__label" for="cf-timeframe">Preferred date or timeframe</label>'
-      + '<input class="form__input" id="cf-timeframe" name="preferred_timeframe" type="text" placeholder="A date, month, or general timeframe"></div>'
-      + '</div>',
-  };
+  /* `enLabel` rides along in data-en so the submission stays English while the
+     visible span is translated. */
+  function chipMarkup(name, key, enLabel) {
+    return '<label style="' + pillStyle(false) + '" data-en="' + esc(enLabel) + '">'
+      + '<input name="' + name + '" type="checkbox" style="position:absolute;opacity:0;width:0;height:0">'
+      + '<span style="' + boxStyle(false) + '"></span><span>' + esc(t(key)) + '</span></label>';
+  }
+
+  /* Reads the English label a chip was built with, falling back to its visible
+     text for the footer chips that ship in the HTML. */
+  function chipValue(label) {
+    var en = label.getAttribute('data-en');
+    if (en) return en;
+    var spans = label.querySelectorAll('span');
+    var span = spans[spans.length - 1];
+    return span ? span.textContent.trim() : '';
+  }
+
+  /* Option `value`s stay fixed in every language. They are the keys the submission
+     maps back to English with, so only the visible text changes. */
+  function conditionalGroup(reason) {
+    if (reason === 'register') {
+      return '<div class="form__field">'
+        + '<label class="form__label" for="cf-parish">' + esc(t('contact.parish.label')) + '</label>'
+        + '<select class="form__input" id="cf-parish" name="parish">'
+        + '<option value="">' + esc(t('contact.parish.choose')) + '</option>'
+        + '<option value="sjb">' + esc(t('contact.parish.sjb')) + '</option>'
+        + '<option value="ic">' + esc(t('contact.parish.ic')) + '</option>'
+        + '<option value="unsure">' + esc(t('contact.parish.unsure')) + '</option>'
+        + '</select></div>'
+        + '<div class="contact-form-grid">'
+        + '<div class="form__field"><label class="form__label" for="cf-phone">' + esc(t('contact.phone.label')) + '</label>'
+        + '<input class="form__input" id="cf-phone" name="phone" type="text" placeholder="' + esc(t('contact.phone.placeholder')) + '"></div>'
+        + '<div class="form__field"><label class="form__label" for="cf-heard-about">' + esc(t('contact.heard.label')) + '</label>'
+        + '<input class="form__input" id="cf-heard-about" name="heard_about_us" type="text" placeholder="' + esc(t('contact.heard.placeholder')) + '"></div>'
+        + '</div>'
+        + '<div class="form__field"><span class="form__label">' + esc(t('contact.emails.label')) + '</span>'
+        + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">'
+        + chipMarkup('weekly_bulletin', 'chip.weeklyBulletin', 'Weekly bulletin')
+        + chipMarkup('quarterly_newsletter', 'chip.quarterlyNewsletter', 'Quarterly newsletter')
+        + chipMarkup('holy_day_reminders', 'chip.holyDayReminders', 'Holy-day reminders')
+        + '</div></div>';
+    }
+    if (reason === 'prayer') {
+      return '<div class="contact-form-grid">'
+        + '<div class="form__field"><label class="form__label" for="cf-prayer-for">' + esc(t('contact.prayerFor.label')) + '</label>'
+        + '<input class="form__input" id="cf-prayer-for" name="person_needing_prayer" type="text" placeholder="' + esc(t('contact.prayerFor.placeholder')) + '"></div>'
+        + '<div class="form__field"><label class="form__label" for="cf-requester-contact">' + esc(t('contact.requester.label')) + '</label>'
+        + '<input class="form__input" id="cf-requester-contact" name="requester_contact" type="text" placeholder="' + esc(t('contact.requester.placeholder')) + '"></div>'
+        + '</div>'
+        + '<p class="form__help" style="margin-top:-4px">' + esc(t('contact.prayer.note')) + '</p>';
+    }
+    if (reason === 'sacrament') {
+      return '<div class="contact-form-grid">'
+        + '<div class="form__field"><label class="form__label" for="cf-sacrament">' + esc(t('contact.sacrament.label')) + '</label>'
+        + '<select class="form__input" id="cf-sacrament" name="sacrament_type">'
+        + '<option value="">' + esc(t('contact.sacrament.choose')) + '</option>'
+        + '<option value="baptism">' + esc(t('contact.sacrament.baptism')) + '</option>'
+        + '<option value="first-communion">' + esc(t('contact.sacrament.firstCommunion')) + '</option>'
+        + '<option value="confirmation">' + esc(t('contact.sacrament.confirmation')) + '</option>'
+        + '<option value="marriage">' + esc(t('contact.sacrament.marriage')) + '</option>'
+        + '<option value="funeral">' + esc(t('contact.sacrament.funeral')) + '</option>'
+        + '<option value="anointing">' + esc(t('contact.sacrament.anointing')) + '</option>'
+        + '</select></div>'
+        + '<div class="form__field"><label class="form__label" for="cf-timeframe">' + esc(t('contact.timeframe.label')) + '</label>'
+        + '<input class="form__input" id="cf-timeframe" name="preferred_timeframe" type="text" placeholder="' + esc(t('contact.timeframe.placeholder')) + '"></div>'
+        + '</div>';
+    }
+    return '';
+  }
 
   function setError(input, on) {
     if (!input) return;
@@ -191,9 +219,7 @@
       msg = document.createElement('p');
       msg.className = 'form__error';
       msg.id = input.id + '-error';
-      msg.textContent = input.type === 'email'
-        ? 'Please enter a valid email address.'
-        : 'This field is required.';
+      msg.textContent = input.type === 'email' ? t('error.email') : t('error.required');
       field.appendChild(msg);
     } else if (!on && msg) {
       msg.remove();
@@ -201,16 +227,10 @@
   }
 
   function successMessage(reason, name) {
-    var first = (name || '').trim().split(' ')[0] || 'friend';
-    if (reason === 'register') {
-      return 'Thank you, ' + first + '. We have your details, and someone from the parish '
-        + 'office will reach out soon about getting you registered.';
-    }
-    if (reason === 'prayer') {
-      return 'Thank you. Your intention has been received and will be held in prayer, in confidence.';
-    }
-    return 'Thank you, ' + first + '. Your message is on its way to the parish office. '
-      + "We'll reply during office hours; for anything urgent, please call " + OFFICE_PHONE + '.';
+    var first = (name || '').trim().split(' ')[0] || t('success.friend');
+    if (reason === 'register') return t('success.register', { name: first });
+    if (reason === 'prayer') return t('success.prayer');
+    return t('success.default', { name: first, phone: OFFICE_PHONE });
   }
 
   function initContactForm(form) {
@@ -235,9 +255,9 @@
 
       var applyReason = function () {
         var reason = currentReason();
-        slot.innerHTML = CONDITIONAL_GROUPS[reason] || '';
+        slot.innerHTML = conditionalGroup(reason);
         initChips(slot);
-        if (message) message.placeholder = PLACEHOLDERS[reason] || DEFAULT_PLACEHOLDER;
+        if (message) message.placeholder = placeholderFor(reason);
       };
       reasonSelect.addEventListener('change', applyReason);
       applyReason();
@@ -290,10 +310,7 @@
         body.phone = ($('#cf-phone', form) || {}).value || '';
         body.heard_about_us = ($('#cf-heard-about', form) || {}).value || '';
         body.newsletter_preferences = $$('input[type="checkbox"]:checked', form)
-          .map(function (c) {
-            var span = c.parentNode.querySelectorAll('span')[1];
-            return span ? span.textContent : c.name;
-          }).join(', ');
+          .map(function (c) { return chipValue(c.parentNode); }).join(', ');
       } else if (reason === 'prayer') {
         body.person_needing_prayer = ($('#cf-prayer-for', form) || {}).value || '';
         body.requester_contact = ($('#cf-requester-contact', form) || {}).value || '';
@@ -306,7 +323,7 @@
       if (subjectInput) subjectInput.value = body._subject;
 
       var submitBtn = $('button[type="submit"]', form);
-      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = t('btn.sending'); }
 
       fetch(FORMSPREE, {
         method: 'POST',
@@ -320,12 +337,11 @@
         note.textContent = successMessage(reason, name);
         form.replaceWith(note);
       }).catch(function () {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send message'; }
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = t('btn.send'); }
         var err = $('.form__send-error', form) || document.createElement('p');
         err.className = 'form__error form__send-error';
         err.setAttribute('role', 'alert');
-        err.textContent = 'That did not go through. Please try again, or call the parish office at '
-          + OFFICE_PHONE + '.';
+        err.textContent = t('error.send', { phone: OFFICE_PHONE });
         form.appendChild(err);
       });
     });
@@ -349,10 +365,10 @@
       var prefs = $$('.chip', form).filter(function (c) {
         var input = $('input[type="checkbox"]', c);
         return input && input.checked;
-      }).map(function (c) { return $('span', c).textContent.trim(); });
+      }).map(chipValue);
 
       var btn = $('.footer__signup-btn', form);
-      if (btn) { btn.disabled = true; btn.textContent = 'Signing up…'; }
+      if (btn) { btn.disabled = true; btn.textContent = t('btn.signingUp'); }
 
       fetch(FORMSPREE, {
         method: 'POST',
@@ -368,10 +384,10 @@
         var note = document.createElement('p');
         note.className = 'footer__signup-thanks';
         note.setAttribute('role', 'status');
-        note.textContent = "You're on the list. Watch your inbox Sunday morning.";
+        note.textContent = t('signup.thanks');
         form.replaceWith(note);
       }).catch(function () {
-        if (btn) { btn.disabled = false; btn.textContent = 'Sign me up'; }
+        if (btn) { btn.disabled = false; btn.textContent = t('btn.signUp'); }
         setError(email, true);
       });
     });
