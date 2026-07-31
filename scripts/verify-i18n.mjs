@@ -15,6 +15,7 @@ const BASE = 'https://dpeterson01.github.io/ukc-website/';
 
 const failures = [];
 const notes = [];
+const noindexed = new Set();
 const fail = (page, message) => failures.push(`${page}: ${message}`);
 
 /* Page ids are the URL path relative to their tree, so '' is the tree's home. */
@@ -91,7 +92,12 @@ function checkPage(page, lang) {
 
   const pending = html.includes('TRANSLATION PENDING');
   const noindex = /<meta name="robots" content="noindex">/.test(html);
-  if (lang === 'en' && (pending || noindex)) fail(id, 'English page is marked pending or noindex');
+  if (noindex) noindexed.add(`${lang}:${page}`);
+
+  /* English is the source language, so it can never be awaiting translation. It
+     can still be held back from search, which is how an unlaunched page like the
+     registration form is published without inviting traffic to it. */
+  if (lang === 'en' && pending) fail(id, 'English is the source language and cannot be marked pending');
   if (lang === 'es' && pending !== noindex) {
     fail(id, 'the TRANSLATION PENDING marker and the noindex meta must be added and removed together');
   }
@@ -100,6 +106,15 @@ function checkPage(page, lang) {
 
 for (const page of enPages) checkPage(page, 'en');
 const stillEnglish = esPages.filter((page) => checkPage(page, 'es'));
+
+/* Holding a page back from search only works if both languages are held back.
+   The reverse is normal: a pending Spanish page is noindex while English is live. */
+for (const page of enPages) {
+  if (!esPages.includes(page)) continue;
+  if (noindexed.has(`en:${page}`) && !noindexed.has(`es:${page}`)) {
+    fail(page || '/', 'English is noindex but its Spanish counterpart is not');
+  }
+}
 
 /* Chrome is duplicated by hand across every page, so drift is the likely bug. */
 function chromeParity(pages, lang) {
