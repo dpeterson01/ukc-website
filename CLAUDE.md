@@ -89,14 +89,24 @@ language toggle is a pure path rewrite with no lookup table to maintain.
 - **Submission labels are always English.** Anything sent to Formspree or the worker (reason,
   parish, sacrament, subject, newsletter preferences) stays English so the office can read it.
   That is enforced by fixed `value` attributes and by `data-en` on the newsletter chips. Do not
-  translate either.
-- Untranslated Spanish pages carry `<meta name="robots" content="noindex">` and a
-  `TRANSLATION PENDING` comment. Remove both together when a page is translated.
+  translate either. `chipValue()` falls back to the visible label text when `data-en` is missing,
+  which on a Spanish page would quietly mail Spanish labels to the office, so every chip in both
+  trees carries `data-en` even where English does not strictly need it.
+- A page still awaiting Spanish copy carries `<meta name="robots" content="noindex">` and a
+  `TRANSLATION PENDING` comment, so search never indexes English copy at a Spanish URL. The rule
+  runs one way: pending implies noindex, but noindex does not imply pending. An unlaunched page
+  is noindex in both languages regardless of translation state, which is why
+  `site/es/forms/parish-registration/` stays hidden while `FORMS_LIVE = False`.
 - `TRANSLATION.md` is the handoff spec: scope, glossary, register, and the rules above.
 
 Run `node scripts/verify-i18n.mjs` after touching either tree. It needs nothing installed and
 checks page pairing, toggle targets, hreflang, asset paths, chrome parity, and EN/ES key parity in
 `strings.js`.
+
+It also compares the `name`, `value`, `id`, `for`, `data-en`, and `data-ukc-form` attributes on
+each page against its counterpart and fails on any difference. Those attributes are what `site.js`
+and the forms engine key off, and a translator editing prose has no reason to touch them, so a
+mismatch means something load-bearing got translated by accident.
 
 `scripts/verify-pages.mjs` and `scripts/verify-behavior.mjs` are still worth running after edits
 to the chrome or to `site/assets/site.js`. Both need Playwright, which is deliberately not

@@ -1,11 +1,20 @@
 # Translating the site into Spanish
 
-This is the handoff for Phase 2. Phase 1 built the plumbing: there is now a complete
-`site/es/` tree with all sixteen pages, a language toggle in the utility bar of every
-page, and a `strings.js` table for the text that JavaScript builds at runtime. Every
-Spanish page is currently an English copy carrying a `noindex` tag and a
-`TRANSLATION PENDING` comment. Phase 2 replaces that English copy with Spanish and
-removes the markers.
+Phase 1 built the plumbing: a complete `site/es/` tree with all sixteen pages, a language
+toggle in the utility bar of every page, and a `strings.js` table for the text that
+JavaScript builds at runtime.
+
+**Phase 2 is done as a first pass.** All sixteen pages and all 43 runtime strings are in
+Spanish, and the `noindex` tags and `TRANSLATION PENDING` markers have come off. The one
+exception is `site/es/forms/parish-registration/`, which stays `noindex` because the
+English form is not launched yet.
+
+What remains is review. The pass below was produced against the glossary and register
+rules in this document, so it is consistent, but it has not been read by a native speaker
+who knows the parish. Fr. Higuera should review it in the browser rather than in a diff:
+the copy reads differently in place than it does as a list of strings. The rest of this
+document is the spec that pass was written to, and the reference for anyone editing the
+Spanish later.
 
 ## How much there is
 
@@ -131,7 +140,7 @@ Add this note to:
 Draft Fr. Higuera can edit:
 
 > Todas nuestras Misas se celebran actualmente en inglés. Muchas familias
-> hispanohablantes forman parte de nuestra comunidad, y el Padre Francisco habla
+> hispanohablantes forman parte de nuestra comunidad, y el Padre Higuera habla
 > español, así que no dude en acercarse a él antes o después de la Misa.
 
 ## Rules that must not be broken
