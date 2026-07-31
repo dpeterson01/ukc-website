@@ -114,6 +114,19 @@ copy with the English in parentheses on first use per page, and to leave the log
 addresses, and the map links untouched. Place names stay in English: Cle Elum, Roslyn,
 Kittitas County, Cascade foothills.
 
+**Nav labels are short on purpose.** The seven inline links have to fit beside the parish
+lockup, so the nav says *Misas* and *Formación* where the page headings say *Horario de
+Misas* and *Formación en la Fe*. That is not an inconsistency to correct. One link carries
+both lengths and the stylesheet picks between them by screen width:
+
+```html
+<a class="nav__link"><span class="nav__label-long">Nuestras Parroquias</span><span
+   class="nav__label-short">Parroquias</span></a>
+```
+
+Translate the text inside each span and leave the spans, their classes, and the absence of
+whitespace between them alone. Deleting either one breaks the narrow layout.
+
 **Do not translate the abuse reporting notice in the footer.** The Diocese of Yakima
 publishes official Spanish wording for the Victim Assistance line. Get that exact text
 from the diocese and paste it in. Improvising here is the one place where a well-meaning

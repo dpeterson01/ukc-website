@@ -21,6 +21,42 @@
   display: none !important;
 }
 
+/* Nav sizing. The inline links keep each label on one line and never shrink, so
+   the brand lockup gives up the space instead of sliding underneath them. */
+.nav__links {
+  flex: 0 0 auto;
+}
+
+.nav__link {
+  white-space: nowrap;
+}
+
+.nav__logo {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Short link labels. The drawer keeps the long ones, where width is not scarce. */
+.nav__label-short {
+  display: none;
+}
+
+@media (max-width: 1180px) and (min-width: 901px) {
+  /* Between the widest layout and the drawer there is not room for both the
+     parish names and seven links, so the circle mark carries the brand. */
+  .nav__logo-words {
+    display: none;
+  }
+
+  .nav__link .nav__label-long {
+    display: none;
+  }
+
+  .nav__link .nav__label-short {
+    display: inline;
+  }
+}
+
 .form__error {
   margin: 6px 0 0;
   font-family: var(--font-sans);
