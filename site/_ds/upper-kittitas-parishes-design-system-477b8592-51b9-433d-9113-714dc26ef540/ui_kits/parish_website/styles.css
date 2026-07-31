@@ -1028,7 +1028,11 @@ p  { margin: 0; }
   h1 { font-size: 36px; line-height: 1.1; }
   h2 { font-size: 26px; }
   h3 { font-size: 20px; }
+}
 
+/* The weekend Mass strip and the contact links stop fitting on one row below
+   1000px, well above the phone breakpoint. */
+@media (max-width: 1000px) {
   /* Utility bar: hide the weekend Mass strip; keep contact links centred. */
   .utility-bar__inner {
     flex-direction: column;
@@ -1044,7 +1048,11 @@ p  { margin: 0; }
     font-size: 12px;
   }
   .utility-bar__contact a { padding: 4px 2px; }
+}
 
+/* Seven inline links plus the brand run out of room at 900px, so the drawer
+   takes over there rather than at the phone breakpoint. */
+@media (max-width: 900px) {
   /* Main nav: collapse to logo + hamburger; hide inline links. */
   .nav__inner { padding: 12px 16px; gap: 12px; }
   .nav__logo { height: 46px; }
@@ -1106,7 +1114,9 @@ p  { margin: 0; }
     text-decoration: none;
     padding: 6px 0;
   }
+}
 
+@media (max-width: 720px) {
   /* Section header row: stack so the season-strip drops below the h2 */
   .section-head-row {
     flex-direction: column;
