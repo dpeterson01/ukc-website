@@ -135,7 +135,7 @@ needs re-running if new font files are added (needs `fonttools` + `brotli`).
 ## Deploy
 
 GitHub Pages serves `site/` via `.github/workflows/deploy-pages.yml` on every push to `main`.
-Live: https://dpeterson01.github.io/ukc-website/
+Live: https://ukccatholic.org/
 
 ## Verify a deploy
 
