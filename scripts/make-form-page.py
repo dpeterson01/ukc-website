@@ -17,7 +17,7 @@ import re
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 SOURCE = SITE / "formation" / "index.html"
-BASE_URL = "https://dpeterson01.github.io/ukc-website/"
+BASE_URL = "https://ukccatholic.org/"
 
 # The Worker that receives submissions. Until it is deployed this points at the
 # production hostname anyway, so switching over is a DNS change, not a code one.
@@ -49,8 +49,9 @@ PAGES = [
         "path": "forms/index.html",
         "depth": 1,
         "title": "Parish Forms",
-        "description": "Register with the parish, sign up for faith formation, "
-                       "and enroll in OCIA. Fill everything out online, no printing.",
+        "description": "Register with St. John the Baptist or Immaculate Conception, "
+                       "sign up for faith formation, or enroll in OCIA with our secure "
+                       "online parish forms.",
         "main": """
     <section class="section">
       <div class="section section--narrow">
@@ -142,6 +143,10 @@ def main() -> None:
     source = SOURCE.read_text(encoding="utf-8")
     head, body_open, after_main = build("", source)
 
+    # Read off the source page so a change to the site title reaches these pages too.
+    found = re.search(r"<title>[^|<]*\|\s*([^<]*)</title>", source)
+    site_title = found.group(1).strip() if found else "Cle Elum &amp; Roslyn Catholic Parishes"
+
     for page in PAGES:
         depth = page["depth"]
         rel = page["path"].replace("index.html", "")
@@ -150,15 +155,19 @@ def main() -> None:
 
         new_head = head
         new_head = re.sub(r"<title>.*?</title>",
-                          f'<title>{page["title"]} | Catholic Parishes of Upper Kittitas County</title>',
+                          lambda m: f'<title>{page["title"]} | {site_title}</title>',
                           new_head, flags=re.S)
         new_head = re.sub(r'(<meta (?:name|property)="(?:og:|twitter:)?(?:description|title)"[^>]*content=")[^"]*(")',
                           lambda m: m.group(1) + (
-                              f'{page["title"]} | Catholic Parishes of Upper Kittitas County'
+                              f'{page["title"]} | {site_title}'
                               if "title" in m.group(0) else page["description"]
                           ) + m.group(2),
                           new_head)
         new_head = re.sub(r'<link rel="canonical"[^>]*>', f'<link rel="canonical" href="{url}">', new_head)
+
+        # og:url is page-specific as well, and would otherwise stay on /formation/.
+        new_head = re.sub(r'(<meta property="og:url" content=")[^"]*(")',
+                          lambda m: m.group(1) + url + m.group(2), new_head)
 
         # The chrome carries the source page's hreflang set, which would otherwise
         # point both form pages at /formation/.
