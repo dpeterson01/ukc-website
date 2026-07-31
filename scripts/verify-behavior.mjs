@@ -106,13 +106,15 @@ const check = (name, pass, detail = '') => {
   await page.close();
 }
 
-// --- /new/ locked register form -----------------------------------------
+// --- /new/ locked hello form --------------------------------------------
 {
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
   await page.goto(`http://localhost:${PORT}/new/`, { waitUntil: 'load' });
   await page.waitForTimeout(300);
   check('/new/ has no reason selector', (await page.locator('#cf-reason').count()) === 0);
-  check('/new/ prerenders register fields', (await page.locator('#cf-parish').count()) === 1);
+  check('/new/ is a hello form', await page.locator('form.form').getAttribute('data-reason') === 'hello');
+  check('/new/ has no register fields', (await page.locator('#cf-parish, #cf-phone, #cf-heard-about').count()) === 0);
+  await page.screenshot({ path: path.join(SHOTS, 'new-hello-form.png'), fullPage: true });
   await page.close();
 }
 
