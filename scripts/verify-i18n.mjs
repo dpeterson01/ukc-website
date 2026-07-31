@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = join(ROOT, 'site');
-const BASE = 'https://dpeterson01.github.io/ukc-website/';
+const BASE = 'https://ukccatholic.org/';
 
 const failures = [];
 const notes = [];
