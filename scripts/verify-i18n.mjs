@@ -148,7 +148,7 @@ chromeParity(esPages, 'es');
 /* Translating a page means rewriting text inside markup that has to survive
    untouched. These attributes carry no prose, and site.js and the forms engine
    both key off them, so a Spanish page must declare exactly what English does. */
-const WIRING = /\s(name|value|id|for|data-en|data-ukc-form)="([^"]*)"/g;
+const WIRING = /\s(name|value|id|for|data-en|data-reason|data-ukc-form)="([^"]*)"/g;
 for (const page of enPages) {
   if (!esPages.includes(page)) continue;
   const read = (lang) => {
