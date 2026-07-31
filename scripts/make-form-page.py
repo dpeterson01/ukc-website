@@ -144,7 +144,9 @@ def main() -> None:
 
     for page in PAGES:
         depth = page["depth"]
-        url = BASE_URL + page["path"].replace("index.html", "")
+        rel = page["path"].replace("index.html", "")
+        url = BASE_URL + rel
+        es_url = BASE_URL + "es/" + rel
 
         new_head = head
         new_head = re.sub(r"<title>.*?</title>",
@@ -157,6 +159,12 @@ def main() -> None:
                           ) + m.group(2),
                           new_head)
         new_head = re.sub(r'<link rel="canonical"[^>]*>', f'<link rel="canonical" href="{url}">', new_head)
+
+        # The chrome carries the source page's hreflang set, which would otherwise
+        # point both form pages at /formation/.
+        for lang, href in (("en", url), ("es", es_url), ("x-default", url)):
+            new_head = re.sub(rf'<link rel="alternate" hreflang="{lang}"[^>]*>',
+                              f'<link rel="alternate" hreflang="{lang}" href="{href}">', new_head)
 
         # The forms engine loads on top of the site stylesheet, never instead of it.
         prefix = "../" * depth
@@ -174,6 +182,11 @@ def main() -> None:
         if page.get("form") and not FORMS_LIVE:
             new_head += '  <meta name="robots" content="noindex">\n'
 
+        # The utility bar's language toggle inherits the source page's target as well.
+        new_body_open = re.sub(r'(<a class="utility-bar__lang" href=")[^"]*(")',
+                               lambda m: m.group(1) + prefix + "es/" + rel + m.group(2),
+                               rewrite_depth(body_open, depth))
+
         main_html = (page["main"]
                      .replace("__ENDPOINT__", ENDPOINT)
                      .replace("__REGISTRATION_CTA__", REGISTRATION_CTA)
@@ -181,7 +194,7 @@ def main() -> None:
         html = (
             new_head
             + "</head>"
-            + rewrite_depth(body_open, depth)
+            + new_body_open
             + f'<main data-screen-label="{page["title"]}">'
             + main_html
             + "  </main>"
