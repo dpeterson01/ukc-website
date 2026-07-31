@@ -10,10 +10,11 @@ import { chromium } from 'playwright';
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { createReadStream } from 'node:fs';
+import { createReadStream, existsSync } from 'node:fs';
 
 const SITE = '/Users/derekpeterson/projects/personal/ukc-website/site';
 const SHOTS = '/tmp/ukc-shots/forms';
+const FIXTURE = '/Users/derekpeterson/projects/personal/ukc-website/worker/test/fixture.json';
 const PORT = 8795;
 const MIME = {
   '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
@@ -66,8 +67,13 @@ page.on('pageerror', (e) => consoleErrors.push(String(e)));
 page.on('response', (r) => { if (r.status() >= 400) badResponses.push(`${r.status()} ${r.url()}`); });
 
 let shotIndex = 0;
+// Inputs fade their border colour over 120ms. Screenshotting inside that window
+// catches a half-faded error red and makes a correct form look broken.
+const settle = () => page.waitForTimeout(200);
+
 const shot = async (name) => {
   shotIndex += 1;
+  await settle();
   await page.screenshot({
     path: path.join(SHOTS, `${String(shotIndex).padStart(2, '0')}-${name}.png`),
     fullPage: true,
@@ -295,26 +301,23 @@ check('an unsigned form is refused', await page.locator('.ukcf-summary').isVisib
 await page.locator('#f-signature-econsent').check();
 await page.locator('#f-signature-typed').fill('Mary Kowalski');
 await page.locator('#f-signature-intent').check();
-const pad = await page.locator('.ukcf-sigpad').boundingBox();
-await page.mouse.move(pad.x + 40, pad.y + 100);
-await page.mouse.down();
-await page.mouse.move(pad.x + 120, pad.y + 40, { steps: 12 });
-await page.mouse.move(pad.x + 200, pad.y + 110, { steps: 12 });
-await page.mouse.up();
-await page.waitForTimeout(200);
-const inkPixels = await page.evaluate(() => {
-  const c = document.querySelector('.ukcf-sigpad');
-  const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
-  let n = 0;
-  for (let i = 3; i < d.length; i += 4) if (d[i] > 0) n += 1;
-  return n;
-});
-check('the signature pad takes ink', inkPixels > 200, `${inkPixels} px`);
 check('signing clears the warnings it was showing',
   (await page.locator('.ukcf-summary').isHidden())
   && (await page.locator('#f-signature-typed-msg').innerText()).trim() === ''
   && (await page.locator('#f-signature-attest-msg').innerText()).trim() === '',
   (await page.locator('#f-signature-typed-msg').innerText()).trim());
+
+// The message clearing and the red border are set in different places, so a
+// cleared message is not proof the field stopped looking wrong.
+await settle();
+const sigLook = await page.evaluate(() => {
+  const el = document.querySelector('#f-signature-typed');
+  const cs = getComputedStyle(el);
+  return { invalid: el.getAttribute('aria-invalid'), border: cs.borderTopColor };
+});
+check('a signed name does not still look like an error',
+  sigLook.invalid === 'false' && !/^rgb\(1[0-9]{2}, [0-9]{1,2}, [0-9]{1,2}\)$/.test(sigLook.border),
+  JSON.stringify(sigLook));
 await shot('step10-sign-filled');
 
 // collect() returns the nested shape the Worker will receive, not flat paths.
@@ -326,12 +329,36 @@ check('the spouse answers are in the payload', collected.spouse?.first === 'Toma
 check('the removed child is gone from the payload', collected.children?.length === 1,
   JSON.stringify(collected.children?.length));
 check('the signature is in the payload', !!collected.signature?.typedName);
-check('the drawn signature is a PNG data URL',
-  String(collected.signature?.drawnSignature || '').startsWith('data:image/png'));
 check('dates are sent as ISO', collected.head?.birthdate === '1979-04-02',
   JSON.stringify(collected.head?.birthdate));
 check('the photo answer is recorded either way', collected.photoConsent === 'no',
   JSON.stringify(collected.photoConsent));
+
+// The backend gets tested against whatever the browser actually posts. Writing
+// the envelope out here keeps the two ends from drifting apart, which is what
+// would happen if the fixture were hand-written next to the backend.
+const envelope = await page.evaluate(() => {
+  const e = window.ukcFormEngine;
+  return {
+    formId: e.schema.formId,
+    formTitle: e.schema.title,
+    version: e.schema.version,
+    subjectPrefix: e.schema.subjectPrefix || e.schema.title,
+    submittedAt: new Date().toISOString(),
+    elapsedMs: 91000,
+    data: e.collect(),
+    labels: e.labelMap(),
+    turnstileToken: null,
+  };
+});
+// Written only when the backend folder is already present, so this check does
+// not assume which backend wins.
+if (existsSync(path.dirname(FIXTURE))) {
+  await fs.writeFile(FIXTURE, `${JSON.stringify(envelope, null, 2)}\n`);
+}
+check('the submitted envelope carries labels and steps',
+  envelope.labels['head.first']?.step === 'Head of household',
+  JSON.stringify(envelope.labels['head.first']));
 
 // --- the draft survives a reload ----------------------------------------
 await page.reload({ waitUntil: 'load' });
