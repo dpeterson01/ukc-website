@@ -55,3 +55,26 @@
 .footer__signup-form .form__error {
   color: var(--color-gold-screen);
 }
+
+/* Language toggle. Sits in the utility bar next to the phone and email, and is
+   cloned into the mobile drawer by site.js. */
+.utility-bar__lang {
+  padding-left: 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.22);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.nav__drawer-contact .utility-bar__lang {
+  padding-left: 0;
+  border-left: 0;
+  text-decoration: underline;
+}
+
+@media (max-width: 380px) {
+  /* The design system hides the last utility-bar link on the narrowest phones.
+     The toggle is now last, and matters more there than the address, which the
+     drawer also carries. */
+  .utility-bar__contact a:last-child { display: inline; }
+  .utility-bar__contact a[href^='mailto:'] { display: none; }
+}

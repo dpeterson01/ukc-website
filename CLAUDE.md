@@ -43,24 +43,29 @@ site/sjb-history/index.html
 site/ic-history/index.html
 ```
 
-These fourteen files **are the source**. Edit them directly. `support.js`, `_ds_bundle.js`, and
-`ContactForm.dc.html` are gone, so the site no longer depends on `unpkg.com`, and every page has
-its own indexable URL and canonical link.
+Two more were added later under `site/forms/`, so the count is sixteen. These files **are the
+source**. Edit them directly. `support.js`, `_ds_bundle.js`, and `ContactForm.dc.html` are gone,
+so the site no longer depends on `unpkg.com`, and every page has its own indexable URL and
+canonical link.
 
-The interactivity React used to provide now lives in two hand-written files:
+The interactivity React used to provide now lives in three hand-written files:
 
 - `site/assets/site.js` — mobile nav drawer, the contact form's reason-driven conditional fields,
   chip toggles, validation, and the Formspree submissions for both the contact form and the
   footer signup.
 - `site/assets/site.css` — the handful of rules the design system doesn't cover (`.form__error`,
-  `.form__success`, and link-styling resets for elements that used to be `<button>`s).
+  `.form__success`, link-styling resets for elements that used to be `<button>`s, and the
+  language toggle).
+- `site/assets/strings.js` — the EN/ES lookup table for text `site.js` builds at runtime. It must
+  load **before** `site.js` on every page.
 
 ### The tradeoff
 
-Nav and footer markup is duplicated across all fourteen files. That is deliberate. A parish site
-that changes a few times a year is better served by files a volunteer can open and edit than by a
-build step, and a build step is exactly what this repo just removed. When chrome changes, change
-it in all fourteen files.
+Nav and footer markup is duplicated across all sixteen files, and again across their Spanish
+counterparts, so thirty-two in total. That is deliberate. A parish site that changes a few times a
+year is better served by files a volunteer can open and edit than by a build step, and a build
+step is exactly what this repo just removed. When chrome changes, change it everywhere and run
+`node scripts/verify-i18n.mjs`, which fails if the two trees drift apart.
 
 ### Regenerating (historical)
 
@@ -68,6 +73,30 @@ it in all fourteen files.
 pre-flatten template. They are kept for the record, not for routine use, and running them now
 would overwrite hand-edits. Recovering the old template means checking out a commit before the
 flatten.
+
+## Bilingual: `site/es/`
+
+The site is English and Spanish. Spanish lives in a parallel `site/es/` tree that mirrors the
+English one file for file, using the **same English slugs** (`/es/mass/`, not `/es/misa/`), so the
+language toggle is a pure path rewrite with no lookup table to maintain.
+
+- Every page carries a self-referencing `canonical` plus an `hreflang` triple (`en`, `es`,
+  `x-default`), and a toggle anchor (`.utility-bar__lang`) in the utility bar. `site.js` clones
+  that anchor into the mobile drawer.
+- Relative nav links (`../mass/`) keep you inside whichever tree you are already in, so language
+  persists structurally. There is no `localStorage`, no cookie, and no auto-redirect on
+  `navigator.language`.
+- **Submission labels are always English.** Anything sent to Formspree or the worker (reason,
+  parish, sacrament, subject, newsletter preferences) stays English so the office can read it.
+  That is enforced by fixed `value` attributes and by `data-en` on the newsletter chips. Do not
+  translate either.
+- Untranslated Spanish pages carry `<meta name="robots" content="noindex">` and a
+  `TRANSLATION PENDING` comment. Remove both together when a page is translated.
+- `TRANSLATION.md` is the handoff spec: scope, glossary, register, and the rules above.
+
+Run `node scripts/verify-i18n.mjs` after touching either tree. It needs nothing installed and
+checks page pairing, toggle targets, hreflang, asset paths, chrome parity, and EN/ES key parity in
+`strings.js`.
 
 `scripts/verify-pages.mjs` and `scripts/verify-behavior.mjs` are still worth running after edits
 to the chrome or to `site/assets/site.js`. Both need Playwright, which is deliberately not
