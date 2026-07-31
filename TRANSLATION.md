@@ -99,7 +99,7 @@ Starter glossary. Fr. Higuera should confirm or correct this before drafting beg
 | Deacon | Diácono |
 | Diocese | Diócesis |
 | Faith Formation | Formación en la fe |
-| RCIA / OCIA | RICA (Rito de Iniciación Cristiana de Adultos) |
+| OCIA | OCIA (leave it. It is the program's name, and RCIA and RICA are both retired) |
 | Bulletin | Boletín |
 | Newsletter | Boletín informativo |
 | Prayer request | Petición de oración |
