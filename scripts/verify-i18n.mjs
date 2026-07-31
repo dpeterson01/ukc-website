@@ -96,10 +96,14 @@ function checkPage(page, lang) {
 
   /* English is the source language, so it can never be awaiting translation. It
      can still be held back from search, which is how an unlaunched page like the
-     registration form is published without inviting traffic to it. */
+     registration form is published without inviting traffic to it.
+
+     Those are two separate reasons to be noindex, so the rule runs one way only:
+     an untranslated page must be hidden, but a hidden page need not be
+     untranslated. */
   if (lang === 'en' && pending) fail(id, 'English is the source language and cannot be marked pending');
-  if (lang === 'es' && pending !== noindex) {
-    fail(id, 'the TRANSLATION PENDING marker and the noindex meta must be added and removed together');
+  if (lang === 'es' && pending && !noindex) {
+    fail(id, 'still marked TRANSLATION PENDING, so it needs noindex to keep English copy off a Spanish URL in search');
   }
   return pending;
 }
@@ -140,6 +144,36 @@ function chromeParity(pages, lang) {
 }
 chromeParity(enPages, 'en');
 chromeParity(esPages, 'es');
+
+/* Translating a page means rewriting text inside markup that has to survive
+   untouched. These attributes carry no prose, and site.js and the forms engine
+   both key off them, so a Spanish page must declare exactly what English does. */
+const WIRING = /\s(name|value|id|for|data-en|data-ukc-form)="([^"]*)"/g;
+for (const page of enPages) {
+  if (!esPages.includes(page)) continue;
+  const read = (lang) => {
+    const file = join(SITE, lang === 'es' ? 'es' : '', page, 'index.html');
+    if (!existsSync(file)) return null;
+    /* <meta name> is page metadata, not wiring, and robots legitimately differs. */
+    const body = readFileSync(file, 'utf8').replace(/<meta\b[^>]*>/g, '');
+    return [...body.matchAll(WIRING)]
+      .map(([, key, val]) => `${key}="${val}"`)
+      .sort();
+  };
+  const en = read('en');
+  const es = read('es');
+  if (!en || !es) continue;
+  const tally = (list) => list.reduce((m, k) => m.set(k, (m.get(k) || 0) + 1), new Map());
+  const enCount = tally(en);
+  const esCount = tally(es);
+  for (const [k, n] of enCount) {
+    const got = esCount.get(k) || 0;
+    if (got !== n) fail(`es/${page}`, `English has ${n}x ${k}, Spanish has ${got}x`);
+  }
+  for (const [k, n] of esCount) {
+    if (!enCount.has(k)) fail(`es/${page}`, `Spanish has ${n}x ${k}, which English does not`);
+  }
+}
 
 const strings = readFileSync(join(SITE, 'assets', 'strings.js'), 'utf8');
 const esBlock = (strings.match(/var ES = \{([\s\S]*?)\n  \};/) || [])[1] || '';

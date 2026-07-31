@@ -74,65 +74,79 @@
 
     'btn.send': 'Send message',
     'btn.sending': 'Sending…',
-    'btn.signUp': 'Sign me up',
-    'btn.signingUp': 'Signing up…',
-    'signup.thanks': "You're on the list. Watch your inbox Sunday morning.",
+    'btn.signUp': 'Keep me posted',
+    'btn.signingUp': 'Sending…',
+    'signup.thanks': "Thank you. We'll email you as soon as the bulletin is ready to send.",
   };
 
   /* Translator: fill in the values below. Leave a value as '' to keep English.
      Do not rename, reorder, or remove keys. See TRANSLATION.md for terminology. */
   var ES = {
-    'contact.parish.label': '',
-    'contact.parish.choose': '',
-    'contact.parish.sjb': '',
-    'contact.parish.ic': '',
-    'contact.parish.unsure': '',
+    'contact.parish.label': '¿Cuál parroquia?',
+    'contact.parish.choose': 'Elija una parroquia…',
+    'contact.parish.sjb': 'St. John the Baptist (Cle Elum)',
+    'contact.parish.ic': 'Immaculate Conception (Roslyn)',
+    'contact.parish.unsure': 'Todavía no estoy seguro',
 
-    'contact.phone.label': '',
-    'contact.phone.placeholder': '',
-    'contact.heard.label': '',
-    'contact.heard.placeholder': '',
+    'contact.phone.label': 'Número de teléfono',
+    'contact.phone.placeholder': '(509) 555-0123',
+    'contact.heard.label': '¿Cómo supo de nosotros?',
+    'contact.heard.placeholder': 'Un amigo, una búsqueda en línea, una visita a Misa…',
 
-    'contact.emails.label': '',
-    'chip.weeklyBulletin': '',
-    'chip.quarterlyNewsletter': '',
-    'chip.holyDayReminders': '',
+    'contact.emails.label': 'Ya que está aquí, ¿le gustaría recibir correos?',
+    'chip.weeklyBulletin': 'Boletín semanal',
+    'chip.quarterlyNewsletter': 'Boletín informativo trimestral',
+    'chip.holyDayReminders': 'Recordatorios de días de precepto',
 
-    'contact.prayerFor.label': '',
-    'contact.prayerFor.placeholder': '',
-    'contact.requester.label': '',
-    'contact.requester.placeholder': '',
-    'contact.prayer.note': '',
+    'contact.prayerFor.label': 'Nombre de la persona por quien se ora',
+    'contact.prayerFor.placeholder': 'Nombre o iniciales',
+    'contact.requester.label': 'Datos de contacto de quien solicita',
+    'contact.requester.placeholder': 'Correo electrónico o teléfono para responderle',
+    'contact.prayer.note': 
+      'Su petición es confidencial y solo se comparte con el Padre Higuera y la '
+      + 'oficina parroquial.',
 
-    'contact.sacrament.label': '',
-    'contact.sacrament.choose': '',
-    'contact.sacrament.baptism': '',
-    'contact.sacrament.firstCommunion': '',
-    'contact.sacrament.confirmation': '',
-    'contact.sacrament.marriage': '',
-    'contact.sacrament.funeral': '',
-    'contact.sacrament.anointing': '',
-    'contact.timeframe.label': '',
-    'contact.timeframe.placeholder': '',
+    'contact.sacrament.label': 'Tipo de sacramento',
+    'contact.sacrament.choose': 'Elija un sacramento…',
+    'contact.sacrament.baptism': 'Bautismo',
+    'contact.sacrament.firstCommunion': 'Primera Comunión',
+    'contact.sacrament.confirmation': 'Confirmación',
+    'contact.sacrament.marriage': 'Matrimonio',
+    'contact.sacrament.funeral': 'Misa exequial',
+    'contact.sacrament.anointing': 'Unción de los enfermos',
+    'contact.timeframe.label': 'Fecha o periodo preferido',
+    'contact.timeframe.placeholder': 'Una fecha, un mes o un periodo aproximado',
 
-    'message.placeholder.default': '',
-    'message.placeholder.register': '',
-    'message.placeholder.prayer': '',
+    'message.placeholder.default': 
+      'Inscribirse, preparar un sacramento, una petición de oración o simplemente '
+      + 'saludar…',
+    'message.placeholder.register': 
+      'Cuéntenos un poco sobre su familia, cómo nos encontró o cualquier pregunta…',
+    'message.placeholder.prayer': 
+      'Comparta su intención. Todas las peticiones se tratan de forma confidencial.',
 
-    'error.email': '',
-    'error.required': '',
-    'error.send': '',
+    'error.email': 'Ingrese un correo electrónico válido.',
+    'error.required': 'Este campo es obligatorio.',
+    'error.send': 
+      'No se pudo enviar. Vuelva a intentarlo o llame a la oficina parroquial al {phone}.',
 
-    'success.friend': '',
-    'success.register': '',
-    'success.prayer': '',
-    'success.default': '',
+    'success.friend': 'amigo',
+    'success.register': 
+      'Gracias, {name}. Ya tenemos sus datos y alguien de la oficina parroquial se '
+      + 'comunicará con usted pronto para completar su inscripción.',
+    'success.prayer': 
+      'Gracias. Hemos recibido su intención y la llevaremos en oración, de forma '
+      + 'confidencial.',
+    'success.default': 
+      'Gracias, {name}. Su mensaje va camino a la oficina parroquial. Le responderemos '
+      + 'en horario de oficina; si es algo urgente, llame al {phone}.',
 
-    'btn.send': '',
-    'btn.sending': '',
-    'btn.signUp': '',
-    'btn.signingUp': '',
-    'signup.thanks': '',
+    'btn.send': 'Enviar mensaje',
+    'btn.sending': 'Enviando…',
+    'btn.signUp': 'Manténgame informado',
+    'btn.signingUp': 'Enviando…',
+    'signup.thanks': 
+      'Gracias. Le enviaremos un correo en cuanto el boletín esté listo.',
   };
 
   var TABLES = { en: EN, es: ES };
