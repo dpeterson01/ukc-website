@@ -99,7 +99,7 @@ Starter glossary. Fr. Higuera should confirm or correct this before drafting beg
 | Deacon | Diácono |
 | Diocese | Diócesis |
 | Faith Formation | Formación en la fe |
-| RCIA / OCIA | RICA (Rito de Iniciación Cristiana de Adultos) |
+| OCIA | OICA (Orden de la Iniciación Cristiana de Adultos) |
 | Bulletin | Boletín |
 | Newsletter | Boletín informativo |
 | Prayer request | Petición de oración |
@@ -107,12 +107,17 @@ Starter glossary. Fr. Higuera should confirm or correct this before drafting beg
 | Livestream | Transmisión en vivo |
 | Register as a parishioner | Inscribirse como feligrés |
 
-**Parish names.** Fr. Higuera's call. Spanish-speaking Catholics will say *San Juan
-Bautista* and *Inmaculada Concepción*, but the English names are what appear on the
-buildings and on diocesan paperwork. The suggestion is to use the Spanish name in body
-copy with the English in parentheses on first use per page, and to leave the logo, the
-addresses, and the map links untouched. Place names stay in English: Cle Elum, Roslyn,
-Kittitas County, Cascade foothills.
+**Parish names.** Settled by Fr. Higuera: *Parroquia San Juan Bautista* and *Parroquia de
+La Inmaculada Concepción*. Running copy uses the bare names, *San Juan Bautista* and *La
+Inmaculada Concepción*, with the article dropped in wordmarks, headings, and name badges
+where it reads as a label rather than a sentence. The logo, the street addresses, and the
+map links stay untouched, and so do the `sjb` and `ic` values the forms submit. Place
+names stay in English: Cle Elum, Roslyn, Kittitas County, Cascade foothills.
+
+**Site name.** *San Juan Bautista, Cle Elum | La Inmaculada Concepción, Roslyn*, matching
+the English *St. John the Baptist, Cle Elum | Immaculate Conception, Roslyn*. It is the
+suffix on every page title except the four parish pages, which would only repeat
+themselves.
 
 **Nav labels are short on purpose.** The seven inline links have to fit beside the parish
 lockup, so the nav says *Misas* and *Formación* where the page headings say *Horario de
