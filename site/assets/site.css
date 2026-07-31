@@ -107,6 +107,27 @@
   text-decoration: underline;
 }
 
+@media (max-width: 1000px) {
+  .utility-bar__contact {
+    gap: 12px;
+  }
+
+  .utility-bar__contact a {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .utility-bar__contact .utility-bar__lang {
+    padding-left: 12px;
+  }
+}
+
+@media (max-width: 900px) {
+  .nav__logo-sep {
+    display: none;
+  }
+}
+
 @media (max-width: 380px) {
   /* The design system hides the last utility-bar link on the narrowest phones.
      The toggle is now last, and matters more there than the address, which the
