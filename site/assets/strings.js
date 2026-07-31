@@ -84,8 +84,8 @@
   var ES = {
     'contact.parish.label': '¿Cuál parroquia?',
     'contact.parish.choose': 'Elija una parroquia…',
-    'contact.parish.sjb': 'St. John the Baptist (Cle Elum)',
-    'contact.parish.ic': 'Immaculate Conception (Roslyn)',
+    'contact.parish.sjb': 'San Juan Bautista (Cle Elum)',
+    'contact.parish.ic': 'Inmaculada Concepción (Roslyn)',
     'contact.parish.unsure': 'Todavía no estoy seguro',
 
     'contact.phone.label': 'Número de teléfono',
