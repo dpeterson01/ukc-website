@@ -109,8 +109,10 @@ const toggle = async (selector, want) => {
 
 // --- the picker page -----------------------------------------------------
 await page.goto(`http://localhost:${PORT}/forms/`, { waitUntil: 'load' });
-check('picker page has a live registration link',
-  (await page.locator('a[href="./parish-registration/"]').count()) === 1);
+check('picker page keeps registration unlinked while the endpoint is dead',
+  (await page.locator('a[href="./parish-registration/"]').count()) === 0);
+check('picker page still shows all three form cards',
+  (await page.locator('.contact-card').count()) === 3);
 await shot('picker');
 
 // --- the form loads ------------------------------------------------------

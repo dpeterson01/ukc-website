@@ -23,6 +23,27 @@ BASE_URL = "https://dpeterson01.github.io/ukc-website/"
 # production hostname anyway, so switching over is a DNS change, not a code one.
 ENDPOINT = "https://forms.ukccatholic.org/submit"
 
+# Nothing answers at ENDPOINT yet, so the form is built but deliberately unlinked.
+# Flip this in the same change that points ENDPOINT at a live backend, re-run, and
+# restore the two hand-written links in site/new/ and site/formation/.
+FORMS_LIVE = False
+
+COMING_SOON = ('<span class="btn btn--ghost" aria-disabled="true"'
+               ' style="opacity: 0.55; cursor: default;">Coming soon</span>')
+
+REGISTRATION_CTA = (
+    '<a class="btn btn--ghost" href="./parish-registration/">Start the form &rarr;</a>'
+    if FORMS_LIVE else COMING_SOON
+)
+
+FORMS_INTRO = """No printing, no mailing, no dropping anything in the collection box. Choose a form
+          below and we will email you a copy when you are done. Prefer paper? Call the parish
+          office at <a href="tel:+15096742531" style="color: var(--color-navy);">(509) 674-2531</a>
+          and we will mail you one.""" if FORMS_LIVE else """These are moving online soon, so there will be nothing to print and nothing to mail.
+          Until then, call the parish office at
+          <a href="tel:+15096742531" style="color: var(--color-navy);">(509) 674-2531</a>
+          and we will send you a form."""
+
 PAGES = [
     {
         "path": "forms/index.html",
@@ -37,10 +58,7 @@ PAGES = [
         <h1 style="margin-bottom: 8px;">Fill it out online</h1>
         <hr class="rule-gold" style="margin: 0px 0px 20px;">
         <p class="about-history" style="margin-bottom: 32px;">
-          No printing, no mailing, no dropping anything in the collection box. Choose a form
-          below and we will email you a copy when you are done. Prefer paper? Call the parish
-          office at <a href="tel:+15096742531" style="color: var(--color-navy);">(509) 674-2531</a>
-          and we will mail you one.
+          __FORMS_INTRO__
         </p>
 
         <div class="contact-grid">
@@ -50,7 +68,7 @@ PAGES = [
               Make Immaculate Conception or St. John the Baptist your parish home, or update
               information we already have.
             </p>
-            <a class="btn btn--ghost" href="./parish-registration/">Start the form &rarr;</a>
+            __REGISTRATION_CTA__
           </div>
           <div class="contact-card">
             <h3>Children's faith formation</h3>
@@ -152,7 +170,14 @@ def main() -> None:
         new_head = rewrite_depth(new_head, depth)
         new_head = new_head.replace("<script src=", extras + "<script src=", 1) if extras else new_head
 
-        main_html = page["main"].replace("__ENDPOINT__", ENDPOINT)
+        # An unlinked form should stay out of search results too.
+        if page.get("form") and not FORMS_LIVE:
+            new_head += '  <meta name="robots" content="noindex">\n'
+
+        main_html = (page["main"]
+                     .replace("__ENDPOINT__", ENDPOINT)
+                     .replace("__REGISTRATION_CTA__", REGISTRATION_CTA)
+                     .replace("__FORMS_INTRO__", FORMS_INTRO))
         html = (
             new_head
             + "</head>"
