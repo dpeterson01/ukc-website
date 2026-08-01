@@ -233,10 +233,29 @@
     return t('success.default', { name: first, phone: OFFICE_PHONE });
   }
 
+  // Formspree silently discards any submission where `_gotcha` has a value, which
+  // is what lets us turn its reCAPTCHA off (reCAPTCHA blocks AJAX submissions).
+  // Added from JS so all 37 forms stay in sync without a build step.
+  function addHoneypot(form) {
+    var hp = document.createElement('input');
+    hp.type = 'text';
+    hp.name = '_gotcha';
+    hp.tabIndex = -1;
+    hp.autocomplete = 'off';
+    hp.setAttribute('aria-hidden', 'true');
+    hp.setAttribute(
+      'style',
+      'position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;'
+    );
+    form.appendChild(hp);
+    return hp;
+  }
+
   function initContactForm(form) {
     var reasonSelect = $('#cf-reason', form);
     var subjectInput = $('input[name="_subject"]', form);
     var message = $('#cf-message', form);
+    var honeypot = addHoneypot(form);
     var tried = false;
 
     // A locked form (the Register block on the New Here? page) has no selector and
@@ -298,6 +317,7 @@
       var name = $('#cf-name', form).value.trim();
       var body = {
         _subject: 'New contact: ' + (SUBJECT_LABELS[reason] || SUBJECT_LABELS.hello) + ' from ' + name,
+        _gotcha: honeypot.value,
         name: name,
         email: $('#cf-email', form).value.trim(),
         reason: REASON_LABELS[reason] || REASON_LABELS.hello,
@@ -352,9 +372,12 @@
   function initSignup(form) {
     initChips(form);
     var email = $('.footer__signup-input', form);
+    var honeypot = addHoneypot(form);
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      var stale = $('.form__send-error', form);
+      if (stale) stale.remove();
       if (!validEmail(email.value)) {
         setError(email, true);
         email.focus();
@@ -375,6 +398,7 @@
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           _subject: 'Email signup: ' + email.value.trim(),
+          _gotcha: honeypot.value,
           email: email.value.trim(),
           reason: 'Email list signup',
           subscriptions: prefs.join(', ') || 'None selected',
@@ -388,7 +412,13 @@
         form.replaceWith(note);
       }).catch(function () {
         if (btn) { btn.disabled = false; btn.textContent = t('btn.signUp'); }
-        setError(email, true);
+        // Not an invalid address, so say what actually went wrong.
+        setError(email, false);
+        var err = document.createElement('p');
+        err.className = 'form__error form__send-error';
+        err.setAttribute('role', 'alert');
+        err.textContent = t('error.send', { phone: OFFICE_PHONE });
+        form.appendChild(err);
       });
     });
   }
