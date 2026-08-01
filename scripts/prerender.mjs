@@ -19,7 +19,7 @@ import { createReadStream } from 'node:fs';
 
 const SITE = '/Users/derekpeterson/projects/personal/ukc-website/site';
 const PORT = 8791;
-const BASE = 'https://dpeterson01.github.io/ukc-website/';
+const BASE = 'https://ukccatholic.org/';
 
 const ROUTES = [
   '', 'new', 'mass', 'about', 'sjb', 'ic', 'sjb-history', 'ic-history',
