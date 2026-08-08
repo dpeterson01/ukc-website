@@ -1017,9 +1017,10 @@
       subjectPrefix: this.schema.subjectPrefix || this.schema.title,
       submittedAt: new Date().toISOString(),
       elapsedMs: elapsed,
+      // Sent so the server can apply the same check. Empty for a real person.
+      website: this.honeypot.value || '',
       data: this.collect(),
       labels: this.labelMap(),
-      turnstileToken: this.turnstileToken || null,
     };
 
     fetch(this.config.endpoint, {
