@@ -1,0 +1,325 @@
+{
+  "_comment": [
+    "Built from the paper 'Religious Education Registration' form Holli provided.",
+    "Two deliberate departures from the paper:",
+    "  1. The paper is one form per child. This is one form per household with a",
+    "     repeating child block, because the tuition table is already priced per",
+    "     family and a parent should not retype their own details per child.",
+    "  2. The paper's separate 'Registration Fee form' is the returning-family",
+    "     path. That is the 'renew' intent on the first step here.",
+    "Photo release wording is reproduced from the paper form. Changes are the",
+    "pastor's call."
+  ],
+
+  "formId": "faith-formation",
+  "version": "1.0.0",
+  "title": "Faith Formation Registration",
+  "subjectPrefix": "Faith Formation Registration",
+  "submitLabel": "Sign and submit",
+  "successTitle": "Thank you. Your children are registered.",
+  "successBody": "The Catechesis Coordinator will follow up about tuition and the class schedule. Watch for a copy of this form in your email.",
+
+  "steps": [
+    {
+      "id": "getting-started",
+      "title": "Getting started",
+      "help": "This takes about fifteen minutes. We save your progress as you go, so you can close this and come back.",
+      "fields": [
+        {
+          "id": "intent",
+          "type": "radio",
+          "label": "What would you like to do?",
+          "required": true,
+          "options": [
+            { "value": "new", "label": "Register for the first time", "help": "Your family is new to the parish or new to this program." },
+            { "value": "renew", "label": "Re-register for the coming year", "help": "You have been in the program before and nothing major has changed." }
+          ]
+        },
+        {
+          "id": "parish",
+          "type": "radio",
+          "label": "Which parish?",
+          "required": true,
+          "options": [
+            { "value": "ic", "label": "Immaculate Conception", "help": "Roslyn" },
+            { "value": "sjb", "label": "St. John the Baptist", "help": "Cle Elum" }
+          ]
+        },
+        {
+          "type": "static",
+          "id": "registrationNotice",
+          "html": "<p>If your family is new to the parish, please also fill out the <a href=\"../parish-registration/\">parish registration form</a>. This form enrolls your children in faith formation. It does not register your household with the parish.</p>",
+          "showIf": { "field": "intent", "equals": "new" }
+        },
+        {
+          "type": "static",
+          "id": "privacyNotice",
+          "html": "<p>This information is used for the purposes of the Church Office only and will not be given out without consent.</p>"
+        }
+      ]
+    },
+
+    {
+      "id": "children",
+      "title": "Children to enroll",
+      "help": "Add one for each child you are enrolling. Tuition is charged per family, not per child.",
+      "fields": [
+        {
+          "type": "repeat",
+          "id": "children",
+          "block": "ff-child",
+          "label": "Children",
+          "itemLabel": "Child",
+          "addLabel": "Add another child",
+          "min": 1
+        }
+      ],
+      "checks": [
+        { "type": "personEach", "repeat": "children" },
+        { "type": "gradeAge", "repeat": "children", "birthdate": "birthdate", "grade": "grade" }
+      ]
+    },
+
+    {
+      "id": "household",
+      "title": "Where the children live",
+      "help": "The parish office uses this address for mailings about the program.",
+      "fields": [
+        {
+          "type": "block",
+          "block": "address",
+          "id": "household",
+          "label": "Home address"
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email address",
+          "width": "full",
+          "autocomplete": "email",
+          "placeholder": "you@example.com",
+          "help": "This is used for all communication about the program."
+        },
+        {
+          "id": "homePhone",
+          "type": "tel",
+          "label": "Home phone",
+          "width": "half",
+          "autocomplete": "tel"
+        },
+        {
+          "id": "mobilePhone",
+          "type": "tel",
+          "label": "Mobile phone",
+          "width": "half",
+          "autocomplete": "tel"
+        }
+      ],
+      "checks": [
+        {
+          "type": "contactMethods",
+          "paths": ["email", "mobilePhone", "homePhone"],
+          "message": "Please give us at least one way to reach you: an email address or a phone number."
+        }
+      ]
+    },
+
+    {
+      "id": "father",
+      "title": "Father",
+      "fields": [
+        {
+          "id": "hasFather",
+          "type": "radio",
+          "label": "Would you like to give the father's details?",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "Not applicable" }
+          ]
+        },
+        {
+          "type": "block",
+          "block": "parent",
+          "id": "father",
+          "showIf": { "field": "hasFather", "equals": "yes" }
+        }
+      ]
+    },
+
+    {
+      "id": "mother",
+      "title": "Mother",
+      "fields": [
+        {
+          "id": "hasMother",
+          "type": "radio",
+          "label": "Would you like to give the mother's details?",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "Not applicable" }
+          ]
+        },
+        {
+          "type": "block",
+          "block": "parent",
+          "id": "mother",
+          "options": { "maidenName": true },
+          "showIf": { "field": "hasMother", "equals": "yes" }
+        }
+      ]
+    },
+
+    {
+      "id": "guardian",
+      "title": "Custodial parent or guardian",
+      "help": "Only if this is someone other than the parents above.",
+      "fields": [
+        {
+          "id": "hasGuardian",
+          "type": "radio",
+          "label": "Is the custodial parent or guardian different from the people above?",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        },
+        {
+          "type": "block",
+          "block": "parent",
+          "id": "guardian",
+          "showIf": { "field": "hasGuardian", "equals": "yes" }
+        },
+        {
+          "_comment": "Reproduced from the paper form. Do not soften this wording.",
+          "type": "static",
+          "id": "releaseNotice",
+          "html": "<p>Please note: we are unable to release a child to any person who is not listed as the custodial parent or guardian without written notification by the custodial parent or guardian. Parents are obligated to provide the Catechesis Coordinator or Office Administrator with custody or restraining legal documentation.</p>"
+        }
+      ]
+    },
+
+    {
+      "id": "emergency",
+      "title": "Emergency contacts",
+      "help": "People we can call if we cannot reach you. Please give us at least one.",
+      "fields": [
+        {
+          "type": "block",
+          "block": "emergency-contact",
+          "id": "emergency1",
+          "label": "First contact"
+        },
+        {
+          "id": "hasSecondContact",
+          "type": "radio",
+          "label": "Would you like to add a second emergency contact?",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        },
+        {
+          "type": "block",
+          "block": "emergency-contact",
+          "id": "emergency2",
+          "label": "Second contact",
+          "showIf": { "field": "hasSecondContact", "equals": "yes" }
+        }
+      ],
+      "checks": [
+        {
+          "type": "contactMethods",
+          "paths": ["emergency1.contact.mobilePhone", "emergency1.contact.homePhone", "emergency1.contact.email"],
+          "message": "Please give us a phone number or email for your first emergency contact."
+        }
+      ]
+    },
+
+    {
+      "id": "tuition",
+      "title": "Tuition",
+      "help": "Tuition is charged per family. You can pay at the parish office or in the collection box.",
+      "fields": [
+        {
+          "type": "static",
+          "id": "tuitionTable",
+          "html": "<table class=\"ukcf-table\"><caption>Tuition for the year</caption><thead><tr><th scope=\"col\">Family</th><th scope=\"col\">Cost</th></tr></thead><tbody><tr><td>1 child</td><td>$55.00</td></tr><tr><td>2 children</td><td>$70.00</td></tr><tr><td>3 or more children</td><td>$90.00</td></tr><tr><td>Children of full-time catechists and aides</td><td>$0.00</td></tr></tbody></table>"
+        },
+        {
+          "type": "static",
+          "id": "hardshipNotice",
+          "html": "<p>Please tell the Catechesis Coordinator about any financial hardship. Tuition assistance is always available and no child is turned away.</p>"
+        },
+        {
+          "id": "catechistFamily",
+          "type": "checkbox",
+          "label": "A parent in this household is a full-time catechist or aide.",
+          "width": "full"
+        },
+        {
+          "id": "paymentMethod",
+          "type": "radio",
+          "label": "How would you like to pay?",
+          "required": true,
+          "width": "full",
+          "options": [
+            { "value": "check", "label": "Check" },
+            { "value": "cash", "label": "Cash" },
+            { "value": "office", "label": "I will arrange it with the parish office" },
+            { "value": "hardship", "label": "I would like to talk about tuition assistance" }
+          ]
+        },
+        {
+          "id": "checkNumber",
+          "type": "text",
+          "label": "Check number",
+          "width": "half",
+          "maxLength": 20,
+          "showIf": { "field": "paymentMethod", "equals": "check" }
+        }
+      ]
+    },
+
+    {
+      "id": "photos",
+      "title": "Photographs",
+      "fields": [
+        {
+          "type": "block",
+          "block": "consent-photo",
+          "id": "photo"
+        }
+      ]
+    },
+
+    {
+      "id": "review",
+      "title": "Check your answers",
+      "help": "Everything you entered is below. Use Back to change anything.",
+      "fields": [
+        { "type": "review", "id": "review" }
+      ]
+    },
+
+    {
+      "id": "sign",
+      "title": "Sign and send",
+      "fields": [
+        {
+          "type": "static",
+          "id": "signNotice",
+          "html": "<p>By signing you confirm that the information above is accurate and that you have read the release note about who may collect your child.</p>"
+        },
+        {
+          "type": "signature",
+          "id": "signature",
+          "label": "Parent or guardian signature"
+        }
+      ]
+    }
+  ]
+}

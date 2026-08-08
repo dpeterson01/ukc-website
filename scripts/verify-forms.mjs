@@ -117,8 +117,8 @@ const toggle = async (selector, want) => {
 await page.goto(`http://localhost:${PORT}/forms/`, { waitUntil: 'load' });
 check('picker page keeps registration unlinked while the endpoint is dead',
   (await page.locator('a[href="./parish-registration/"]').count()) === 0);
-check('picker page still shows all three form cards',
-  (await page.locator('.contact-card').count()) === 3);
+check('picker page still shows all four form cards',
+  (await page.locator('.contact-card').count()) === 4);
 await shot('picker');
 
 // --- the form loads ------------------------------------------------------
@@ -379,8 +379,39 @@ check('no horizontal scroll on a phone', overflow <= 1, `${overflow}px`);
 await mobile.screenshot({ path: path.join(SHOTS, '99-mobile.png'), fullPage: true });
 await mobile.close();
 
+// --- the other three forms ----------------------------------------------
+// Parish registration gets walked end to end above. The rest are checked far
+// enough to catch a schema that will not load or a step that renders empty,
+// which is where a hand-written schema actually goes wrong.
+for (const [slug, firstStep] of [
+  ['faith-formation', 'Getting started'],
+  ['ocia-participant', 'Getting started'],
+  ['ocia-sponsor', 'What a sponsor does'],
+]) {
+  await page.goto(`http://localhost:${PORT}/forms/${slug}/`, { waitUntil: 'load' });
+  await page.waitForSelector('.ukcf-form', { timeout: 5000 });
+  check(`${slug}: the schema loads`, await page.locator('.ukcf-form').isVisible());
+  const visible = page.locator('.ukcf-step:not([hidden])').first();
+  check(`${slug}: the first step is titled`,
+    (await visible.locator('.ukcf-step-title').innerText()).trim() === firstStep,
+    (await visible.locator('.ukcf-step-title').innerText()).trim());
+  check(`${slug}: the first step has content`,
+    (await visible.locator('.ukcf-step-body').innerText()).trim().length > 40);
+  await shot(`form-${slug}`);
+
+  // Every step gets rendered once with nothing filled in, so a broken option
+  // list or a static block that throws shows up here rather than in front of
+  // someone registering their children.
+  const steps = await page.evaluate(() => {
+    const e = window.ukcFormEngine;
+    return e.schema.steps.map((s) => s.title || s.id);
+  });
+  check(`${slug}: every step is titled`, steps.every((t) => t && t.trim()), steps.join(' > '));
+}
+
 // --- console -------------------------------------------------------------
 check('no console errors', consoleErrors.length === 0, consoleErrors.slice(0, 3).join(' | '));
+check('no failed requests', badResponses.length === 0, badResponses.slice(0, 3).join(' | '));
 check('no failed requests', badResponses.length === 0, badResponses.slice(0, 3).join(' | '));
 
 await browser.close();

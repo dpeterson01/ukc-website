@@ -1,0 +1,326 @@
+{
+  "_comment": [
+    "Built from the paper 'OCIA Sponsor Form' Holli provided.",
+    "",
+    "The paper form leads with a page describing what a sponsor does (accompany,",
+    "pray, witness, believe, hope, love) before it asks anything. That framing is",
+    "kept here as the first step, because it is doing real work: it lets someone",
+    "decide they are not ready before they fill in twenty fields.",
+    "",
+    "The paper form lists the parish phone as 509-574-2531. Every other parish",
+    "document uses 509-674-2531, so the correct number is used here.",
+    "",
+    "A sponsor must be a confirmed Catholic in good standing and at least 16.",
+    "That is asked plainly rather than assumed."
+  ],
+
+  "formId": "ocia-sponsor",
+  "version": "1.0.0",
+  "title": "OCIA Sponsor",
+  "subjectPrefix": "OCIA Sponsor",
+  "submitLabel": "Sign and submit",
+  "successTitle": "Thank you for saying yes.",
+  "successBody": "Fr. Higuera or a member of the OCIA team will be in touch before sessions begin. Watch for a copy of this form in your email.",
+
+  "steps": [
+    {
+      "id": "what-a-sponsor-does",
+      "title": "What a sponsor does",
+      "help": "Read this first. If it is not the right year for you to take this on, that is a good thing to know now.",
+      "fields": [
+        {
+          "_comment": "Reproduced from the paper form. Do not rewrite.",
+          "type": "static",
+          "id": "roleNotice",
+          "html": "<h3>Accompany</h3><ul><li>Attend OCIA sessions weekly.</li><li>Inquire about the process.</li><li>Check in throughout the week.</li></ul><h3>Pray</h3><ul><li>Worship at Sunday Mass.</li><li>Commit to daily personal prayer.</li><li>Pray with your candidate.</li><li>Pray for your candidate.</li></ul><h3>Witness</h3><ul><li>Share your experiences.</li><li>Model an integrated Catholic life.</li><li>Live the joy of the Gospel.</li></ul><h3>Believe, hope, love</h3><ul><li>God is alive today and working miracles today.</li><li>Keep a heaven-based perspective and trust in the work God is doing.</li><li>Love God, love your candidate, and be willing to be poured out in service to both this year.</li></ul>"
+        },
+        {
+          "type": "static",
+          "id": "sessionNotice",
+          "html": "<p>Sponsors are expected to attend all OCIA sessions and Rites with their candidates. Sessions are Thursday evenings at 6pm in the St. John the Baptist Parish Hall, Cle Elum.</p><p>Questions before you commit? Call Fr. Francisco Higuera at (509) 674-2531 ext. 5 or email <a href=\"mailto:Fr.higuera@yakimadiocese.org\">Fr.higuera@yakimadiocese.org</a>.</p>"
+        },
+        {
+          "id": "commitment",
+          "type": "checkbox",
+          "label": "I understand what is being asked and I am willing to commit to it for this year.",
+          "required": true,
+          "width": "full"
+        }
+      ]
+    },
+
+    {
+      "id": "eligibility",
+      "title": "A few requirements",
+      "help": "The Church asks these of every sponsor. If you answer no to any of them, send the form anyway and we will talk it through.",
+      "fields": [
+        {
+          "id": "isConfirmedCatholic",
+          "type": "radio",
+          "label": "Have you been baptized and confirmed in the Catholic Church, and received First Communion?",
+          "required": true,
+          "width": "full",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" },
+            { "value": "unsure", "label": "I am not sure" }
+          ]
+        },
+        {
+          "id": "isPracticing",
+          "type": "radio",
+          "label": "Are you currently attending Mass and living in full communion with the Church?",
+          "required": true,
+          "width": "full",
+          "help": "This includes marriage being recognised by the Church, if you are married.",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" },
+            { "value": "unsure", "label": "I am not sure" }
+          ]
+        },
+        {
+          "type": "static",
+          "id": "eligibilityHelp",
+          "html": "<p>Thank you for answering honestly. This is very often something that can be resolved, and it is worth a conversation. Please send the form and Fr. Higuera will follow up with you directly.</p>",
+          "showIf": {
+            "any": [
+              { "field": "isConfirmedCatholic", "in": ["no", "unsure"] },
+              { "field": "isPracticing", "in": ["no", "unsure"] }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "candidate",
+      "title": "Your candidate",
+      "fields": [
+        {
+          "id": "hasCandidate",
+          "type": "radio",
+          "label": "Has a candidate already asked you to sponsor them?",
+          "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No, please pair me with someone" }
+          ]
+        },
+        {
+          "id": "candidateName",
+          "type": "text",
+          "label": "Candidate's name",
+          "required": true,
+          "width": "full",
+          "autocomplete": "off",
+          "showIf": { "field": "hasCandidate", "equals": "yes" }
+        },
+        {
+          "id": "parish",
+          "type": "radio",
+          "label": "Which parish are you registered at?",
+          "required": true,
+          "options": [
+            { "value": "ic", "label": "Immaculate Conception", "help": "Roslyn" },
+            { "value": "sjb", "label": "St. John the Baptist", "help": "Cle Elum" },
+            { "value": "other", "label": "Somewhere else" }
+          ]
+        },
+        {
+          "id": "otherParish",
+          "type": "text",
+          "label": "Which parish?",
+          "required": true,
+          "width": "full",
+          "help": "We will need a letter of good standing from them.",
+          "showIf": { "field": "parish", "equals": "other" }
+        }
+      ]
+    },
+
+    {
+      "id": "about-you",
+      "title": "About you",
+      "fields": [
+        {
+          "type": "block",
+          "block": "person-name",
+          "id": "person",
+          "options": { "middleName": true, "nickname": true, "suffix": true, "maidenName": true }
+        },
+        {
+          "id": "birthdate",
+          "type": "date",
+          "label": "Date of birth",
+          "required": true,
+          "width": "full",
+          "isBirthdate": true
+        },
+        {
+          "id": "gender",
+          "type": "radio",
+          "label": "Gender",
+          "width": "half",
+          "options": [
+            { "value": "male", "label": "Male" },
+            { "value": "female", "label": "Female" }
+          ]
+        },
+        {
+          "id": "maritalStatus",
+          "type": "select",
+          "label": "Marital status",
+          "width": "half",
+          "placeholder": "Choose one…",
+          "options": [
+            { "value": "single", "label": "Single" },
+            { "value": "married", "label": "Married" },
+            { "value": "widowed", "label": "Widowed" },
+            { "value": "divorced", "label": "Divorced" },
+            { "value": "religious", "label": "Consecrated religious" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "contact",
+      "title": "How we reach you",
+      "fields": [
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email address",
+          "width": "full",
+          "autocomplete": "email",
+          "placeholder": "you@example.com"
+        },
+        {
+          "id": "mobilePhone",
+          "type": "tel",
+          "label": "Mobile phone",
+          "width": "half",
+          "autocomplete": "tel"
+        },
+        {
+          "id": "homePhone",
+          "type": "tel",
+          "label": "Home phone",
+          "width": "half",
+          "autocomplete": "tel"
+        }
+      ],
+      "checks": [
+        {
+          "type": "contactMethods",
+          "paths": ["email", "mobilePhone", "homePhone"],
+          "message": "Please give us at least one way to reach you: an email address or a phone number."
+        }
+      ]
+    },
+
+    {
+      "id": "sacraments",
+      "title": "Your own sacraments",
+      "help": "If you do not have the dates to hand, an approximate year and the church name are enough for us to request the record.",
+      "fields": [
+        {
+          "id": "baptismDate",
+          "type": "date",
+          "label": "Date of baptism",
+          "width": "full"
+        },
+        {
+          "id": "baptismChurch",
+          "type": "text",
+          "label": "Church of baptism",
+          "width": "half"
+        },
+        {
+          "id": "baptismCityState",
+          "type": "text",
+          "label": "City and state",
+          "width": "half",
+          "placeholder": "Roslyn, WA"
+        },
+        {
+          "id": "confirmationDate",
+          "type": "date",
+          "label": "Date of confirmation",
+          "width": "full"
+        },
+        {
+          "id": "confirmationChurch",
+          "type": "text",
+          "label": "Church of confirmation",
+          "width": "half"
+        },
+        {
+          "id": "confirmationCityState",
+          "type": "text",
+          "label": "City and state",
+          "width": "half",
+          "placeholder": "Roslyn, WA"
+        }
+      ]
+    },
+
+    {
+      "id": "why",
+      "title": "In your own words",
+      "help": "Two questions. Answer them however you like, short or long.",
+      "fields": [
+        {
+          "id": "whySponsor",
+          "type": "textarea",
+          "label": "Why do you want to be a sponsor?",
+          "required": true,
+          "width": "full",
+          "rows": 5,
+          "maxLength": 3000
+        },
+        {
+          "id": "whatYouEnjoy",
+          "type": "textarea",
+          "label": "What do you enjoy most about being Catholic?",
+          "required": true,
+          "width": "full",
+          "rows": 5,
+          "maxLength": 3000
+        },
+        {
+          "type": "static",
+          "id": "blessing",
+          "html": "<p><em>May your faith rest not on human wisdom, but on the power of God.</em></p>"
+        }
+      ]
+    },
+
+    {
+      "id": "review",
+      "title": "Check your answers",
+      "help": "Everything you entered is below. Use Back to change anything.",
+      "fields": [
+        { "type": "review", "id": "review" }
+      ]
+    },
+
+    {
+      "id": "sign",
+      "title": "Sign and send",
+      "fields": [
+        {
+          "type": "static",
+          "id": "signNotice",
+          "html": "<p>This information is used for the purposes of the Church Office only and will not be given out without consent.</p>"
+        },
+        {
+          "type": "signature",
+          "id": "signature",
+          "label": "Your signature"
+        }
+      ]
+    }
+  ]
+}

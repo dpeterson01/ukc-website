@@ -1,0 +1,419 @@
+{
+  "_comment": [
+    "Built from the paper 'Order of Christian Initiation for Adults' form Holli",
+    "provided for Immaculate Conception and St. John the Baptist.",
+    "",
+    "The paper form asks civil status as a list of tick boxes with follow-up",
+    "questions crammed underneath, so a person answering on paper sees questions",
+    "that do not apply to them. Here the follow-ups only appear for the status",
+    "chosen. The annulment question in particular is asked gently, because for",
+    "many people it is the reason they stopped coming.",
+    "",
+    "Photo consent wording is reproduced from the paper form and differs from the",
+    "faith formation opt-out. Do not merge the two. Changes are the pastor's call."
+  ],
+
+  "formId": "ocia-participant",
+  "version": "1.0.0",
+  "title": "OCIA Inquiry",
+  "subjectPrefix": "OCIA Participant",
+  "submitLabel": "Sign and submit",
+  "successTitle": "Thank you. We have your information.",
+  "successBody": "Someone from the OCIA team will be in touch about the next session. Watch for a copy of this form in your email.",
+
+  "steps": [
+    {
+      "id": "getting-started",
+      "title": "Getting started",
+      "help": "This takes about fifteen minutes. Nothing here commits you to anything. We save your progress as you go, so you can close this and come back.",
+      "fields": [
+        {
+          "type": "static",
+          "id": "welcome",
+          "html": "<p>The Order of Christian Initiation for Adults is how adults come into the Catholic Church, and it is also where people go simply to ask questions. Some of what follows is personal. Answer what you can, and leave anything blank that you would rather talk about in person.</p>"
+        },
+        {
+          "id": "parish",
+          "type": "radio",
+          "label": "Which parish are you coming to?",
+          "required": true,
+          "options": [
+            { "value": "ic", "label": "Immaculate Conception", "help": "Roslyn" },
+            { "value": "sjb", "label": "St. John the Baptist", "help": "Cle Elum" },
+            { "value": "unsure", "label": "I am not sure yet" }
+          ]
+        },
+        {
+          "type": "static",
+          "id": "privacyNotice",
+          "html": "<p>This information is used for the purposes of the Church Office only and will not be given out without consent.</p>"
+        }
+      ]
+    },
+
+    {
+      "id": "about-you",
+      "title": "About you",
+      "fields": [
+        {
+          "type": "block",
+          "block": "person-name",
+          "id": "person",
+          "options": { "middleName": true, "nickname": true, "suffix": true, "maidenName": true }
+        },
+        {
+          "id": "birthdate",
+          "type": "date",
+          "label": "Date of birth",
+          "required": true,
+          "width": "full",
+          "isBirthdate": true
+        },
+        {
+          "id": "birthplace",
+          "type": "text",
+          "label": "Place of birth",
+          "width": "full",
+          "placeholder": "City, state, and country"
+        }
+      ]
+    },
+
+    {
+      "id": "contact",
+      "title": "How we reach you",
+      "fields": [
+        {
+          "type": "block",
+          "block": "address",
+          "id": "home",
+          "label": "Home address"
+        },
+        {
+          "type": "block",
+          "block": "address",
+          "id": "mailing",
+          "label": "Mailing address",
+          "options": { "sameAs": true, "sameAsLabel": "the home address" }
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email address",
+          "width": "full",
+          "autocomplete": "email",
+          "placeholder": "you@example.com"
+        },
+        {
+          "id": "homePhone",
+          "type": "tel",
+          "label": "Home phone",
+          "width": "half",
+          "autocomplete": "tel"
+        },
+        {
+          "id": "mobilePhone",
+          "type": "tel",
+          "label": "Mobile phone",
+          "width": "half",
+          "autocomplete": "tel"
+        }
+      ],
+      "checks": [
+        {
+          "type": "contactMethods",
+          "paths": ["email", "mobilePhone", "homePhone"],
+          "message": "Please give us at least one way to reach you: an email address or a phone number."
+        }
+      ]
+    },
+
+    {
+      "id": "religious-history",
+      "title": "Religious background",
+      "help": "There is no wrong answer here.",
+      "fields": [
+        {
+          "id": "religion",
+          "type": "select",
+          "label": "What religion do you profess or practice?",
+          "required": true,
+          "width": "full",
+          "placeholder": "Choose one…",
+          "options": [
+            { "value": "catholic", "label": "Catholic" },
+            { "value": "evangelical", "label": "Evangelical" },
+            { "value": "baptist", "label": "Baptist" },
+            { "value": "jewish", "label": "Jewish" },
+            { "value": "buddhist", "label": "Buddhist" },
+            { "value": "agnostic", "label": "Agnostic" },
+            { "value": "atheist", "label": "Atheist" },
+            { "value": "none", "label": "None" },
+            { "value": "other", "label": "Something else" }
+          ]
+        },
+        {
+          "id": "religionOther",
+          "type": "text",
+          "label": "What tradition is that?",
+          "required": true,
+          "width": "full",
+          "showIf": { "field": "religion", "equals": "other" }
+        },
+        {
+          "id": "currentParishName",
+          "type": "text",
+          "label": "Current parish or congregation",
+          "width": "half",
+          "help": "Leave it blank if you do not attend anywhere right now."
+        },
+        {
+          "id": "currentParishCityState",
+          "type": "text",
+          "label": "City and state",
+          "width": "half",
+          "placeholder": "Roslyn, WA"
+        }
+      ]
+    },
+
+    {
+      "id": "sacraments",
+      "title": "Sacraments you have received",
+      "help": "If you are not sure, say so. That is a common answer and we can look it up together.",
+      "fields": [
+        {
+          "type": "block",
+          "block": "ocia-sacrament",
+          "id": "baptism",
+          "label": "Baptism",
+          "options": { "rite": "baptism" }
+        },
+        {
+          "type": "block",
+          "block": "ocia-sacrament",
+          "id": "penance",
+          "label": "Penance (Confession)",
+          "options": { "rite": "penance" }
+        },
+        {
+          "type": "block",
+          "block": "ocia-sacrament",
+          "id": "eucharist",
+          "label": "Eucharist (First Communion)",
+          "options": { "rite": "First Communion" }
+        },
+        {
+          "type": "block",
+          "block": "ocia-sacrament",
+          "id": "confirmation",
+          "label": "Confirmation",
+          "options": { "rite": "confirmation" }
+        }
+      ]
+    },
+
+    {
+      "id": "civil-status",
+      "title": "Marriage and family",
+      "help": "The Church asks about marriage because it affects which sacraments are open to you. If any of this is difficult, leave it blank and tell us in person instead.",
+      "fields": [
+        {
+          "id": "civilStatus",
+          "type": "radio",
+          "label": "Which of these describes you?",
+          "required": true,
+          "width": "full",
+          "options": [
+            { "value": "single", "label": "I am single and have never been married", "help": "Neither by the Church nor by civil law." },
+            { "value": "engaged", "label": "I am engaged to be married" },
+            { "value": "married", "label": "I am currently married" },
+            { "value": "divorced", "label": "I was married and I am legally divorced" },
+            { "value": "remarried", "label": "I was divorced and have remarried" },
+            { "value": "separated", "label": "I am married but separated from my spouse" },
+            { "value": "widowed", "label": "I am widowed" },
+            { "value": "partner", "label": "I am living with a partner without being married" }
+          ]
+        },
+        {
+          "id": "marriedBy",
+          "type": "radio",
+          "label": "Who married you?",
+          "width": "full",
+          "options": [
+            { "value": "catholic", "label": "A Catholic priest or deacon" },
+            { "value": "nonCatholic", "label": "Another religious minister" },
+            { "value": "civil", "label": "A civil ceremony" }
+          ],
+          "showIf": { "field": "civilStatus", "in": ["married", "remarried", "separated"] }
+        },
+        {
+          "id": "spouseName",
+          "type": "text",
+          "label": "Spouse's name",
+          "width": "half",
+          "showIf": { "field": "civilStatus", "in": ["married", "remarried", "separated", "widowed"] }
+        },
+        {
+          "id": "marriageDate",
+          "type": "date",
+          "label": "Date of marriage",
+          "width": "full",
+          "showIf": { "field": "civilStatus", "in": ["married", "remarried", "separated", "widowed"] }
+        },
+        {
+          "id": "annulment",
+          "type": "radio",
+          "label": "Do you think an annulment may be needed?",
+          "width": "full",
+          "help": "It is completely fine to answer 'I do not know'. This is one of the most common things OCIA helps people sort out.",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" },
+            { "value": "unsure", "label": "I do not know" }
+          ],
+          "showIf": { "field": "civilStatus", "in": ["married", "divorced", "remarried", "separated", "partner"] }
+        },
+        {
+          "id": "fianceName",
+          "type": "text",
+          "label": "Fiancé's name",
+          "width": "half",
+          "showIf": { "field": "civilStatus", "equals": "engaged" }
+        },
+        {
+          "id": "weddingDate",
+          "type": "date",
+          "label": "Date to be married",
+          "width": "full",
+          "notFuture": false,
+          "showIf": { "field": "civilStatus", "equals": "engaged" }
+        },
+        {
+          "id": "weddingChurch",
+          "type": "text",
+          "label": "Church to be married at",
+          "width": "full",
+          "showIf": { "field": "civilStatus", "equals": "engaged" }
+        },
+        {
+          "id": "children",
+          "type": "textarea",
+          "label": "Children",
+          "width": "full",
+          "rows": 3,
+          "maxLength": 1000,
+          "placeholder": "Names and ages",
+          "help": "Leave it blank if you have none."
+        },
+        {
+          "id": "statusNote",
+          "type": "textarea",
+          "label": "Anything you would like to add",
+          "width": "full",
+          "rows": 3,
+          "maxLength": 2000
+        }
+      ]
+    },
+
+    {
+      "id": "where-you-are",
+      "title": "Where you are right now",
+      "fields": [
+        {
+          "id": "seeking",
+          "type": "radio",
+          "label": "What brings you to OCIA?",
+          "required": true,
+          "width": "full",
+          "options": [
+            { "value": "sacraments", "label": "I would like to be received into the Catholic Church" },
+            { "value": "curious", "label": "I am curious about the Catholic faith and not seeking any sacraments right now" },
+            { "value": "returning", "label": "I am Catholic and coming back after time away" },
+            { "value": "unsure", "label": "I am not sure yet" }
+          ]
+        },
+        {
+          "id": "massAttendance",
+          "type": "select",
+          "label": "How often are you attending Mass?",
+          "width": "full",
+          "placeholder": "Choose one…",
+          "options": [
+            { "value": "weekly", "label": "Weekly" },
+            { "value": "monthly", "label": "About once a month" },
+            { "value": "occasionally", "label": "Occasionally" },
+            { "value": "rarely", "label": "Rarely" },
+            { "value": "never", "label": "Not at all right now" }
+          ]
+        },
+        {
+          "id": "massLocation",
+          "type": "text",
+          "label": "Where are you attending?",
+          "width": "full",
+          "showIf": { "field": "massAttendance", "notIn": ["never", ""] }
+        },
+        {
+          "id": "questions",
+          "type": "textarea",
+          "label": "Is there anything you would like us to know, or any question you would like answered first?",
+          "width": "full",
+          "rows": 4,
+          "maxLength": 2000
+        }
+      ]
+    },
+
+    {
+      "id": "photos",
+      "title": "Photographs",
+      "fields": [
+        {
+          "_comment": "Reproduced from the paper OCIA form. Do not rewrite.",
+          "type": "static",
+          "id": "photoNotice",
+          "html": "<p>I give my full consent to St. John the Baptist, Cle Elum and Immaculate Conception, Roslyn, or to whom it assigns, for the use of photographs and videos taken during classes, activities, and ceremonies organized by the Parish, in order to be used for educational, advertising, presentation, or dissemination purposes through newspapers, the Internet, or other means of communication. I fully authorize, and waive any claim of compensation for, the use of such photos and videos by the Parish.</p>"
+        },
+        {
+          "id": "photoConsent",
+          "type": "radio",
+          "label": "Do you give that consent?",
+          "required": true,
+          "width": "full",
+          "options": [
+            { "value": "yes", "label": "Yes, I give my consent." },
+            { "value": "no", "label": "No, please do not use my photograph." }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "review",
+      "title": "Check your answers",
+      "help": "Everything you entered is below. Use Back to change anything.",
+      "fields": [
+        { "type": "review", "id": "review" }
+      ]
+    },
+
+    {
+      "id": "sign",
+      "title": "Sign and send",
+      "fields": [
+        {
+          "type": "static",
+          "id": "signNotice",
+          "html": "<p>This information is used for the purposes of the Church Office only and will not be given out without consent.</p>"
+        },
+        {
+          "type": "signature",
+          "id": "signature",
+          "label": "Your signature"
+        }
+      ]
+    }
+  ]
+}
