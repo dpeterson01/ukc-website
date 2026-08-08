@@ -1,0 +1,424 @@
+{
+  "formId": "parish-registration",
+  "formTitle": "Parish Registration",
+  "version": "1.0.0",
+  "subjectPrefix": "Parish Registration",
+  "submittedAt": "2026-08-01T20:36:58.115Z",
+  "elapsedMs": 91000,
+  "data": {
+    "intent": "new",
+    "parish": "sjb",
+    "head": {
+      "first": "Mary",
+      "last": "Kowalski",
+      "birthdate": "1979-04-02",
+      "birthplace": "Yakima, WA",
+      "baptism": {
+        "received": "yes",
+        "date": "1979-06-10"
+      },
+      "eucharist": {
+        "received": "yes",
+        "date": "1988-05-01"
+      },
+      "confirmation": {
+        "received": "yes",
+        "date": "1986-03-01"
+      },
+      "marriage": {
+        "received": "no"
+      }
+    },
+    "email": "mary@example.com",
+    "primaryPhone": "(509) 674-2531",
+    "mailing": {
+      "street": "PO Box 630",
+      "city": "Cle Elum",
+      "state": "WA",
+      "zip": "98922"
+    },
+    "home": {
+      "sameAs": true
+    },
+    "hasSpouse": "yes",
+    "spouse": {
+      "first": "Tomasz",
+      "last": "Kowalski",
+      "birthdate": "1977-11-09",
+      "baptism": {
+        "received": "unsure"
+      },
+      "eucharist": {
+        "received": "no"
+      },
+      "confirmation": {
+        "received": "no"
+      },
+      "marriage": {
+        "received": "no"
+      }
+    },
+    "spouseAddress": {
+      "sameAs": true
+    },
+    "hasChildren": "yes",
+    "photoConsent": "no",
+    "children": [
+      {
+        "first": "Zofia",
+        "last": "Kowalski",
+        "birthdate": "2016-08-14",
+        "baptism": {
+          "received": "yes",
+          "date": "2016-10-02"
+        },
+        "eucharist": {
+          "received": "no"
+        },
+        "confirmation": {
+          "received": "no"
+        }
+      }
+    ],
+    "signature": {
+      "typedName": "Mary Kowalski",
+      "intentToSign": true,
+      "electronicRecordsConsent": true,
+      "disclosureVersion": "1.0",
+      "signedAtClient": "2026-08-01T20:36:58.115Z"
+    }
+  },
+  "labels": {
+    "intent": {
+      "label": "What would you like to do?",
+      "step": "Getting started",
+      "display": "Register with the parish"
+    },
+    "parish": {
+      "label": "Which parish?",
+      "step": "Getting started",
+      "display": "St. John the Baptist"
+    },
+    "head.first": {
+      "label": "First name",
+      "step": "Head of household",
+      "display": "Mary"
+    },
+    "head.middle": {
+      "label": "Middle name",
+      "step": "Head of household",
+      "display": ""
+    },
+    "head.last": {
+      "label": "Last name",
+      "step": "Head of household",
+      "display": "Kowalski"
+    },
+    "head.nickname": {
+      "label": "Nickname",
+      "step": "Head of household",
+      "display": ""
+    },
+    "head.suffix": {
+      "label": "Suffix",
+      "step": "Head of household",
+      "display": ""
+    },
+    "head.birthdate": {
+      "label": "Date of birth",
+      "step": "Head of household",
+      "display": "1979-04-02"
+    },
+    "head.birthplace": {
+      "label": "Place of birth",
+      "step": "Head of household",
+      "display": "Yakima, WA"
+    },
+    "head.baptism.received": {
+      "label": "Has baptism been received?",
+      "step": "Sacramental record",
+      "display": "Yes"
+    },
+    "head.baptism.date": {
+      "label": "Date of baptism",
+      "step": "Sacramental record",
+      "display": "1979-06-10"
+    },
+    "head.baptism.parish": {
+      "label": "Parish name",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.baptism.celebrant": {
+      "label": "Celebrant's name",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.baptism.cityState": {
+      "label": "City and state",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.eucharist.received": {
+      "label": "Has first Eucharist been received?",
+      "step": "Sacramental record",
+      "display": "Yes"
+    },
+    "head.eucharist.date": {
+      "label": "Date of first Eucharist",
+      "step": "Sacramental record",
+      "display": "1988-05-01"
+    },
+    "head.eucharist.parish": {
+      "label": "Parish name",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.eucharist.celebrant": {
+      "label": "Celebrant's name",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.eucharist.cityState": {
+      "label": "City and state",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.confirmation.received": {
+      "label": "Has confirmation been received?",
+      "step": "Sacramental record",
+      "display": "Yes"
+    },
+    "head.confirmation.date": {
+      "label": "Date of confirmation",
+      "step": "Sacramental record",
+      "display": "1986-03-01"
+    },
+    "head.confirmation.parish": {
+      "label": "Parish name",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.confirmation.celebrant": {
+      "label": "Celebrant's name",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.confirmation.cityState": {
+      "label": "City and state",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.marriage.received": {
+      "label": "Has marriage been received?",
+      "step": "Sacramental record",
+      "display": "No"
+    },
+    "email": {
+      "label": "Email address",
+      "step": "How we reach you",
+      "display": "mary@example.com"
+    },
+    "primaryPhone": {
+      "label": "Primary phone",
+      "step": "How we reach you",
+      "display": "(509) 674-2531"
+    },
+    "mobilePhone": {
+      "label": "Mobile phone",
+      "step": "How we reach you",
+      "display": ""
+    },
+    "mailing.street": {
+      "label": "Street or PO Box",
+      "step": "How we reach you",
+      "display": "PO Box 630"
+    },
+    "mailing.city": {
+      "label": "City",
+      "step": "How we reach you",
+      "display": "Cle Elum"
+    },
+    "mailing.state": {
+      "label": "State",
+      "step": "How we reach you",
+      "display": "WA"
+    },
+    "mailing.zip": {
+      "label": "ZIP code",
+      "step": "How we reach you",
+      "display": "98922"
+    },
+    "home.sameAs": {
+      "label": "Same as the mailing address",
+      "step": "How we reach you",
+      "display": "Yes"
+    },
+    "hasSpouse": {
+      "label": "Is there a spouse or second adult in the household?",
+      "step": "Spouse or second adult",
+      "display": "Yes"
+    },
+    "spouse.first": {
+      "label": "First name",
+      "step": "Spouse or second adult",
+      "display": "Tomasz"
+    },
+    "spouse.middle": {
+      "label": "Middle name",
+      "step": "Spouse or second adult",
+      "display": ""
+    },
+    "spouse.last": {
+      "label": "Last name",
+      "step": "Spouse or second adult",
+      "display": "Kowalski"
+    },
+    "spouse.maiden": {
+      "label": "Maiden name",
+      "step": "Spouse or second adult",
+      "display": ""
+    },
+    "spouse.nickname": {
+      "label": "Nickname",
+      "step": "Spouse or second adult",
+      "display": ""
+    },
+    "spouse.suffix": {
+      "label": "Suffix",
+      "step": "Spouse or second adult",
+      "display": ""
+    },
+    "spouse.birthdate": {
+      "label": "Date of birth",
+      "step": "Spouse or second adult",
+      "display": "1977-11-09"
+    },
+    "spouse.birthplace": {
+      "label": "Place of birth",
+      "step": "Spouse or second adult",
+      "display": ""
+    },
+    "spouse.email": {
+      "label": "Email address",
+      "step": "Spouse or second adult",
+      "display": ""
+    },
+    "spouse.homePhone": {
+      "label": "Home phone",
+      "step": "Spouse or second adult",
+      "display": ""
+    },
+    "spouse.mobilePhone": {
+      "label": "Mobile phone",
+      "step": "Spouse or second adult",
+      "display": ""
+    },
+    "spouseAddress.sameAs": {
+      "label": "Same as the household mailing address",
+      "step": "Spouse or second adult",
+      "display": "Yes"
+    },
+    "spouse.baptism.received": {
+      "label": "Has baptism been received?",
+      "step": "Their sacramental record",
+      "display": "Not sure"
+    },
+    "spouse.eucharist.received": {
+      "label": "Has first Eucharist been received?",
+      "step": "Their sacramental record",
+      "display": "No"
+    },
+    "spouse.confirmation.received": {
+      "label": "Has confirmation been received?",
+      "step": "Their sacramental record",
+      "display": "No"
+    },
+    "spouse.marriage.received": {
+      "label": "Has marriage been received?",
+      "step": "Their sacramental record",
+      "display": "No"
+    },
+    "hasChildren": {
+      "label": "Are there children in the household?",
+      "step": "Children",
+      "display": "Yes"
+    },
+    "photoConsent": {
+      "label": "May we use photographs of your household in parish publications?",
+      "step": "Photographs",
+      "display": "No, please do not use our household's photographs."
+    },
+    "children.0.first": {
+      "label": "First name",
+      "step": "Children",
+      "display": "Zofia"
+    },
+    "children.0.middle": {
+      "label": "Middle name",
+      "step": "Children",
+      "display": ""
+    },
+    "children.0.last": {
+      "label": "Last name",
+      "step": "Children",
+      "display": "Kowalski"
+    },
+    "children.0.nickname": {
+      "label": "Nickname",
+      "step": "Children",
+      "display": ""
+    },
+    "children.0.suffix": {
+      "label": "Suffix",
+      "step": "Children",
+      "display": ""
+    },
+    "children.0.birthdate": {
+      "label": "Date of birth",
+      "step": "Children",
+      "display": "2016-08-14"
+    },
+    "children.0.birthplace": {
+      "label": "Place of birth",
+      "step": "Children",
+      "display": ""
+    },
+    "children.0.baptism.received": {
+      "label": "Has baptism been received?",
+      "step": "Children",
+      "display": "Yes"
+    },
+    "children.0.baptism.date": {
+      "label": "Date of baptism",
+      "step": "Children",
+      "display": "2016-10-02"
+    },
+    "children.0.baptism.parish": {
+      "label": "Parish name",
+      "step": "Children",
+      "display": ""
+    },
+    "children.0.baptism.celebrant": {
+      "label": "Celebrant's name",
+      "step": "Children",
+      "display": ""
+    },
+    "children.0.baptism.cityState": {
+      "label": "City and state",
+      "step": "Children",
+      "display": ""
+    },
+    "children.0.eucharist.received": {
+      "label": "Has first Eucharist been received?",
+      "step": "Children",
+      "display": "No"
+    },
+    "children.0.confirmation.received": {
+      "label": "Has confirmation been received?",
+      "step": "Children",
+      "display": "No"
+    }
+  },
+  "turnstileToken": null
+}

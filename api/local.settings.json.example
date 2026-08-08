@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "MAIL_FROM": "Upper Kittitas Catholic <forms@forms.ukccatholic.org>",
+    "MAIL_FROM_NAME": "Upper Kittitas Catholic",
+    "PARISH_PHONE": "(509) 674-2531",
+    "ALLOWED_ORIGINS": "https://ukccatholic.org,https://www.ukccatholic.org,https://dpeterson01.github.io,http://localhost:8765",
+    "EXTRA_ALLOWED_RECIPIENTS": "",
+    "FORMS_DRY_RUN": "true",
+    "FINGERPRINT_SECRET": "development-only-secret"
+  }
+}
