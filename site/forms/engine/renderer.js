@@ -16,6 +16,14 @@
 (function (global) {
   'use strict';
 
+  /* Set when an engine is constructed. Nested closures reach the engine's words
+   * through T() rather than `this`, which is not the engine inside most of them. */
+  var activeT = null;
+  function T(key, vars) {
+    if (!activeT) activeT = new global.UKCFormsI18n.Translator('en', null);
+    return activeT.t(key, vars);
+  }
+
   var V = global.UKCValidate;
 
   /* --- small helpers ---------------------------------------------------- */
@@ -137,6 +145,11 @@
     this.schema = schema;
     this.blocks = blocks;
     this.config = config || {};
+    this.t = this.config.t || new global.UKCFormsI18n.Translator('en', null);
+    // Half the places that need a word are inside nested closures where `this`
+    // is not the engine. One form renders per page, so a module-scoped handle
+    // is simpler than threading `self` through every one of them.
+    activeT = this.t;
     this.data = {};
     this.registry = [];      // every rendered field, for visibility and validation
     this.repeats = [];       // repeat controllers, so add/remove can rebuild
@@ -195,7 +208,7 @@
     this.form.appendChild(this.errorSummary);
 
     this.backBtn = el('button', { type: 'button', class: 'ukcf-btn ukcf-btn--ghost', text: 'Back' });
-    this.nextBtn = el('button', { type: 'button', class: 'ukcf-btn ukcf-btn--primary', text: 'Continue' });
+    this.nextBtn = el('button', { type: 'button', class: 'ukcf-btn ukcf-btn--primary', text: T('btn.continue') });
     this.form.appendChild(el('div', { class: 'ukcf-actions' }, [this.backBtn, this.nextBtn]));
 
     this.statusNode = el('p', { class: 'ukcf-status', 'aria-live': 'polite' });
@@ -314,7 +327,7 @@
         ? V.STATES.map(function (s) { return { value: s, label: s }; })
         : (field.options || []);
       control = el('select', { id: id, class: 'ukcf-input' });
-      control.appendChild(el('option', { value: '', text: field.placeholder || 'Choose one…' }));
+      control.appendChild(el('option', { value: '', text: field.placeholder || T('choose.one') }));
       opts.forEach(function (o) {
         control.appendChild(el('option', { value: o.value, text: o.label }));
       });
@@ -448,7 +461,7 @@
     var items = el('div', { class: 'ukcf-repeat-items' });
     var addBtn = el('button', {
       type: 'button', class: 'ukcf-btn ukcf-btn--ghost ukcf-repeat-add',
-      text: field.addLabel || 'Add another',
+      text: field.addLabel || T('btn.addAnother'),
     });
     wrap.appendChild(items);
     wrap.appendChild(addBtn);
@@ -477,7 +490,7 @@
       var card = el('div', { class: 'ukcf-repeat-item' });
       var head = el('div', { class: 'ukcf-repeat-head' }, [
         el('h3', { class: 'ukcf-repeat-legend', text: itemLabel(index) }),
-        el('button', { type: 'button', class: 'ukcf-repeat-remove', text: 'Remove' }),
+        el('button', { type: 'button', class: 'ukcf-repeat-remove', text: T('btn.remove') }),
       ]);
       card.appendChild(head);
       var body = el('div', { class: 'ukcf-grid' });
@@ -658,7 +671,7 @@
     var pos = visible.findIndex(function (s) { return s.index === index; });
     this.backBtn.hidden = pos <= 0;
     var last = pos === visible.length - 1;
-    this.nextBtn.textContent = last ? (this.schema.submitLabel || 'Submit') : 'Continue';
+    this.nextBtn.textContent = last ? (this.schema.submitLabel || T('btn.submit')) : T('btn.continue');
     this.isLastStep = last;
 
     // The read-back sits on its own step, one before the signature, so it has
@@ -877,7 +890,7 @@
     var self = this;
     this.errorSummary.innerHTML = '';
     this.errorSummary.appendChild(el('h3', {
-      text: errors.length === 1 ? 'One thing needs your attention' : errors.length + ' things need your attention',
+      text: errors.length === 1 ? T('errors.heading') : T('errors.headingPlural', { count: errors.length }),
     }));
     var list = el('ul');
     errors.forEach(function (e) {
@@ -998,7 +1011,7 @@
     var elapsed = Date.now() - this.startedAt;
     // Nobody fills a registration form in four seconds.
     if (this.honeypot.value || elapsed < 5000) {
-      this.statusNode.textContent = 'Something went wrong. Please call the parish office at (509) 674-2531.';
+      this.statusNode.textContent = T('error.generic', { phone: '(509) 674-2531' });
       this.statusNode.className = 'ukcf-status is-error';
       return;
     }
@@ -1006,7 +1019,7 @@
     this.submitting = true;
     this.nextBtn.disabled = true;
     this.backBtn.disabled = true;
-    this.nextBtn.textContent = 'Sending…';
+    this.nextBtn.textContent = T('btn.sending');
     this.statusNode.textContent = '';
     this.statusNode.className = 'ukcf-status';
 
@@ -1039,7 +1052,7 @@
       self.submitting = false;
       self.nextBtn.disabled = false;
       self.backBtn.disabled = false;
-      self.nextBtn.textContent = self.schema.submitLabel || 'Submit';
+      self.nextBtn.textContent = self.schema.submitLabel || T('btn.submit');
       self.statusNode.textContent = 'We could not send that. ' + err.message
         + ' Please try again, or call the parish office at (509) 674-2531.';
       self.statusNode.className = 'ukcf-status is-error';
@@ -1049,17 +1062,17 @@
 
   Engine.prototype.showSuccess = function (body) {
     var done = el('div', { class: 'ukcf-done', role: 'status', tabindex: '-1' }, [
-      el('h2', { text: this.schema.successTitle || 'Thank you.' }),
-      el('p', { text: this.schema.successBody || 'The parish office has your form.' }),
+      el('h2', { text: this.schema.successTitle || T('done.title') }),
+      el('p', { text: this.schema.successBody || T('done.body') }),
       body && body.reference
         ? el('p', { class: 'ukcf-ref' }, [
-          el('span', { text: 'Your reference number is ' }),
+          el('span', { text: T('done.reference') }),
           el('strong', { text: body.reference }),
           el('span', { text: '. We emailed you a copy for your records.' }),
         ])
         : null,
       el('p', {}, [
-        el('span', { text: 'Questions? Call the parish office at ' }),
+        el('span', { text: T('done.questions') }),
         el('a', { href: 'tel:+15096742531', text: '(509) 674-2531' }),
         el('span', { text: '.' }),
       ]),
@@ -1079,37 +1092,51 @@
     if (!mount) return;
 
     var base = mount.getAttribute('data-base') || '../';
-    var schemaUrl = base + 'schemas/' + mount.getAttribute('data-ukc-form') + '.json';
+    var formId = mount.getAttribute('data-ukc-form');
+    var schemaUrl = base + 'schemas/' + formId + '.json';
     var blocksUrl = base + 'blocks/blocks.json';
     var endpoint = mount.getAttribute('data-endpoint');
+    var lang = mount.getAttribute('data-lang')
+      || (document.documentElement.getAttribute('lang') || 'en').slice(0, 2);
 
-    mount.appendChild(el('p', { class: 'ukcf-loading', text: 'Loading the form…' }));
+    var i18n = global.UKCFormsI18n;
+    var t = new i18n.Translator(lang, null);
+
+    mount.appendChild(el('p', { class: 'ukcf-loading', text: t.t('loading') }));
+
+    // A missing translation file is not a failure. The form renders in English,
+    // which is worse than Spanish and far better than not loading at all.
+    var strings = lang === 'en' ? Promise.resolve({}) : fetch(base + 'i18n/' + formId + '.' + lang + '.json')
+      .then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
+    var blockStrings = lang === 'en' ? Promise.resolve({}) : fetch(base + 'i18n/blocks.' + lang + '.json')
+      .then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
 
     Promise.all([
       fetch(schemaUrl).then(function (r) { return r.json(); }),
       fetch(blocksUrl).then(function (r) { return r.json(); }),
+      strings,
+      blockStrings,
     ]).then(function (parts) {
-      var engine = new Engine(mount, parts[0], parts[1], { endpoint: endpoint });
+      var schema = parts[0];
+      var blocks = parts[1];
+      var merged = {};
+      [parts[2], parts[3]].forEach(function (table) {
+        Object.keys(table || {}).forEach(function (k) { merged[k] = table[k]; });
+      });
+      t.content = merged;
+      i18n.localise(schema, blocks, t);
+
+      var engine = new Engine(mount, schema, blocks, { endpoint: endpoint, t: t, lang: t.lang });
       global.ukcFormEngine = engine;
       engine.render();
-
-      var siteKey = mount.getAttribute('data-turnstile-sitekey');
-      if (siteKey && global.turnstile) {
-        var holder = el('div', { class: 'ukcf-turnstile' });
-        engine.form.insertBefore(holder, engine.form.querySelector('.ukcf-actions'));
-        engine.turnstileWidget = global.turnstile.render(holder, {
-          sitekey: siteKey,
-          callback: function (token) { engine.turnstileToken = token; },
-        });
-      }
     }).catch(function (err) {
       mount.innerHTML = '';
       mount.appendChild(el('div', { class: 'ukcf-status is-error' }, [
-        el('p', { text: 'This form could not load. ' + err.message }),
+        el('p', { text: t.t('error.load') + err.message }),
         el('p', {}, [
-          el('span', { text: 'Please call the parish office at ' }),
+          el('span', { text: t.t('error.callUs') }),
           el('a', { href: 'tel:+15096742531', text: '(509) 674-2531' }),
-          el('span', { text: ' and we will register you over the phone.' }),
+          el('span', { text: t.t('error.overThePhone') }),
         ]),
       ]));
     });
