@@ -7,8 +7,11 @@
 (function () {
   'use strict';
 
-  var FORMSPREE = 'https://formspree.io/f/mjgnpjyr';
+  var CONTACT_ENDPOINT = 'https://forms.ukccatholic.org/contact';
   var OFFICE_PHONE = '(509) 674-2531';
+  // Both forms report how long the person took, so the server can apply the
+  // same too-fast check the form engine uses.
+  var LOADED_AT = Date.now();
 
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
@@ -233,10 +236,30 @@
     return t('success.default', { name: first, phone: OFFICE_PHONE });
   }
 
+  // A field no person sees and no person fills in. The value rides along in the
+  // payload so the parish endpoint can reject it too, since a script posting
+  // straight there never runs any of this.
+  // Added from JS so all 37 forms stay in sync without a build step.
+  function addHoneypot(form) {
+    var hp = document.createElement('input');
+    hp.type = 'text';
+    hp.name = 'website';
+    hp.tabIndex = -1;
+    hp.autocomplete = 'off';
+    hp.setAttribute('aria-hidden', 'true');
+    hp.setAttribute(
+      'style',
+      'position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;'
+    );
+    form.appendChild(hp);
+    return hp;
+  }
+
   function initContactForm(form) {
     var reasonSelect = $('#cf-reason', form);
-    var subjectInput = $('input[name="_subject"]', form);
+    var subjectInput = $('input[name="_subject"], input[name="subject"]', form);
     var message = $('#cf-message', form);
+    var honeypot = addHoneypot(form);
     var tried = false;
 
     // A locked form (the Register block on the New Here? page) has no selector and
@@ -296,41 +319,47 @@
 
       var reason = currentReason();
       var name = $('#cf-name', form).value.trim();
+      var fields = {
+        Name: name,
+        Email: $('#cf-email', form).value.trim(),
+        Reason: REASON_LABELS[reason] || REASON_LABELS.hello,
+        Message: message.value.trim(),
+      };
       var body = {
-        _subject: 'New contact: ' + (SUBJECT_LABELS[reason] || SUBJECT_LABELS.hello) + ' from ' + name,
-        name: name,
-        email: $('#cf-email', form).value.trim(),
-        reason: REASON_LABELS[reason] || REASON_LABELS.hello,
-        message: message.value.trim(),
+        kind: 'contact',
+        subject: 'New contact: ' + (SUBJECT_LABELS[reason] || SUBJECT_LABELS.hello) + ' from ' + name,
+        website: honeypot.value,
+        elapsedMs: Date.now() - LOADED_AT,
+        fields: fields,
       };
 
       if (reason === 'register') {
         var parish = $('#cf-parish', form);
-        body.parish = parish ? (PARISH_LABELS[parish.value] || '') : '';
-        body.phone = ($('#cf-phone', form) || {}).value || '';
-        body.heard_about_us = ($('#cf-heard-about', form) || {}).value || '';
-        body.newsletter_preferences = $$('input[type="checkbox"]:checked', form)
+        fields.Parish = parish ? (PARISH_LABELS[parish.value] || '') : '';
+        fields.Phone = ($('#cf-phone', form) || {}).value || '';
+        fields['Heard about us'] = ($('#cf-heard-about', form) || {}).value || '';
+        fields['Newsletter preferences'] = $$('input[type="checkbox"]:checked', form)
           .map(function (c) { return chipValue(c.parentNode); }).join(', ');
       } else if (reason === 'prayer') {
-        body.person_needing_prayer = ($('#cf-prayer-for', form) || {}).value || '';
-        body.requester_contact = ($('#cf-requester-contact', form) || {}).value || '';
-        body.confidentiality = 'Shared only with Father and the parish office';
+        fields['Person needing prayer'] = ($('#cf-prayer-for', form) || {}).value || '';
+        fields['Requester contact'] = ($('#cf-requester-contact', form) || {}).value || '';
+        fields.Confidentiality = 'Shared only with Father and the parish office';
       } else if (reason === 'sacrament') {
         var sac = $('#cf-sacrament', form);
-        body.sacrament_type = sac ? (SACRAMENT_LABELS[sac.value] || '') : '';
-        body.preferred_timeframe = ($('#cf-timeframe', form) || {}).value || '';
+        fields.Sacrament = sac ? (SACRAMENT_LABELS[sac.value] || '') : '';
+        fields['Preferred timeframe'] = ($('#cf-timeframe', form) || {}).value || '';
       }
-      if (subjectInput) subjectInput.value = body._subject;
+      if (subjectInput) subjectInput.value = body.subject;
 
       var submitBtn = $('button[type="submit"]', form);
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = t('btn.sending'); }
 
-      fetch(FORMSPREE, {
+      fetch(CONTACT_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(body),
       }).then(function (res) {
-        if (!res.ok) throw new Error('Formspree responded ' + res.status);
+        if (!res.ok) throw new Error('The server responded ' + res.status);
         var note = document.createElement('div');
         note.className = 'form__success';
         note.setAttribute('role', 'status');
@@ -352,9 +381,12 @@
   function initSignup(form) {
     initChips(form);
     var email = $('.footer__signup-input', form);
+    var honeypot = addHoneypot(form);
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      var stale = $('.form__send-error', form);
+      if (stale) stale.remove();
       if (!validEmail(email.value)) {
         setError(email, true);
         email.focus();
@@ -370,17 +402,21 @@
       var btn = $('.footer__signup-btn', form);
       if (btn) { btn.disabled = true; btn.textContent = t('btn.signingUp'); }
 
-      fetch(FORMSPREE, {
+      fetch(CONTACT_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          _subject: 'Email signup: ' + email.value.trim(),
-          email: email.value.trim(),
-          reason: 'Email list signup',
-          subscriptions: prefs.join(', ') || 'None selected',
+          kind: 'signup',
+          subject: 'Email signup: ' + email.value.trim(),
+          website: honeypot.value,
+          elapsedMs: Date.now() - LOADED_AT,
+          fields: {
+            Email: email.value.trim(),
+            Subscriptions: prefs.join(', ') || 'None selected',
+          },
         }),
       }).then(function (res) {
-        if (!res.ok) throw new Error('Formspree responded ' + res.status);
+        if (!res.ok) throw new Error('The server responded ' + res.status);
         var note = document.createElement('p');
         note.className = 'footer__signup-thanks';
         note.setAttribute('role', 'status');
@@ -388,7 +424,13 @@
         form.replaceWith(note);
       }).catch(function () {
         if (btn) { btn.disabled = false; btn.textContent = t('btn.signUp'); }
-        setError(email, true);
+        // Not an invalid address, so say what actually went wrong.
+        setError(email, false);
+        var err = document.createElement('p');
+        err.className = 'form__error form__send-error';
+        err.setAttribute('role', 'alert');
+        err.textContent = t('error.send', { phone: OFFICE_PHONE });
+        form.appendChild(err);
       });
     });
   }

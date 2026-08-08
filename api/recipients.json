@@ -1,0 +1,18 @@
+{
+  "_comment": [
+    "Who gets each form. Edit this file, run `npx wrangler deploy` from the",
+    "worker folder, and the change is live. No code change needed.",
+    "",
+    "A form with no entry here falls back to _default.",
+    "",
+    "Addresses ending in @ukccatholic.org are accepted as-is. Anything else has",
+    "to also be listed in EXTRA_ALLOWED_RECIPIENTS in wrangler.toml, so that",
+    "someone who gets hold of this repo cannot quietly redirect parish mail.",
+    "Nine recipients per form is the ceiling."
+  ],
+  "_default": { "to": ["parish@ukccatholic.org"], "cc": [] },
+  "parish-registration": { "to": ["parish@ukccatholic.org"], "cc": [] },
+  "faith-formation": { "to": ["parish@ukccatholic.org"], "cc": [] },
+  "ocia-participant": { "to": ["parish@ukccatholic.org"], "cc": [] },
+  "ocia-sponsor": { "to": ["parish@ukccatholic.org"], "cc": [] }
+}

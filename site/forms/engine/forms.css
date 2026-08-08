@@ -463,6 +463,64 @@ select.ukcf-input {
 .ukcf-static-body p { margin: 0 0 var(--space-3); }
 .ukcf-static-body p:last-child { margin-bottom: 0; }
 
+/* Two of the paper forms lay out what they are asking for as headed lists,
+   so static blocks need to carry headings and bullets, not only paragraphs. */
+.ukcf-static-body h3 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--color-navy);
+  margin: var(--space-3) 0 var(--space-1);
+}
+
+.ukcf-static-body h3:first-child { margin-top: 0; }
+
+.ukcf-static-body ul {
+  margin: 0 0 var(--space-3);
+  padding-left: 1.25em;
+}
+
+.ukcf-static-body li { margin-bottom: var(--space-1); }
+.ukcf-static-body ul:last-child { margin-bottom: 0; }
+
+/* The faith formation fee schedule is a real table on the paper form and reads
+   as one here too. It stays narrow so it does not need horizontal scrolling. */
+.ukcf-table {
+  width: 100%;
+  max-width: 34rem;
+  border-collapse: collapse;
+  font-family: var(--font-sans, inherit);
+  font-size: 15px;
+}
+
+.ukcf-table caption {
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--color-navy);
+  margin-bottom: var(--space-2);
+}
+
+.ukcf-table th,
+.ukcf-table td {
+  text-align: left;
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.ukcf-table th {
+  font-weight: 600;
+  color: var(--color-navy);
+}
+
+.ukcf-table td:last-child,
+.ukcf-table th:last-child {
+  text-align: right;
+  padding-right: 0;
+  white-space: nowrap;
+}
+
+.ukcf-table tbody tr:last-child td { border-bottom: none; }
+
 .ukcf-static-title {
   font-family: var(--font-display);
   font-size: 20px;
