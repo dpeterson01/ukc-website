@@ -146,8 +146,17 @@
   },
 
   "sacrament-record": {
-    "_comment": "Nothing past the first question is asked unless the answer is yes.",
-    "defaults": { "rite": "this sacrament" },
+    "_comment": [
+      "Nothing past the first question is asked unless the answer is yes.",
+      "Parish, city and country sit together because they are one thought: where",
+      "the record is held. The celebrant comes last, being the part people are",
+      "least likely to remember.",
+      "`askTradition` turns on which tradition the sacrament was received in.",
+      "Turn it on for baptism. A baptism in another Trinitarian church is",
+      "recognised and is never repeated, so the answer decides whether the office",
+      "is tracing an existing record or preparing a sacrament."
+    ],
+    "defaults": { "rite": "this sacrament", "askTradition": false },
     "fields": [
       {
         "id": "received",
@@ -162,18 +171,66 @@
         ]
       },
       {
+        "id": "tradition",
+        "type": "radio",
+        "includeIf": "askTradition",
+        "label": "In what tradition?",
+        "required": true,
+        "width": "full",
+        "help": "A baptism in another Trinitarian church is recognised and is never repeated. Knowing this tells the office whether to trace the record.",
+        "options": [
+          { "value": "catholic", "label": "Catholic" },
+          { "value": "other", "label": "Another Christian tradition" },
+          { "value": "unsure", "label": "Not sure" }
+        ],
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "traditionName",
+        "type": "text",
+        "includeIf": "askTradition",
+        "label": "Which church or denomination?",
+        "width": "full",
+        "placeholder": "Lutheran, Methodist, Anglican, Orthodox…",
+        "showIf": {
+          "all": [
+            { "field": "received", "equals": "yes" },
+            { "field": "tradition", "equals": "other" }
+          ]
+        }
+      },
+      {
         "id": "date",
         "type": "date",
         "label": "Date of {{rite}}",
         "width": "full",
         "isBirthdate": false,
+        "approximate": true,
+        "help": "A year on its own is fine if that is all you remember.",
         "showIf": { "field": "received", "equals": "yes" }
       },
       {
         "id": "parish",
         "type": "text",
-        "label": "Parish name",
+        "label": "Parish or church name",
         "width": "half",
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "cityState",
+        "type": "text",
+        "label": "City and state or province",
+        "width": "half",
+        "placeholder": "Roslyn, WA",
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "country",
+        "type": "text",
+        "label": "Country",
+        "width": "half",
+        "default": "United States",
+        "help": "Change this if it took place in another country.",
         "showIf": { "field": "received", "equals": "yes" }
       },
       {
@@ -182,14 +239,6 @@
         "label": "Celebrant's name",
         "width": "half",
         "help": "The priest or deacon. Leave it blank if you do not know.",
-        "showIf": { "field": "received", "equals": "yes" }
-      },
-      {
-        "id": "cityState",
-        "type": "text",
-        "label": "City and state",
-        "width": "half",
-        "placeholder": "Roslyn, WA",
         "showIf": { "field": "received", "equals": "yes" }
       }
     ]
@@ -215,6 +264,8 @@
         "type": "date",
         "label": "Date of marriage",
         "width": "full",
+        "approximate": true,
+        "help": "A year on its own is fine if that is all you remember.",
         "showIf": { "field": "received", "equals": "yes" }
       },
       {
@@ -229,6 +280,23 @@
         "type": "text",
         "label": "Place or location married at",
         "width": "half",
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "cityState",
+        "type": "text",
+        "label": "City and state or province",
+        "width": "half",
+        "placeholder": "Roslyn, WA",
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "country",
+        "type": "text",
+        "label": "Country",
+        "width": "half",
+        "default": "United States",
+        "help": "Change this if it took place in another country.",
         "showIf": { "field": "received", "equals": "yes" }
       }
     ]
@@ -263,16 +331,31 @@
         "width": "full",
         "options": [
           { "value": "catholic", "label": "Catholic" },
-          { "value": "other", "label": "Another Christian tradition" }
+          { "value": "other", "label": "Another Christian tradition" },
+          { "value": "unsure", "label": "Not sure" }
         ],
         "showIf": { "field": "received", "equals": "yes" }
       },
       {
+        "id": "traditionName",
+        "type": "text",
+        "label": "Which church or denomination?",
+        "width": "full",
+        "placeholder": "Lutheran, Methodist, Anglican, Orthodox…",
+        "showIf": {
+          "all": [
+            { "field": "received", "equals": "yes" },
+            { "field": "tradition", "equals": "other" }
+          ]
+        }
+      },
+      {
         "id": "date",
         "type": "date",
-        "label": "Approximate date",
+        "label": "Date of {{rite}}",
         "width": "full",
-        "help": "A year on its own is fine if that is all you remember.",
+        "approximate": true,
+        "help": "Give the exact date if you have it. A year on its own is fine if that is all you remember.",
         "showIf": { "field": "received", "equals": "yes" }
       },
       {
@@ -285,9 +368,18 @@
       {
         "id": "cityState",
         "type": "text",
-        "label": "City and state",
+        "label": "City and state or province",
         "width": "half",
         "placeholder": "Roslyn, WA",
+        "showIf": { "field": "received", "equals": "yes" }
+      },
+      {
+        "id": "country",
+        "type": "text",
+        "label": "Country",
+        "width": "half",
+        "default": "United States",
+        "help": "Change this if it took place in another country.",
         "showIf": { "field": "received", "equals": "yes" }
       }
     ]
@@ -326,7 +418,7 @@
         "block": "sacrament-record",
         "id": "baptism",
         "label": "Baptism",
-        "options": { "rite": "baptism" }
+        "options": { "rite": "baptism", "askTradition": true }
       },
       {
         "type": "block",
@@ -380,7 +472,7 @@
         "block": "sacrament-record",
         "id": "baptism",
         "label": "Baptism",
-        "options": { "rite": "baptism" }
+        "options": { "rite": "baptism", "askTradition": true }
       },
       {
         "type": "block",
@@ -468,7 +560,7 @@
         "block": "sacrament-record",
         "id": "baptism",
         "label": "Baptism",
-        "options": { "rite": "baptism" }
+        "options": { "rite": "baptism", "askTradition": true }
       },
       {
         "type": "block",

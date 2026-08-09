@@ -157,6 +157,7 @@ check('advanced to sacramental record', (await stepTitle()).includes('Sacramenta
 
 // --- step 3: sacraments, and the out-of-order warning --------------------
 await radio('f-head-baptism-received', 'yes').check();
+await radio('f-head-baptism-tradition', 'catholic').check();
 await setDate('f-head-baptism-date', '6', '10', '1979');
 await radio('f-head-eucharist-received', 'yes').check();
 await setDate('f-head-eucharist-date', '5', '1', '1988');
@@ -166,6 +167,20 @@ await radio('f-head-marriage-received', 'no').check();
 await page.waitForTimeout(200);
 check('sacrament fields appear only after "yes"',
   await page.locator('#f-head-marriage-date-month').isHidden());
+
+// Only baptism asks which tradition, because it is the one that is recognised
+// across churches and never repeated.
+check('baptism asks which tradition it was in',
+  await radio('f-head-baptism-tradition', 'catholic').isVisible());
+check('confirmation does not ask about tradition',
+  (await radio('f-head-confirmation-tradition', 'catholic').count()) === 0);
+check('the denomination box stays hidden for a Catholic baptism',
+  await page.locator('#f-head-baptism-traditionName').isHidden());
+
+check('country defaults to the United States',
+  (await page.locator('#f-head-baptism-country').inputValue()) === 'United States',
+  await page.locator('#f-head-baptism-country').inputValue());
+
 await shot('step3-sacraments');
 
 await next();
@@ -246,7 +261,18 @@ await page.locator('#f-children-0-first').fill('Zofia');
 await page.locator('#f-children-0-last').fill('Kowalski');
 await setDate('f-children-0-birthdate', '8', '14', '2016');
 await radio('f-children-0-baptism-received', 'yes').check();
-await setDate('f-children-0-baptism-date', '10', '2', '2016');
+await radio('f-children-0-baptism-tradition', 'other').check();
+await page.waitForTimeout(200);
+check('naming the denomination is asked only when the baptism was elsewhere',
+  await page.locator('#f-children-0-baptism-traditionName').isVisible());
+await page.locator('#f-children-0-baptism-traditionName').fill('Lutheran');
+await page.locator('#f-children-0-baptism-country').fill('Mexico');
+// Year only, which is how most people remember a sacrament from decades back.
+// This used to validate and then get dropped on submit.
+await page.locator('#f-children-0-baptism-date-year').fill('2016');
+check('the optional date boxes say they are optional',
+  /optional/i.test(await page.locator('label[for="f-children-0-baptism-date-month"]').innerText()),
+  await page.locator('label[for="f-children-0-baptism-date-month"]').innerText());
 await radio('f-children-0-eucharist-received', 'no').check();
 await radio('f-children-0-confirmation-received', 'no').check();
 
@@ -328,6 +354,14 @@ check('the spouse answers are in the payload', collected.spouse?.first === 'Toma
   JSON.stringify(Object.keys(collected)));
 check('the removed child is gone from the payload', collected.children?.length === 1,
   JSON.stringify(collected.children?.length));
+// The bug this replaced: a year-only date validated, then vanished on submit.
+check('a year-only sacrament date survives to the payload',
+  collected.children?.[0]?.baptism?.date === '2016',
+  JSON.stringify(collected.children?.[0]?.baptism));
+check('the tradition and country come through too',
+  collected.children?.[0]?.baptism?.traditionName === 'Lutheran'
+  && collected.children?.[0]?.baptism?.country === 'Mexico',
+  JSON.stringify(collected.children?.[0]?.baptism));
 check('the signature is in the payload', !!collected.signature?.typedName);
 check('dates are sent as ISO', collected.head?.birthdate === '1979-04-02',
   JSON.stringify(collected.head?.birthdate));
@@ -411,7 +445,6 @@ for (const [slug, firstStep] of [
 
 // --- console -------------------------------------------------------------
 check('no console errors', consoleErrors.length === 0, consoleErrors.slice(0, 3).join(' | '));
-check('no failed requests', badResponses.length === 0, badResponses.slice(0, 3).join(' | '));
 check('no failed requests', badResponses.length === 0, badResponses.slice(0, 3).join(' | '));
 
 await browser.close();
