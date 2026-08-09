@@ -117,10 +117,14 @@
    * stands for, recursively, applying the block's include/exclude options and
    * interpolating labels. Returns plain field definitions the renderer already
    * knows how to draw. */
-  function expandBlock(ref, blocks, inheritedOptions) {
+  function expandBlock(ref, blocks, inheritedOptions, inheritedOptionsEn) {
     var def = blocks[ref.block];
     if (!def) throw new Error('Unknown block: ' + ref.block);
     var options = Object.assign({}, def.defaults || {}, inheritedOptions || {}, ref.options || {});
+    // The same bag before translation, so an English label interpolates to
+    // "Date of baptism" rather than "Date of el bautismo".
+    var optionsEn = Object.assign({}, def.defaultsEn || def.defaults || {},
+      inheritedOptionsEn || inheritedOptions || {}, ref.optionsEn || ref.options || {});
 
     return (def.fields || []).filter(function (f) {
       if (f.includeIf && !options[f.includeIf]) return false;
@@ -129,10 +133,14 @@
     }).map(function (f) {
       var copy = Object.assign({}, f);
       copy.label = interpolate(copy.label, options);
+      copy.labelEn = interpolate(copy.labelEn || copy.label, optionsEn);
       copy.help = interpolate(copy.help, options);
       copy.legend = interpolate(copy.legend, options);
       if (copy.type === 'block') {
-        copy = Object.assign({}, copy, { options: Object.assign({}, options, copy.options || {}) });
+        copy = Object.assign({}, copy, {
+          options: Object.assign({}, options, copy.options || {}),
+          optionsEn: Object.assign({}, optionsEn, copy.optionsEn || copy.options || {}),
+        });
       }
       return copy;
     });
@@ -207,7 +215,7 @@
     });
     this.form.appendChild(this.errorSummary);
 
-    this.backBtn = el('button', { type: 'button', class: 'ukcf-btn ukcf-btn--ghost', text: 'Back' });
+    this.backBtn = el('button', { type: 'button', class: 'ukcf-btn ukcf-btn--ghost', text: T('btn.back') });
     this.nextBtn = el('button', { type: 'button', class: 'ukcf-btn ukcf-btn--primary', text: T('btn.continue') });
     this.form.appendChild(el('div', { class: 'ukcf-actions' }, [this.backBtn, this.nextBtn]));
 
@@ -242,7 +250,7 @@
     var self = this;
 
     if (field.type === 'block') {
-      var inner = expandBlock(field, this.blocks, field.options);
+      var inner = expandBlock(field, this.blocks, field.options, field.optionsEn);
       var blockScope = join(scope, field.id);
       // An unlabelled block is a composition detail, not a section a person
       // should see a box drawn around.
@@ -499,7 +507,7 @@
       var body = el('div', { class: 'ukcf-grid' });
       card.appendChild(body);
 
-      var inner = expandBlock(field, self.blocks, field.options);
+      var inner = expandBlock(field, self.blocks, field.options, field.optionsEn);
       self.renderFields(inner, body, itemScope, step);
       items.appendChild(card);
 
@@ -949,23 +957,25 @@
     });
   };
 
-  Engine.prototype.displayValue = function (entry) {
+  Engine.prototype.displayValue = function (entry, english) {
     var value = getPath(this.data, entry.path);
     var f = entry.field;
+    // The office copy reads in English even when the form was filled in Spanish.
+    var pick = function (o) { return (english && o.labelEn) ? o.labelEn : o.label; };
     if (f.type === 'date') {
       return f.approximate ? V.approximateIso(value)
         : (V.datePartsComplete(value) ? V.isoDate(value) : '');
     }
-    if (f.type === 'checkbox') return value ? 'Yes' : '';
+    if (f.type === 'checkbox') return value ? (english ? 'Yes' : T('review.yes')) : '';
     if (f.type === 'checkboxes') {
       var labels = (f.options || []).filter(function (o) {
         return (value || []).indexOf(o.value) >= 0;
-      }).map(function (o) { return o.label; });
+      }).map(pick);
       return labels.join(', ');
     }
     if (f.type === 'select' || f.type === 'radio') {
       var match = (f.options || []).filter(function (o) { return o.value === value; })[0];
-      return match ? match.label : (value || '');
+      return match ? pick(match) : (value || '');
     }
     return value === undefined || value === null ? '' : String(value);
   };
@@ -1003,9 +1013,9 @@
     this.registry.forEach(function (entry) {
       if (entry.kind !== 'input' || entry.hidden || self.ancestorHidden(entry)) return;
       map[entry.path] = {
-        label: entry.field.label || entry.path,
-        step: entry.step.title,
-        display: self.displayValue(entry),
+        label: entry.field.labelEn || entry.field.label || entry.path,
+        step: entry.step.titleEn || entry.step.title,
+        display: self.displayValue(entry, true),
       };
     });
     return map;
@@ -1032,11 +1042,13 @@
 
     var payload = {
       formId: this.schema.formId,
-      formTitle: this.schema.title,
+      formTitle: this.schema.titleEn || this.schema.title,
       version: this.schema.version,
-      subjectPrefix: this.schema.subjectPrefix || this.schema.title,
+      subjectPrefix: this.schema.subjectPrefix || this.schema.titleEn || this.schema.title,
       submittedAt: new Date().toISOString(),
       elapsedMs: elapsed,
+      // Which language the family filled it in, so the office can reply in it.
+      lang: this.config.lang || 'en',
       // Sent so the server can apply the same check. Empty for a real person.
       website: this.honeypot.value || '',
       data: this.collect(),

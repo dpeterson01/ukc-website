@@ -107,6 +107,44 @@ for (const [slug, expected] of [
   check(`es/${slug} opens in Spanish`, title === expected, title);
 }
 
+// --- what the parish office receives -------------------------------------
+// The office reads one language whichever one the family filled in, so the
+// label map that builds the email and the PDF has to come back English.
+await load(`http://localhost:${PORT}/es/forms/parish-registration/`);
+const office = await page.evaluate(() => {
+  const e = window.ukcFormEngine;
+  Object.assign(e.data, {
+    intent: 'new', parish: 'sjb', hasSpouse: 'no', hasChildren: 'no',
+    head: { first: 'Ana', last: 'Reyes' },
+    home: { sameAs: true },
+  });
+  e.syncControls();
+  e.refreshVisibility();
+  const map = e.labelMap();
+  return {
+    formTitle: e.schema.titleEn || e.schema.title,
+    lang: e.config.lang,
+    intent: map.intent,
+    sameAs: Object.keys(map).filter((k) => k.endsWith('.sameAs')).map((k) => map[k].label),
+    all: Object.keys(map).map((k) => `${map[k].label} ${map[k].step} ${map[k].display}`).join(' | '),
+  };
+});
+
+check('the office copy is titled in English', office.formTitle === 'Parish Registration', office.formTitle);
+check('the office copy labels are English',
+  office.intent.label === 'What would you like to do?', office.intent.label);
+check('the office copy step names are English',
+  office.intent.step === 'Getting started', office.intent.step);
+check('the office copy answers are English',
+  office.intent.display === 'Register with the parish', office.intent.display);
+// A block label like "Same as {{sameAsLabel}}" is interpolated from a bag of
+// words that is itself translated, so the English copy needs the English bag.
+check('no interpolation placeholder survives into the office copy',
+  !/\{\{/.test(office.all), (office.all.match(/\{\{\w+\}\}/) || [''])[0]);
+check('a copied address still reads as a sentence',
+  office.sameAs.every((l) => l && !l.includes('{{')), JSON.stringify(office.sameAs));
+check('the submission records which language was used', office.lang === 'es', String(office.lang));
+
 check('no console errors', problems.length === 0, problems.slice(0, 3).join(' | '));
 
 await browser.close();
