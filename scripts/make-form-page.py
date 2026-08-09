@@ -18,11 +18,12 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 BASE_URL = "https://ukccatholic.org/"
 
-# The Worker that receives submissions. Until it is deployed this points at the
-# production hostname anyway, so switching over is a DNS change, not a code one.
+# The endpoint that receives submissions. Deployed and answering.
 ENDPOINT = "https://forms.ukccatholic.org/submit"
 
-# Nothing answers at ENDPOINT yet, so the form is built but deliberately unlinked.
+# Flip to False to pull the forms back out of the site: the index cards go to
+# "coming soon" and the form pages go noindex. The links on /new/ and
+# /formation/ are hand-written, so those come out by hand.
 FORMS_LIVE = True
 
 COMING_SOON = {

@@ -59,5 +59,3 @@ Pages rebuilds in about a minute. Hard-refresh (⌘⇧R) to bust the CSS cache.
 
 - Replace `assets/photos/*-exterior-placeholder.svg` with real photographs
   (same filenames = no code change needed).
-- Point the three faith-formation registration cards at the Microsoft Forms URLs
-  once they exist (search `Form coming soon` in `index.html`).
