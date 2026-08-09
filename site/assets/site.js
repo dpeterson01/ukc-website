@@ -115,36 +115,22 @@
 
   /* Submission labels. These are what the parish office reads in the email, so they
      stay English no matter which language the form was filled in. */
-  var PARISH_LABELS = {
-    sjb: 'St. John the Baptist (Cle Elum)',
-    ic: 'Immaculate Conception (Roslyn)',
-    unsure: 'Not sure yet',
-  };
   var SACRAMENT_LABELS = {
     baptism: 'Baptism', 'first-communion': 'First Communion', confirmation: 'Confirmation',
     marriage: 'Marriage', funeral: 'Funeral', anointing: 'Anointing of the Sick',
   };
   var REASON_LABELS = {
-    hello: 'Just saying hello', register: 'Register as a parishioner',
+    hello: 'Just saying hello',
     prayer: 'Prayer request', sacrament: 'Planning a sacrament', other: 'Something else',
   };
   var SUBJECT_LABELS = {
-    hello: 'Just Saying Hello', register: 'Register as a Parishioner',
+    hello: 'Just Saying Hello',
     prayer: 'Prayer Request', sacrament: 'Planning a Sacrament', other: 'Something Else',
   };
 
   function placeholderFor(reason) {
-    if (reason === 'register') return t('message.placeholder.register');
     if (reason === 'prayer') return t('message.placeholder.prayer');
     return t('message.placeholder.default');
-  }
-
-  /* `enLabel` rides along in data-en so the submission stays English while the
-     visible span is translated. */
-  function chipMarkup(name, key, enLabel) {
-    return '<label style="' + pillStyle(false) + '" data-en="' + esc(enLabel) + '">'
-      + '<input name="' + name + '" type="checkbox" style="position:absolute;opacity:0;width:0;height:0">'
-      + '<span style="' + boxStyle(false) + '"></span><span>' + esc(t(key)) + '</span></label>';
   }
 
   /* Reads the English label a chip was built with, falling back to its visible
@@ -160,28 +146,6 @@
   /* Option `value`s stay fixed in every language. They are the keys the submission
      maps back to English with, so only the visible text changes. */
   function conditionalGroup(reason) {
-    if (reason === 'register') {
-      return '<div class="form__field">'
-        + '<label class="form__label" for="cf-parish">' + esc(t('contact.parish.label')) + '</label>'
-        + '<select class="form__input" id="cf-parish" name="parish">'
-        + '<option value="">' + esc(t('contact.parish.choose')) + '</option>'
-        + '<option value="sjb">' + esc(t('contact.parish.sjb')) + '</option>'
-        + '<option value="ic">' + esc(t('contact.parish.ic')) + '</option>'
-        + '<option value="unsure">' + esc(t('contact.parish.unsure')) + '</option>'
-        + '</select></div>'
-        + '<div class="contact-form-grid">'
-        + '<div class="form__field"><label class="form__label" for="cf-phone">' + esc(t('contact.phone.label')) + '</label>'
-        + '<input class="form__input" id="cf-phone" name="phone" type="text" placeholder="' + esc(t('contact.phone.placeholder')) + '"></div>'
-        + '<div class="form__field"><label class="form__label" for="cf-heard-about">' + esc(t('contact.heard.label')) + '</label>'
-        + '<input class="form__input" id="cf-heard-about" name="heard_about_us" type="text" placeholder="' + esc(t('contact.heard.placeholder')) + '"></div>'
-        + '</div>'
-        + '<div class="form__field"><span class="form__label">' + esc(t('contact.emails.label')) + '</span>'
-        + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">'
-        + chipMarkup('weekly_bulletin', 'chip.weeklyBulletin', 'Weekly bulletin')
-        + chipMarkup('quarterly_newsletter', 'chip.quarterlyNewsletter', 'Quarterly newsletter')
-        + chipMarkup('holy_day_reminders', 'chip.holyDayReminders', 'Holy-day reminders')
-        + '</div></div>';
-    }
     if (reason === 'prayer') {
       return '<div class="contact-form-grid">'
         + '<div class="form__field"><label class="form__label" for="cf-prayer-for">' + esc(t('contact.prayerFor.label')) + '</label>'
@@ -231,7 +195,6 @@
 
   function successMessage(reason, name) {
     var first = (name || '').trim().split(' ')[0] || t('success.friend');
-    if (reason === 'register') return t('success.register', { name: first });
     if (reason === 'prayer') return t('success.prayer');
     return t('success.default', { name: first, phone: OFFICE_PHONE });
   }
@@ -333,14 +296,7 @@
         fields: fields,
       };
 
-      if (reason === 'register') {
-        var parish = $('#cf-parish', form);
-        fields.Parish = parish ? (PARISH_LABELS[parish.value] || '') : '';
-        fields.Phone = ($('#cf-phone', form) || {}).value || '';
-        fields['Heard about us'] = ($('#cf-heard-about', form) || {}).value || '';
-        fields['Newsletter preferences'] = $$('input[type="checkbox"]:checked', form)
-          .map(function (c) { return chipValue(c.parentNode); }).join(', ');
-      } else if (reason === 'prayer') {
+      if (reason === 'prayer') {
         fields['Person needing prayer'] = ($('#cf-prayer-for', form) || {}).value || '';
         fields['Requester contact'] = ($('#cf-requester-contact', form) || {}).value || '';
         fields.Confidentiality = 'Shared only with Father and the parish office';
