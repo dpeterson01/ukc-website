@@ -224,6 +224,58 @@ const subject = `[${ctx.subjectPrefix}] ${ctx.subjectName} ${submittedAt.slice(0
 check('the subject line is filterable',
   /^\[.+\] Kowalski Household \d{4}-\d{2}-\d{2}$/.test(subject), subject);
 
+/* --- a Spanish submission ------------------------------------------------- */
+
+/* The stored fixture is English. A Spanish one carries the family's wording
+ * beside the English the office reads, so both copies are built from the one
+ * label map. */
+const esLabels = {
+  parish: {
+    label: 'Which parish?', step: 'Getting started', display: 'St. John the Baptist',
+    labelLocal: '¿Cuál parroquia?', stepLocal: 'Para empezar', displayLocal: 'San Juan Bautista',
+  },
+  'children.0.first': {
+    label: 'First name', step: 'Children', display: 'Zofia',
+    labelLocal: 'Nombre', stepLocal: 'Hijos', displayLocal: 'Zofia',
+  },
+};
+const esRepeats = { children: { label: 'Child', labelLocal: 'Hijo o hija' } };
+
+const englishSide = sections(esLabels, { repeatLabels: esRepeats });
+const spanishSide = sections(esLabels, { local: true, repeatLabels: esRepeats });
+
+check('the office still reads a Spanish submission in English',
+  englishSide[0].title === 'Getting started'
+  && englishSide[0].groups[0].rows[0].label === 'Which parish?'
+  && englishSide[0].groups[0].rows[0].value === 'St. John the Baptist');
+check('the family copy is built in their own language',
+  spanishSide[0].title === 'Para empezar'
+  && spanishSide[0].groups[0].rows[0].label === '¿Cuál parroquia?'
+  && spanishSide[0].groups[0].rows[0].value === 'San Juan Bautista');
+check('a repeated block is named in each language',
+  englishSide[1].groups[0].subtitle === 'Child 1'
+  && spanishSide[1].groups[0].subtitle === 'Hijo o hija 1',
+  `${englishSide[1].groups[0].subtitle} / ${spanishSide[1].groups[0].subtitle}`);
+check('a label with no translation falls back to English',
+  sections({ x: { label: 'Envelope number', step: 'Getting started', display: '412' } },
+    { local: true })[0].groups[0].rows[0].label === 'Envelope number');
+
+const esCtx = {
+  ...ctx, lang: 'es', formTitleLocal: 'Inscripción parroquial', localSections: spanishSide,
+};
+const esReceipt = receiptEmail(esCtx);
+check('the Spanish receipt is written in Spanish',
+  esReceipt.includes('La oficina parroquial ya tiene su formulario')
+  && esReceipt.includes('Inscripción parroquial'));
+check('the Spanish receipt keeps the wording the form promised',
+  esReceipt.includes('no se compartirá sin su consentimiento'));
+check('no English boilerplate is left in the Spanish receipt',
+  !/Thank you\.|Signed electronically by|will not be given out without consent/.test(esReceipt));
+check('the office copy of a Spanish submission stays English',
+  officeEmail(esCtx).includes('came in from') && officeEmail(esCtx).includes('Getting started'));
+check('an English submission is unaffected',
+  receiptEmail(ctx).includes('Thank you. The parish office has your form'));
+
 /* --- report --------------------------------------------------------------- */
 
 const failed = results.filter((r) => !r.pass);

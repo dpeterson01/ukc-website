@@ -104,14 +104,24 @@ async function handleSubmit(request) {
   const print = await fingerprint(record, process.env.FINGERPRINT_SECRET || 'development-only-secret');
   record.fingerprint = print;
 
+  // Comes from the browser, so it picks a receipt template and nothing else.
+  const lang = payload.lang === 'es' ? 'es' : 'en';
+  const labelled = payload.repeatLabels;
+  const repeatLabels = labelled && typeof labelled === 'object' && !Array.isArray(labelled)
+    ? labelled
+    : null;
+
   const ctx = {
     formId,
     formTitle: payload.formTitle || formId,
+    formTitleLocal: payload.formTitleLocal || payload.formTitle || formId,
     formVersion: payload.version || '1',
     subjectPrefix: payload.subjectPrefix || payload.formTitle || formId,
     reference: ref,
     submittedAt,
-    sections: sections(payload.labels),
+    lang,
+    sections: sections(payload.labels, { repeatLabels }),
+    localSections: lang === 'en' ? null : sections(payload.labels, { local: true, repeatLabels }),
     signatures: signatures.map((s) => ({ ...s, title: 'Signature' })),
     submitterEmail: submitterEmail(payload.data),
     subjectName: subjectName(payload.data, signatures),

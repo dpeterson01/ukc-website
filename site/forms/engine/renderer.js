@@ -1006,19 +1006,41 @@
   };
 
   /* Field labels travel with the submission so the Worker can render a readable
-   * email and PDF without importing the schema. */
+   * email and PDF without importing the schema. English is what the office
+   * reads; the family's own wording rides along so their receipt can use it. */
   Engine.prototype.labelMap = function () {
     var self = this;
     var map = {};
+    var localised = (this.config.lang || 'en') !== 'en';
     this.registry.forEach(function (entry) {
       if (entry.kind !== 'input' || entry.hidden || self.ancestorHidden(entry)) return;
-      map[entry.path] = {
+      var row = {
         label: entry.field.labelEn || entry.field.label || entry.path,
         step: entry.step.titleEn || entry.step.title,
         display: self.displayValue(entry, true),
       };
+      if (localised) {
+        row.labelLocal = entry.field.label || row.label;
+        row.stepLocal = entry.step.title || row.step;
+        row.displayLocal = self.displayValue(entry, false);
+      }
+      map[entry.path] = row;
     });
     return map;
+  };
+
+  /* "Child 1" over each repeated block. Sent because the server would otherwise
+   * have to guess a singular from the path, which it cannot do in Spanish. */
+  Engine.prototype.repeatLabels = function () {
+    var localised = (this.config.lang || 'en') !== 'en';
+    var out = {};
+    this.repeats.forEach(function (repeat) {
+      var english = repeat.field.itemLabelEn || repeat.field.itemLabel;
+      if (!english) return;
+      out[repeat.path] = { label: english };
+      if (localised) out[repeat.path].labelLocal = repeat.field.itemLabel || english;
+    });
+    return out;
   };
 
   Engine.prototype.submit = function () {
@@ -1049,6 +1071,8 @@
       elapsedMs: elapsed,
       // Which language the family filled it in, so the office can reply in it.
       lang: this.config.lang || 'en',
+      formTitleLocal: this.schema.title,
+      repeatLabels: this.repeatLabels(),
       // Sent so the server can apply the same check. Empty for a real person.
       website: this.honeypot.value || '',
       data: this.collect(),

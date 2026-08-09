@@ -23,9 +23,12 @@ LANGS = ["es"]
 # Keys whose values a parishioner reads. `html` is included because the static
 # blocks carry the consent and release wording, which is the part that most
 # needs to be in someone's own language.
-TEXT_KEYS = {"label", "help", "title", "placeholder", "html", "legend",
+# Ordered, and in the same order as TEXT_KEYS in the engine's i18n.js: a set
+# iterates differently in every process, which rewrote these files into a new
+# key order on every run and made the diffs unreadable.
+TEXT_KEYS = ("label", "help", "title", "placeholder", "html", "legend",
              "itemLabel", "addLabel", "successTitle", "successBody", "message",
-             "subtitle", "sameAsLabel"}
+             "subtitle", "sameAsLabel")
 
 
 def walk_fields(fields, prefix, out):

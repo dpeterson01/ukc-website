@@ -175,7 +175,7 @@
         if (typeof field[key] === 'string') {
           // Kept so the parish office reads the submission in English whichever
           // language the family filled it out in.
-          if (key === 'label') field.labelEn = field[key];
+          if (key === 'label' || key === 'itemLabel') field[key + 'En'] = field[key];
           field[key] = t.content_(base + '.' + key, field[key]);
         }
       });

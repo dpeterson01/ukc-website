@@ -20,22 +20,32 @@ const singular = (key) => {
   return titleCase(words);
 };
 
-function subgroupFor(path) {
+function subgroupFor(path, repeatLabels, local) {
   const match = path.match(/^(.*?)\.(\d+)\./);
   if (!match) return null;
-  return `${singular(match[1].split('.').pop())} ${Number(match[2]) + 1}`;
+  const index = Number(match[2]) + 1;
+  const named = repeatLabels && repeatLabels[match[1]];
+  if (named) return `${(local && named.labelLocal) || named.label} ${index}`;
+  return `${singular(match[1].split('.').pop())} ${index}`;
 }
 
-export function sections(labels) {
+/* `local` renders the copy the family gets, in the language they filled the
+ * form in. Every piece falls back to English, so a submission with no
+ * translation behaves exactly as it did before. */
+export function sections(labels, options) {
+  const { local = false, repeatLabels = null } = options || {};
+  const pick = (localValue, base) => (
+    local && localValue !== undefined && localValue !== null ? localValue : base
+  );
   const out = [];
   const bySection = new Map();
 
   for (const path of Object.keys(labels)) {
     const entry = labels[path];
-    const display = String(entry.display ?? '').trim();
+    const display = String(pick(entry.displayLocal, entry.display) ?? '').trim();
     if (!display) continue;
 
-    const title = entry.step || 'Answers';
+    const title = pick(entry.stepLocal, entry.step) || 'Answers';
     if (!bySection.has(title)) {
       const section = { title, groups: [], _byName: new Map() };
       bySection.set(title, section);
@@ -43,14 +53,17 @@ export function sections(labels) {
     }
     const section = bySection.get(title);
 
-    const name = subgroupFor(path);
+    const name = subgroupFor(path, repeatLabels, local);
     const groupKey = name || '';
     if (!section._byName.has(groupKey)) {
       const group = { subtitle: name, rows: [] };
       section._byName.set(groupKey, group);
       section.groups.push(group);
     }
-    section._byName.get(groupKey).rows.push({ label: entry.label || path, value: display });
+    section._byName.get(groupKey).rows.push({
+      label: pick(entry.labelLocal, entry.label) || path,
+      value: display,
+    });
   }
 
   return out.map((s) => ({ title: s.title, groups: s.groups }));

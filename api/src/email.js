@@ -119,16 +119,53 @@ export function officeEmail(ctx) {
   return shell(ctx.parishName, ctx.formTitle, lead, renderSections(ctx.sections), footer);
 }
 
+/* The office reads one language whatever arrives. The family reads the one they
+ * filled the form in, so the receipt carries its own wording. The Spanish
+ * privacy line is the same sentence the form itself shows, word for word. */
+const RECEIPT_TEXT = {
+  en: {
+    lead: 'Thank you. The parish office has your form. A copy is attached for your records, '
+      + 'and nothing further is needed from you right now.',
+    reference: 'Reference {reference}',
+    signed: 'Signed electronically by {who}',
+    correct: 'If anything above is wrong, or you did not fill out this form, call the parish '
+      + 'office at {phone} and we will sort it out.',
+    privacy: 'This information is used for the purposes of the Church Office only and will not '
+      + 'be given out without consent.',
+  },
+  es: {
+    lead: 'Gracias. La oficina parroquial ya tiene su formulario. Se adjunta una copia para sus '
+      + 'archivos, y por ahora no necesita hacer nada más.',
+    reference: 'Referencia {reference}',
+    signed: 'Firmado electrónicamente por {who}',
+    correct: 'Si algo de lo anterior está mal, o si usted no llenó este formulario, llame a la '
+      + 'oficina parroquial al {phone} y lo resolvemos.',
+    privacy: 'Esta información se usa únicamente para los fines de la oficina parroquial y no se '
+      + 'compartirá sin su consentimiento.',
+  },
+};
+
+// Static wording is ours and goes in as written; only the injected value is escaped.
+const fill = (template, vars) => template.replace(
+  /\{(\w+)\}/g,
+  (whole, name) => (name in vars ? escapeHtml(vars[name]) : whole),
+);
+
 export function receiptEmail(ctx) {
-  const lead = 'Thank you. The parish office has your form. A copy is attached for your records, '
-    + 'and nothing further is needed from you right now.';
+  const words = RECEIPT_TEXT[ctx.lang] || RECEIPT_TEXT.en;
   const signed = signerNames(ctx);
-  const footer = `Reference ${escapeHtml(ctx.reference)}<br>`
-    + (signed ? `Signed electronically by ${escapeHtml(signed)}<br>` : '')
+  const footer = `${fill(words.reference, { reference: ctx.reference })}<br>`
+    + (signed ? `${fill(words.signed, { who: signed })}<br>` : '')
     + `${escapeHtml(utc(ctx.submittedAt))}<br><br>`
-    + `If anything above is wrong, or you did not fill out this form, call the parish office at ${escapeHtml(ctx.parishPhone)} and we will sort it out.<br><br>`
-    + 'This information is used for the purposes of the Church Office only and will not be given out without consent.';
-  return shell(ctx.parishName, ctx.formTitle, lead, renderSections(ctx.sections), footer);
+    + `${fill(words.correct, { phone: ctx.parishPhone })}<br><br>`
+    + words.privacy;
+  return shell(
+    ctx.parishName,
+    ctx.formTitleLocal || ctx.formTitle,
+    words.lead,
+    renderSections(ctx.localSections || ctx.sections),
+    footer,
+  );
 }
 
 async function send(env, message) {
