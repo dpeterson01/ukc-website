@@ -185,6 +185,28 @@ for (const key of enKeys) if (!esKeys.has(key)) fail('strings.js', `es is missin
 for (const key of esKeys) if (!enKeys.has(key)) fail('strings.js', `es has key "${key}" that en does not`);
 const untranslated = [...esBlock.matchAll(/^\s*'([^']+)': '',$/gm)].length;
 
+/* The form translation files are generated one key per line, and JSON keeps the
+ * last of a repeated key without complaining. Two branches editing the same
+ * string at different line positions therefore merge cleanly into a file where
+ * the older wording silently wins, which is how "OICA" reverted to "OCIA" and
+ * left no conflict to notice. Count the keys as text rather than parsing. */
+const I18N = join(SITE, 'forms', 'i18n');
+if (existsSync(I18N)) {
+  let files = 0;
+  for (const name of readdirSync(I18N).filter((f) => f.endsWith('.json')).sort()) {
+    files += 1;
+    const seen = new Map();
+    for (const line of readFileSync(join(I18N, name), 'utf8').split('\n')) {
+      const key = (line.match(/^ {2}"((?:[^"\\]|\\.)*)":/) || [])[1];
+      if (key) seen.set(key, (seen.get(key) || 0) + 1);
+    }
+    for (const [key, n] of seen) {
+      if (n > 1) fail(`forms/i18n/${name}`, `"${key}" appears ${n} times, so only the last one is used`);
+    }
+  }
+  notes.push(`form translation files checked for repeated keys: ${files}`);
+}
+
 notes.push(`${enPages.length} pages per tree`);
 notes.push(`pages still awaiting Spanish copy: ${stillEnglish.length}/${esPages.length}`);
 notes.push(`untranslated strings.js keys: ${untranslated}/${enKeys.size}`);
