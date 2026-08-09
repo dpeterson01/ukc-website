@@ -229,8 +229,8 @@
         "type": "text",
         "label": "Country",
         "width": "half",
-        "default": "United States",
-        "help": "Change this if it took place in another country.",
+        "placeholder": "United States",
+        "help": "Only needed if it happened outside the United States.",
         "showIf": { "field": "received", "equals": "yes" }
       },
       {
@@ -295,8 +295,8 @@
         "type": "text",
         "label": "Country",
         "width": "half",
-        "default": "United States",
-        "help": "Change this if it took place in another country.",
+        "placeholder": "United States",
+        "help": "Only needed if it happened outside the United States.",
         "showIf": { "field": "received", "equals": "yes" }
       }
     ]
@@ -378,8 +378,8 @@
         "type": "text",
         "label": "Country",
         "width": "half",
-        "default": "United States",
-        "help": "Change this if it took place in another country.",
+        "placeholder": "United States",
+        "help": "Only needed if it happened outside the United States.",
         "showIf": { "field": "received", "equals": "yes" }
       }
     ]
