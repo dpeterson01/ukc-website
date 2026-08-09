@@ -12,7 +12,7 @@
   ],
 
   "formId": "faith-formation",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Faith Formation Registration",
   "subjectPrefix": "Faith Formation Registration",
   "submitLabel": "Sign and submit",
@@ -44,6 +44,14 @@
             { "value": "ic", "label": "Immaculate Conception", "help": "Roslyn" },
             { "value": "sjb", "label": "St. John the Baptist", "help": "Cle Elum" }
           ]
+        },
+        {
+          "id": "envelopeNumber",
+          "type": "text",
+          "label": "Envelope number",
+          "width": "half",
+          "help": "Optional. This helps us find your existing household record.",
+          "showIf": { "field": "intent", "equals": "renew" }
         },
         {
           "type": "static",
@@ -113,6 +121,11 @@
           "label": "Mobile phone",
           "width": "half",
           "autocomplete": "tel"
+        },
+        {
+          "type": "block",
+          "block": "communication-language",
+          "id": null
         }
       ],
       "checks": [
@@ -185,6 +198,22 @@
             { "value": "yes", "label": "Yes" },
             { "value": "no", "label": "No" }
           ]
+        },
+        {
+          "id": "guardianRelationship",
+          "type": "select",
+          "label": "Relationship to the children",
+          "required": true,
+          "width": "half",
+          "placeholder": "Choose a relationship…",
+          "options": [
+            { "value": "grandparent", "label": "Grandparent" },
+            { "value": "legalGuardian", "label": "Legal guardian" },
+            { "value": "fosterParent", "label": "Foster parent" },
+            { "value": "otherRelative", "label": "Other relative" },
+            { "value": "other", "label": "Other" }
+          ],
+          "showIf": { "field": "hasGuardian", "equals": "yes" }
         },
         {
           "type": "block",

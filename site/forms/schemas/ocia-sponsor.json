@@ -15,7 +15,7 @@
   ],
 
   "formId": "ocia-sponsor",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "OCIA Sponsor",
   "subjectPrefix": "OCIA Sponsor",
   "submitLabel": "Sign and submit",
@@ -135,6 +135,15 @@
           "width": "full",
           "help": "We will need a letter of good standing from them.",
           "showIf": { "field": "parish", "equals": "other" }
+        },
+        {
+          "id": "otherParishCityState",
+          "type": "text",
+          "label": "Parish city and state",
+          "required": true,
+          "width": "full",
+          "placeholder": "Yakima, WA",
+          "showIf": { "field": "parish", "equals": "other" }
         }
       ]
     },
@@ -209,6 +218,11 @@
           "label": "Home phone",
           "width": "half",
           "autocomplete": "tel"
+        },
+        {
+          "type": "block",
+          "block": "communication-language",
+          "id": null
         }
       ],
       "checks": [
