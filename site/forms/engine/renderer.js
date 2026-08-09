@@ -372,9 +372,12 @@
     } else if (field.type === 'date') {
       control = el('div', { class: 'ukcf-date', role: 'group', 'aria-labelledby': id + '-l' });
       var parts = {};
+      // An approximate date needs only the year, so the other two say so rather
+      // than leaving someone guessing whether they can be left empty.
+      var loose = field.approximate === true;
       [
-        { key: 'month', label: 'Month', max: 2, ph: 'MM' },
-        { key: 'day', label: 'Day', max: 2, ph: 'DD' },
+        { key: 'month', label: loose ? 'Month (optional)' : 'Month', max: 2, ph: 'MM' },
+        { key: 'day', label: loose ? 'Day (optional)' : 'Day', max: 2, ph: 'DD' },
         { key: 'year', label: 'Year', max: 4, ph: 'YYYY' },
       ].forEach(function (p) {
         var input = el('input', {
@@ -949,7 +952,10 @@
   Engine.prototype.displayValue = function (entry) {
     var value = getPath(this.data, entry.path);
     var f = entry.field;
-    if (f.type === 'date') return V.datePartsComplete(value) ? V.isoDate(value) : '';
+    if (f.type === 'date') {
+      return f.approximate ? V.approximateIso(value)
+        : (V.datePartsComplete(value) ? V.isoDate(value) : '');
+    }
     if (f.type === 'checkbox') return value ? 'Yes' : '';
     if (f.type === 'checkboxes') {
       var labels = (f.options || []).filter(function (o) {
@@ -976,7 +982,8 @@
       var value = getPath(self.data, entry.path);
       if (V.isBlank(value)) return;
       if (entry.field.type === 'date') {
-        setPath(out, entry.path, V.isoDate(value));
+        var iso = entry.field.approximate ? V.approximateIso(value) : V.isoDate(value);
+        if (iso) setPath(out, entry.path, iso);
       } else {
         setPath(out, entry.path, value);
       }

@@ -105,6 +105,46 @@
     return !!(parts && !isBlank(parts.month) && !isBlank(parts.day) && !isBlank(parts.year));
   }
 
+  function datePartsAny(parts) {
+    return !!(parts && (!isBlank(parts.month) || !isBlank(parts.day) || !isBlank(parts.year)));
+  }
+
+  var pad2 = function (n) { return ('0' + n).slice(-2); };
+
+  /* A sacrament forty years ago is often remembered as a year and nothing more.
+   * Returns the most precise ISO prefix the answer supports: 1985, 1985-06, or
+   * 1985-06-10. Empty when the pieces cannot make sense, which includes a day
+   * with no month, since that is not a date anyone can act on. */
+  function approximateIso(parts) {
+    if (!parts) return '';
+    var y = String(parts.year === undefined || parts.year === null ? '' : parts.year).trim();
+    var m = String(parts.month === undefined || parts.month === null ? '' : parts.month).trim();
+    var d = String(parts.day === undefined || parts.day === null ? '' : parts.day).trim();
+
+    if (!/^\d{4}$/.test(y)) return '';
+    if (!m) return d ? '' : y;
+
+    var mi = parseInt(m, 10);
+    if (!mi || mi < 1 || mi > 12) return '';
+    if (!d) return y + '-' + pad2(mi);
+
+    return isoDate({ month: m, day: d, year: y });
+  }
+
+  /* The day the answer means, for checks that need one. A year alone is read as
+   * the first of January, which is early enough that a future or over-120 check
+   * still behaves. */
+  function approximateDate(parts) {
+    var iso = approximateIso(parts);
+    if (!iso) return null;
+    var bits = iso.split('-');
+    return new Date(Date.UTC(
+      parseInt(bits[0], 10),
+      bits[1] ? parseInt(bits[1], 10) - 1 : 0,
+      bits[2] ? parseInt(bits[2], 10) : 1,
+    ));
+  }
+
   function ageOn(birth, when) {
     if (!birth) return null;
     var ref = when || new Date();
@@ -122,6 +162,20 @@
     var label = field.label || 'This field';
 
     if (field.type === 'date') {
+      if (field.approximate) {
+        if (!datePartsAny(value)) {
+          return field.required ? { error: label + ' needs at least a year.' } : {};
+        }
+        var loose = approximateDate(value);
+        if (!loose) {
+          return { error: label + ' needs at least a year, and a day needs a month with it.' };
+        }
+        if (field.notFuture !== false && loose.getTime() > new Date().getTime()) {
+          return { error: label + ' cannot be in the future.' };
+        }
+        return {};
+      }
+
       if (!datePartsComplete(value)) {
         return field.required
           ? { error: label + ' needs a month, day, and year.' }
@@ -258,6 +312,9 @@
     toDate: toDate,
     isoDate: isoDate,
     datePartsComplete: datePartsComplete,
+    datePartsAny: datePartsAny,
+    approximateIso: approximateIso,
+    approximateDate: approximateDate,
     ageOn: ageOn,
     checkField: checkField,
     checkPerson: checkPerson,
