@@ -23,9 +23,7 @@ BASE_URL = "https://ukccatholic.org/"
 ENDPOINT = "https://forms.ukccatholic.org/submit"
 
 # Nothing answers at ENDPOINT yet, so the form is built but deliberately unlinked.
-# Flip this in the same change that points ENDPOINT at a live backend, re-run, and
-# restore the two hand-written links in site/new/ and site/formation/.
-FORMS_LIVE = False
+FORMS_LIVE = True
 
 COMING_SOON = {
     "en": ('<span class="btn btn--ghost" aria-disabled="true"'
@@ -394,10 +392,8 @@ def render(lang: str, tree: dict, page: dict, head: str, body_open: str,
     if extras:
         new_head = new_head.replace("<script src=", extras + "<script src=", 1)
 
-    # An unlinked form should stay out of search results too. The Spanish pages
-    # stay noindex past that, because the engine still renders its own labels in
-    # English: better no Spanish result than an English form on a Spanish URL.
-    noindex = page.get("form") and (not FORMS_LIVE or lang == "es")
+    # An unlinked form should stay out of search results too.
+    noindex = page.get("form") and not FORMS_LIVE
     if noindex:
         new_head += '  <meta name="robots" content="noindex">\n'
 

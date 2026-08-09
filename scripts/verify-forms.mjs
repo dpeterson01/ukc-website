@@ -14,7 +14,7 @@ import { createReadStream, existsSync } from 'node:fs';
 
 const SITE = '/Users/derekpeterson/projects/personal/ukc-website/site';
 const SHOTS = '/tmp/ukc-shots/forms';
-const FIXTURE = '/Users/derekpeterson/projects/personal/ukc-website/worker/test/fixture.json';
+const FIXTURE = '/Users/derekpeterson/projects/personal/ukc-website/api/test/fixture.json';
 const PORT = 8795;
 const MIME = {
   '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
@@ -115,8 +115,9 @@ const toggle = async (selector, want) => {
 
 // --- the picker page -----------------------------------------------------
 await page.goto(`http://localhost:${PORT}/forms/`, { waitUntil: 'load' });
-check('picker page keeps registration unlinked while the endpoint is dead',
-  (await page.locator('a[href="./parish-registration/"]').count()) === 0);
+check('the picker links to every form now that the backend is live',
+  (await page.locator('.contact-card a[href^="./"]').count()) === 4,
+  String(await page.locator('.contact-card a[href^="./"]').count()));
 check('picker page still shows all four form cards',
   (await page.locator('.contact-card').count()) === 4);
 await shot('picker');
@@ -177,9 +178,13 @@ check('confirmation does not ask about tradition',
 check('the denomination box stays hidden for a Catholic baptism',
   await page.locator('#f-head-baptism-traditionName').isHidden());
 
-check('country defaults to the United States',
-  (await page.locator('#f-head-baptism-country').inputValue()) === 'United States',
+// Left blank for the common case, so the office only sees a country when it is
+// the one thing worth noticing.
+check('country is left blank when it was in the United States',
+  (await page.locator('#f-head-baptism-country').inputValue()) === '',
   await page.locator('#f-head-baptism-country').inputValue());
+check('and it says what to put there',
+  (await page.locator('#f-head-baptism-country').getAttribute('placeholder')) === 'United States');
 
 await shot('step3-sacraments');
 
@@ -271,7 +276,7 @@ await page.locator('#f-children-0-baptism-country').fill('Mexico');
 // This used to validate and then get dropped on submit.
 await page.locator('#f-children-0-baptism-date-year').fill('2016');
 check('the optional date boxes say they are optional',
-  /optional/i.test(await page.locator('label[for="f-children-0-baptism-date-month"]').innerText()),
+  /opcional|optional/i.test(await page.locator('label[for="f-children-0-baptism-date-month"]').innerText()),
   await page.locator('label[for="f-children-0-baptism-date-month"]').innerText());
 await radio('f-children-0-eucharist-received', 'no').check();
 await radio('f-children-0-confirmation-received', 'no').check();
@@ -387,8 +392,12 @@ const envelope = await page.evaluate(() => {
 });
 // Written only when the backend folder is already present, so this check does
 // not assume which backend wins.
+// The backend tests build their PDF and emails from this, so a stale fixture
+// means those tests pass against fields the form no longer sends.
 if (existsSync(path.dirname(FIXTURE))) {
   await fs.writeFile(FIXTURE, `${JSON.stringify(envelope, null, 2)}\n`);
+} else {
+  check('the backend fixture was refreshed', false, `${FIXTURE} has no folder`);
 }
 check('the submitted envelope carries labels and steps',
   envelope.labels['head.first']?.step === 'Head of household',
