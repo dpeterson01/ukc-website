@@ -33,6 +33,8 @@
   "step.candidate.parish.option.other": "En otro lugar",
   "step.candidate.otherParish.help": "Necesitaremos una carta de buena conducta de esa parroquia.",
   "step.candidate.otherParish.label": "¿Cuál parroquia?",
+  "step.candidate.otherParishCityState.placeholder": "Yakima, WA",
+  "step.candidate.otherParishCityState.label": "Ciudad y estado de la parroquia",
   "step.about-you.title": "Sobre usted",
   "step.about-you.birthdate.label": "Fecha de nacimiento",
   "step.about-you.gender.label": "Sexo",

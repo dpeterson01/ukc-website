@@ -79,10 +79,18 @@
       {
         "id": "street",
         "type": "text",
-        "label": "Street or PO Box",
+        "label": "Street address or PO Box",
         "required": true,
         "width": "full",
-        "autocomplete": "street-address",
+        "autocomplete": "address-line1",
+        "showIf": { "field": "sameAs", "notEquals": true }
+      },
+      {
+        "id": "line2",
+        "type": "text",
+        "label": "Apartment, unit, or address line 2",
+        "width": "full",
+        "autocomplete": "address-line2",
         "showIf": { "field": "sameAs", "notEquals": true }
       },
       {
@@ -112,6 +120,113 @@
         "autocomplete": "postal-code",
         "placeholder": "98922",
         "showIf": { "field": "sameAs", "notEquals": true }
+      },
+      {
+        "id": "country",
+        "type": "text",
+        "label": "Country",
+        "width": "half",
+        "autocomplete": "country-name",
+        "placeholder": "United States",
+        "help": "Only needed if this address is outside the United States.",
+        "showIf": { "field": "sameAs", "notEquals": true }
+      }
+    ]
+  },
+
+  "previous-marriage": {
+    "_comment": [
+      "A marriage that has ended. Whether it was in the Church and how it ended",
+      "is what decides the annulment path, so both are asked plainly. Nothing",
+      "here is required: someone who would rather explain it in conversation",
+      "should be able to move past this step."
+    ],
+    "fields": [
+      {
+        "id": "spouseName",
+        "type": "text",
+        "label": "Former spouse's name",
+        "width": "half"
+      },
+      {
+        "id": "date",
+        "type": "date",
+        "label": "Date of that marriage",
+        "width": "full",
+        "approximate": true,
+        "help": "A year on its own is fine if that is all you remember."
+      },
+      {
+        "id": "marriedBy",
+        "type": "radio",
+        "label": "Who married you?",
+        "width": "full",
+        "options": [
+          { "value": "catholic", "label": "A Catholic priest or deacon" },
+          { "value": "nonCatholic", "label": "Another religious minister" },
+          { "value": "civil", "label": "A civil ceremony" },
+          { "value": "unsure", "label": "I do not know" }
+        ]
+      },
+      {
+        "id": "location",
+        "type": "text",
+        "label": "Church or place married at",
+        "width": "half"
+      },
+      {
+        "id": "cityState",
+        "type": "text",
+        "label": "City and state or province",
+        "width": "half",
+        "placeholder": "Roslyn, WA"
+      },
+      {
+        "id": "endedBy",
+        "type": "radio",
+        "label": "How did that marriage end?",
+        "width": "full",
+        "options": [
+          { "value": "divorce", "label": "Divorce" },
+          { "value": "death", "label": "Death of my spouse" }
+        ]
+      },
+      {
+        "id": "annulmentStatus",
+        "type": "radio",
+        "label": "Has the Church granted an annulment for it?",
+        "width": "full",
+        "help": "Most people coming to OCIA have not started this, and that is a normal place to begin.",
+        "options": [
+          { "value": "granted", "label": "Yes, it was granted" },
+          { "value": "inProcess", "label": "It is in process" },
+          { "value": "notStarted", "label": "No, it has not been started" },
+          { "value": "unsure", "label": "I do not know" }
+        ]
+      }
+    ]
+  },
+
+  "communication-language": {
+    "fields": [
+      {
+        "id": "preferredLanguage",
+        "type": "radio",
+        "label": "Preferred language for parish communication",
+        "width": "full",
+        "options": [
+          { "value": "english", "label": "English" },
+          { "value": "spanish", "label": "Spanish" },
+          { "value": "other", "label": "Another language" }
+        ]
+      },
+      {
+        "id": "preferredLanguageOther",
+        "type": "text",
+        "label": "Which language?",
+        "required": true,
+        "width": "half",
+        "showIf": { "field": "preferredLanguage", "equals": "other" }
       }
     ]
   },
@@ -407,6 +522,16 @@
         "label": "Place of birth",
         "width": "half",
         "placeholder": "City and state"
+      },
+      {
+        "id": "gender",
+        "type": "radio",
+        "label": "Gender",
+        "width": "half",
+        "options": [
+          { "value": "male", "label": "Male" },
+          { "value": "female", "label": "Female" }
+        ]
       }
     ]
   },
@@ -468,6 +593,16 @@
         "placeholder": "City and state"
       },
       {
+        "id": "gender",
+        "type": "radio",
+        "label": "Gender",
+        "width": "half",
+        "options": [
+          { "value": "male", "label": "Male" },
+          { "value": "female", "label": "Female" }
+        ]
+      },
+      {
         "type": "block",
         "block": "sacrament-record",
         "id": "baptism",
@@ -519,6 +654,16 @@
         "label": "Place of birth",
         "width": "half",
         "placeholder": "City and state"
+      },
+      {
+        "id": "gender",
+        "type": "radio",
+        "label": "Gender",
+        "width": "half",
+        "options": [
+          { "value": "male", "label": "Male" },
+          { "value": "female", "label": "Female" }
+        ]
       },
       {
         "id": "grade",

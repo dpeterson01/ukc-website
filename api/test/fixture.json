@@ -1,9 +1,9 @@
 {
   "formId": "parish-registration",
   "formTitle": "Parish Registration",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "subjectPrefix": "Parish Registration",
-  "submittedAt": "2026-08-09T10:58:34.447Z",
+  "submittedAt": "2026-08-09T11:34:58.774Z",
   "elapsedMs": 91000,
   "data": {
     "intent": "new",
@@ -89,7 +89,7 @@
       "intentToSign": true,
       "electronicRecordsConsent": true,
       "disclosureVersion": "1.0",
-      "signedAtClient": "2026-08-09T10:58:34.447Z"
+      "signedAtClient": "2026-08-09T11:34:58.774Z"
     }
   },
   "labels": {
@@ -137,6 +137,11 @@
       "label": "Place of birth",
       "step": "Head of household",
       "display": "Yakima, WA"
+    },
+    "head.gender": {
+      "label": "Gender",
+      "step": "Head of household",
+      "display": ""
     },
     "head.baptism.received": {
       "label": "Has baptism been received?",
@@ -254,9 +259,14 @@
       "display": ""
     },
     "mailing.street": {
-      "label": "Street or PO Box",
+      "label": "Street address or PO Box",
       "step": "How we reach you",
       "display": "PO Box 630"
+    },
+    "mailing.line2": {
+      "label": "Apartment, unit, or address line 2",
+      "step": "How we reach you",
+      "display": ""
     },
     "mailing.city": {
       "label": "City",
@@ -273,10 +283,20 @@
       "step": "How we reach you",
       "display": "98922"
     },
+    "mailing.country": {
+      "label": "Country",
+      "step": "How we reach you",
+      "display": ""
+    },
     "home.sameAs": {
       "label": "Same as the mailing address",
       "step": "How we reach you",
       "display": "Yes"
+    },
+    "preferredLanguage": {
+      "label": "Preferred language for parish communication",
+      "step": "How we reach you",
+      "display": ""
     },
     "hasSpouse": {
       "label": "Is there a spouse or second adult in the household?",
@@ -320,6 +340,11 @@
     },
     "spouse.birthplace": {
       "label": "Place of birth",
+      "step": "Spouse or second adult",
+      "display": ""
+    },
+    "spouse.gender": {
+      "label": "Gender",
       "step": "Spouse or second adult",
       "display": ""
     },
@@ -405,6 +430,11 @@
     },
     "children.0.birthplace": {
       "label": "Place of birth",
+      "step": "Children",
+      "display": ""
+    },
+    "children.0.gender": {
+      "label": "Gender",
       "step": "Children",
       "display": ""
     },

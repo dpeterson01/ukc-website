@@ -20,6 +20,7 @@
       'btn.sending': 'Sending…',
       'btn.addAnother': 'Add another',
       'btn.remove': 'Remove',
+      'review.yes': 'Yes',
       'choose.one': 'Choose one…',
       'date.month': 'Month',
       'date.day': 'Day',
@@ -78,6 +79,7 @@
       'btn.sending': 'Enviando…',
       'btn.addAnother': 'Agregar otro',
       'btn.remove': 'Quitar',
+      'review.yes': 'Sí',
       'choose.one': 'Elija una opción…',
       'date.month': 'Mes',
       'date.day': 'Día',
@@ -171,6 +173,9 @@
       var base = prefix + '.' + id;
       TEXT_KEYS.forEach(function (key) {
         if (typeof field[key] === 'string') {
+          // Kept so the parish office reads the submission in English whichever
+          // language the family filled it out in.
+          if (key === 'label') field.labelEn = field[key];
           field[key] = t.content_(base + '.' + key, field[key]);
         }
       });
@@ -182,6 +187,7 @@
           if (!option || typeof option !== 'object') return;
           var value = option.value === undefined ? i : option.value;
           if (typeof option.label === 'string') {
+            option.labelEn = option.label;
             option.label = t.content_(base + '.option.' + value, option.label);
           }
           if (typeof option.help === 'string') {
@@ -191,6 +197,7 @@
       } else if (field.options && typeof field.options === 'object') {
         // These get interpolated into a label, so an untranslated one leaves an
         // English word sitting inside a Spanish sentence.
+        field.optionsEn = Object.assign({}, field.options);
         Object.keys(field.options).forEach(function (key) {
           if (typeof field.options[key] === 'string') {
             field.options[key] = t.content_(base + '.var.' + key, field.options[key]);
@@ -205,6 +212,7 @@
 
     ['title', 'successTitle', 'successBody', 'submitLabel'].forEach(function (key) {
       if (typeof schema[key] === 'string') {
+        if (key === 'title') schema.titleEn = schema[key];
         schema[key] = t.content_('form.' + key, schema[key]);
       }
     });
@@ -212,7 +220,10 @@
     (schema.steps || []).forEach(function (step) {
       var base = 'step.' + (step.id || '?');
       ['title', 'help'].forEach(function (key) {
-        if (typeof step[key] === 'string') step[key] = t.content_(base + '.' + key, step[key]);
+        if (typeof step[key] === 'string') {
+          if (key === 'title') step.titleEn = step[key];
+          step[key] = t.content_(base + '.' + key, step[key]);
+        }
       });
       (step.checks || []).forEach(function (check) {
         if (typeof check.message === 'string') {
@@ -226,6 +237,7 @@
       var block = blocks[name];
       if (name.charAt(0) === '_' || !block || typeof block !== 'object') return;
       localiseFields(block.fields, 'block.' + name, t);
+      if (block.defaults) block.defaultsEn = Object.assign({}, block.defaults);
       Object.keys(block.defaults || {}).forEach(function (key) {
         if (typeof block.defaults[key] === 'string' && /Label$/.test(key)) {
           block.defaults[key] = t.content_('block.' + name + '.default.' + key, block.defaults[key]);

@@ -14,7 +14,7 @@
   ],
 
   "formId": "ocia-participant",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "OCIA Inquiry",
   "subjectPrefix": "OCIA Participant",
   "submitLabel": "Sign and submit",
@@ -75,6 +75,16 @@
           "label": "Place of birth",
           "width": "full",
           "placeholder": "City, state, and country"
+        },
+        {
+          "id": "gender",
+          "type": "radio",
+          "label": "Gender",
+          "width": "half",
+          "options": [
+            { "value": "male", "label": "Male" },
+            { "value": "female", "label": "Female" }
+          ]
         }
       ]
     },
@@ -117,6 +127,11 @@
           "label": "Mobile phone",
           "width": "half",
           "autocomplete": "tel"
+        },
+        {
+          "type": "block",
+          "block": "communication-language",
+          "id": null
         }
       ],
       "checks": [
@@ -236,6 +251,14 @@
           ]
         },
         {
+          "_comment": "Only shown when a previous marriage is on the same step, so the two are never confused.",
+          "type": "static",
+          "id": "currentMarriageHeading",
+          "label": "Your current marriage",
+          "html": "<p>These questions are about the marriage you are in now. There is room for earlier marriages below.</p>",
+          "showIf": { "field": "civilStatus", "equals": "remarried" }
+        },
+        {
           "id": "marriedBy",
           "type": "radio",
           "label": "Who married you?",
@@ -260,6 +283,32 @@
           "label": "Date of marriage",
           "width": "full",
           "showIf": { "field": "civilStatus", "in": ["married", "remarried", "separated", "widowed"] }
+        },
+        {
+          "id": "marriageLocation",
+          "type": "text",
+          "label": "Church or place married at",
+          "width": "half",
+          "showIf": { "field": "civilStatus", "in": ["married", "remarried", "separated", "widowed"] }
+        },
+        {
+          "id": "marriageCityState",
+          "type": "text",
+          "label": "City and state or province",
+          "width": "half",
+          "placeholder": "Roslyn, WA",
+          "showIf": { "field": "civilStatus", "in": ["married", "remarried", "separated", "widowed"] }
+        },
+        {
+          "type": "repeat",
+          "id": "previousMarriages",
+          "block": "previous-marriage",
+          "label": "Previous marriages",
+          "help": "Add one for each marriage that has ended. Leave anything blank that you would rather talk about in person.",
+          "itemLabel": "Previous marriage",
+          "addLabel": "Add another previous marriage",
+          "min": 1,
+          "showIf": { "field": "civilStatus", "in": ["divorced", "remarried"] }
         },
         {
           "id": "annulment",

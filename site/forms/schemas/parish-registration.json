@@ -1,6 +1,6 @@
 {
   "formId": "parish-registration",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Parish Registration",
   "subjectPrefix": "Parish Registration",
   "submitLabel": "Sign and submit",
@@ -32,6 +32,22 @@
             { "value": "ic", "label": "Immaculate Conception", "help": "Roslyn" },
             { "value": "sjb", "label": "St. John the Baptist", "help": "Cle Elum" }
           ]
+        },
+        {
+          "id": "envelopeNumber",
+          "type": "text",
+          "label": "Envelope number",
+          "width": "half",
+          "help": "Optional. This helps us find your existing household record.",
+          "showIf": { "field": "intent", "equals": "update" }
+        },
+        {
+          "id": "previousPostalCode",
+          "type": "zip",
+          "label": "Previous ZIP code",
+          "width": "half",
+          "help": "Optional. Use the ZIP code already on your parish record if it changed.",
+          "showIf": { "field": "intent", "equals": "update" }
         },
         {
           "type": "static",
@@ -109,6 +125,11 @@
           "id": "home",
           "label": "Home address",
           "options": { "sameAs": true, "sameAsLabel": "the mailing address" }
+        },
+        {
+          "type": "block",
+          "block": "communication-language",
+          "id": null
         }
       ],
       "checks": [
