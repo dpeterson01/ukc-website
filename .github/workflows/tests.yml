@@ -1,0 +1,80 @@
+name: Tests
+
+# The browser suites (verify-forms, verify-form-i18n, verify-pages,
+# verify-behavior) still hardcode absolute local paths, so they are run by hand
+# until that is fixed. Everything here runs on a plain checkout.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site:
+    name: Site and forms
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Schemas match what the engine supports
+        run: python3 scripts/verify-schemas.py
+
+      - name: Approximate dates survive
+        run: node scripts/verify-dates.mjs
+
+      - name: English and Spanish trees stay in step
+        run: node scripts/verify-i18n.mjs
+
+      - name: Canonicals, titles and indexability
+        run: node scripts/verify-seo.mjs
+
+  api:
+    name: Forms API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: api/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Submission pipeline
+        run: node test/run.mjs
+
+      - name: HTTP handler
+        run: node test/http.mjs
+
+      - name: Rate limit and storage guards
+        run: node test/guards.mjs
+
+      - name: Contact form
+        run: node test/contact.mjs
