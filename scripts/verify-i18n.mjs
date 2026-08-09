@@ -91,7 +91,7 @@ function checkPage(page, lang) {
   }
 
   const pending = html.includes('TRANSLATION PENDING');
-  const noindex = /<meta name="robots" content="noindex">/.test(html);
+  const noindex = /<meta name="robots" content="[^"]*noindex/i.test(html);
   if (noindex) noindexed.add(`${lang}:${page}`);
 
   /* English is the source language, so it can never be awaiting translation. It
