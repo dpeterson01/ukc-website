@@ -114,7 +114,7 @@ await load(`http://localhost:${PORT}/es/forms/parish-registration/`);
 const office = await page.evaluate(() => {
   const e = window.ukcFormEngine;
   Object.assign(e.data, {
-    intent: 'new', parish: 'sjb', hasSpouse: 'no', hasChildren: 'no',
+    intent: 'new', parish: 'sjb', hasSpouse: 'no', hasChildren: 'yes',
     head: { first: 'Ana', last: 'Reyes' },
     home: { sameAs: true },
   });
@@ -123,8 +123,10 @@ const office = await page.evaluate(() => {
   const map = e.labelMap();
   return {
     formTitle: e.schema.titleEn || e.schema.title,
+    formTitleLocal: e.schema.title,
     lang: e.config.lang,
     intent: map.intent,
+    repeats: e.repeatLabels(),
     sameAs: Object.keys(map).filter((k) => k.endsWith('.sameAs')).map((k) => map[k].label),
     all: Object.keys(map).map((k) => `${map[k].label} ${map[k].step} ${map[k].display}`).join(' | '),
   };
@@ -144,6 +146,20 @@ check('no interpolation placeholder survives into the office copy',
 check('a copied address still reads as a sentence',
   office.sameAs.every((l) => l && !l.includes('{{')), JSON.stringify(office.sameAs));
 check('the submission records which language was used', office.lang === 'es', String(office.lang));
+
+// The family's receipt is built from the same map, so the Spanish has to ride
+// along rather than being thrown away once the English is taken.
+check('the form title travels in both languages',
+  office.formTitleLocal === 'Inscripción parroquial', office.formTitleLocal);
+check('the family wording travels beside the English',
+  office.intent.labelLocal === '¿Qué desea hacer?'
+  && office.intent.stepLocal === 'Para empezar'
+  && office.intent.displayLocal === 'Inscribirme en la parroquia',
+  JSON.stringify([office.intent.labelLocal, office.intent.stepLocal, office.intent.displayLocal]));
+check('a repeated block sends a name for each language',
+  office.repeats.children && office.repeats.children.label === 'Child'
+  && office.repeats.children.labelLocal === 'Hijo o hija',
+  JSON.stringify(office.repeats));
 
 check('no console errors', problems.length === 0, problems.slice(0, 3).join(' | '));
 
