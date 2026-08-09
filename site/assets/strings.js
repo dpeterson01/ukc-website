@@ -9,29 +9,13 @@
  *
  * What NOT to put here: anything that ends up in a submission. The parish office
  * reads submissions in English regardless of the language the form was filled in,
- * so the reason, parish, sacrament, and subject labels sent to Formspree are held
+ * so the reason, sacrament, and subject labels sent to the endpoint are held
  * in site.js and never translated.
  */
 (function (root) {
   'use strict';
 
   var EN = {
-    'contact.parish.label': 'Which parish?',
-    'contact.parish.choose': 'Choose a parish…',
-    'contact.parish.sjb': 'St. John the Baptist (Cle Elum)',
-    'contact.parish.ic': 'Immaculate Conception (Roslyn)',
-    'contact.parish.unsure': 'Not sure yet',
-
-    'contact.phone.label': 'Phone number',
-    'contact.phone.placeholder': '(509) 555-0123',
-    'contact.heard.label': 'How did you hear about us?',
-    'contact.heard.placeholder': 'A friend, online search, visiting Mass…',
-
-    'contact.emails.label': "While you're here, want emails too?",
-    'chip.weeklyBulletin': 'Weekly bulletin',
-    'chip.quarterlyNewsletter': 'Quarterly newsletter',
-    'chip.holyDayReminders': 'Holy-day reminders',
-
     'contact.prayerFor.label': 'Name of person needing prayer',
     'contact.prayerFor.placeholder': 'Name or initials',
     'contact.requester.label': "Requester's contact info",
@@ -51,9 +35,7 @@
     'contact.timeframe.placeholder': 'A date, month, or general timeframe',
 
     'message.placeholder.default':
-      'Registering, planning a sacrament, a prayer request, or just saying hello…',
-    'message.placeholder.register':
-      'Tell us a bit about your family, how you found us, or any questions…',
+      'Planning a sacrament, sharing a prayer request, or just saying hello…',
     'message.placeholder.prayer':
       'Share your intention. All requests are kept confidential.',
 
@@ -63,9 +45,6 @@
       'That did not go through. Please try again, or call the parish office at {phone}.',
 
     'success.friend': 'friend',
-    'success.register':
-      'Thank you, {name}. We have your details, and someone from the parish office will '
-      + 'reach out soon about getting you registered.',
     'success.prayer':
       'Thank you. Your intention has been received and will be held in prayer, in confidence.',
     'success.default':
@@ -82,22 +61,6 @@
   /* Translator: fill in the values below. Leave a value as '' to keep English.
      Do not rename, reorder, or remove keys. See TRANSLATION.md for terminology. */
   var ES = {
-    'contact.parish.label': '¿Cuál parroquia?',
-    'contact.parish.choose': 'Elija una parroquia…',
-    'contact.parish.sjb': 'San Juan Bautista (Cle Elum)',
-    'contact.parish.ic': 'Inmaculada Concepción (Roslyn)',
-    'contact.parish.unsure': 'Todavía no estoy seguro',
-
-    'contact.phone.label': 'Número de teléfono',
-    'contact.phone.placeholder': '(509) 555-0123',
-    'contact.heard.label': '¿Cómo supo de nosotros?',
-    'contact.heard.placeholder': 'Un amigo, una búsqueda en línea, una visita a Misa…',
-
-    'contact.emails.label': 'Ya que está aquí, ¿le gustaría recibir correos?',
-    'chip.weeklyBulletin': 'Boletín semanal',
-    'chip.quarterlyNewsletter': 'Boletín informativo trimestral',
-    'chip.holyDayReminders': 'Recordatorios de días de precepto',
-
     'contact.prayerFor.label': 'Nombre de la persona por quien se ora',
     'contact.prayerFor.placeholder': 'Nombre o iniciales',
     'contact.requester.label': 'Datos de contacto de quien solicita',
@@ -118,10 +81,8 @@
     'contact.timeframe.placeholder': 'Una fecha, un mes o un periodo aproximado',
 
     'message.placeholder.default': 
-      'Inscribirse, preparar un sacramento, una petición de oración o simplemente '
+      'Planear un sacramento, compartir una petición de oración o simplemente '
       + 'saludar…',
-    'message.placeholder.register': 
-      'Cuéntenos un poco sobre su familia, cómo nos encontró o cualquier pregunta…',
     'message.placeholder.prayer': 
       'Comparta su intención. Todas las peticiones se tratan de forma confidencial.',
 
@@ -131,9 +92,6 @@
       'No se pudo enviar. Vuelva a intentarlo o llame a la oficina parroquial al {phone}.',
 
     'success.friend': 'amigo',
-    'success.register': 
-      'Gracias, {name}. Ya tenemos sus datos y alguien de la oficina parroquial se '
-      + 'comunicará con usted pronto para completar su inscripción.',
     'success.prayer': 
       'Gracias. Hemos recibido su intención y la llevaremos en oración, de forma '
       + 'confidencial.',

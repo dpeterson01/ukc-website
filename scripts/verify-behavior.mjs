@@ -68,7 +68,6 @@ const check = (name, pass, detail = '') => {
 
   const expected = {
     hello: [], other: [],
-    register: ['#cf-parish', '#cf-phone', '#cf-heard-about'],
     prayer: ['#cf-prayer-for', '#cf-requester-contact'],
     sacrament: ['#cf-sacrament', '#cf-timeframe'],
   };
@@ -82,19 +81,11 @@ const check = (name, pass, detail = '') => {
       ids.length ? found.join(' ') : 'no extra fields');
   }
 
-  await page.selectOption('#cf-reason', 'register');
-  await page.waitForTimeout(150);
-  await page.screenshot({ path: path.join(SHOTS, 'contact-register-fields.png'), fullPage: true });
-
-  // chips should toggle their checked state and their styling
-  const chip = page.locator('.form__conditional label:has(input[type=checkbox])').first();
-  if (await chip.count()) {
-    const before = await chip.evaluate((el) => el.querySelector('input')?.checked);
-    await chip.click();
-    await page.waitForTimeout(100);
-    const after = await chip.evaluate((el) => el.querySelector('input')?.checked);
-    check('conditional chip toggles', before !== after);
-  }
+  check('contact has no registration reason',
+    (await page.locator('#cf-reason option[value="register"]').count()) === 0);
+  check('contact links to parish registration',
+    await page.locator('a[href="../forms/parish-registration/"]').count() === 1);
+  await page.screenshot({ path: path.join(SHOTS, 'contact-form.png'), fullPage: true });
 
   // empty submit should surface inline errors, not navigate away
   await page.selectOption('#cf-reason', 'hello');
