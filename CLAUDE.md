@@ -94,9 +94,10 @@ language toggle is a pure path rewrite with no lookup table to maintain.
   trees carries `data-en` even where English does not strictly need it.
 - A page still awaiting Spanish copy carries `<meta name="robots" content="noindex">` and a
   `TRANSLATION PENDING` comment, so search never indexes English copy at a Spanish URL. The rule
-  runs one way: pending implies noindex, but noindex does not imply pending. An unlaunched page
-  is noindex in both languages regardless of translation state, which is why
-  `site/es/forms/parish-registration/` stays hidden while `FORMS_LIVE = False`.
+  runs one way: pending implies noindex, but noindex does not imply pending. The eight form pages
+  under `site/forms/` and `site/es/forms/` carry `noindex, nofollow` permanently, since a form has
+  nothing to rank on and would read as a doorway page. Only the pickers at `/forms/` and
+  `/es/forms/` are offered to search, and `sitemap.xml` lists exactly the indexable pages.
 - `TRANSLATION.md` is the handoff spec: scope, glossary, register, and the rules above.
 
 Run `node scripts/verify-i18n.mjs` after touching either tree. It needs nothing installed and

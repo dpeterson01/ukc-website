@@ -34,6 +34,7 @@
   "block.previous-marriage.endedBy.label": "¿Cómo terminó ese matrimonio?",
   "block.previous-marriage.endedBy.option.divorce": "Por divorcio",
   "block.previous-marriage.endedBy.option.death": "Por el fallecimiento de mi cónyuge",
+  "block.previous-marriage.annulmentStatus.help": "La mayoría de quienes llegan a OICA no ha comenzado este proceso, y es un punto de partida normal.",
   "block.previous-marriage.annulmentStatus.label": "¿La Iglesia ha concedido una anulación de ese matrimonio?",
   "block.previous-marriage.annulmentStatus.help": "La mayoría de quienes llegan a OCIA no ha comenzado este proceso, y es un punto de partida normal.",
   "block.previous-marriage.annulmentStatus.option.granted": "Sí, ya se concedió",

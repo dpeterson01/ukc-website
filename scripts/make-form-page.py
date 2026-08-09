@@ -18,11 +18,13 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 BASE_URL = "https://ukccatholic.org/"
 
-# The Worker that receives submissions. Until it is deployed this points at the
-# production hostname anyway, so switching over is a DNS change, not a code one.
+# The endpoint that receives submissions. Deployed and answering.
 ENDPOINT = "https://forms.ukccatholic.org/submit"
 
-# Nothing answers at ENDPOINT yet, so the form is built but deliberately unlinked.
+# Flip to False to pull the forms back out of the site: the index cards go to
+# "coming soon" and the picker stops linking anywhere. The links on /new/ and
+# /formation/ are hand-written, so those come out by hand. The form pages are
+# noindex either way.
 FORMS_LIVE = True
 
 COMING_SOON = {
@@ -38,7 +40,8 @@ def cta(lang: str, slug: str) -> str:
     """Every card on the index links to its form once the backend is live."""
     if not FORMS_LIVE:
         return COMING_SOON[lang]
-    return f'<a class="btn btn--ghost" href="./{slug}/">{START[lang]}</a>'
+    return (f'<a class="btn btn--ghost" href="./{slug}/" rel="nofollow">'
+            f'{START[lang]}</a>')
 
 
 FORMS_INTRO = {
@@ -146,10 +149,10 @@ CARDS = {
         ("faith-formation", "Formación en la fe para niños",
          "Educación religiosa para niños, los domingos de octubre a mayo.\n"
          "              Un solo formulario para todos los hijos de la familia."),
-        ("ocia-participant", "Consulta sobre OCIA",
+        ("ocia-participant", "Consulta sobre OICA",
          "Para adultos que desean conocer la fe católica o completar sus sacramentos.\n"
          "              Preguntar no lo compromete a nada."),
-        ("ocia-sponsor", "Padrino o madrina de OCIA",
+        ("ocia-sponsor", "Padrino o madrina de OICA",
          "Para católicos confirmados dispuestos a acompañar durante un año a alguien\n"
          "              que entra en la Iglesia."),
     ],
@@ -194,7 +197,7 @@ PAGES = [
         "es": {
             "title": "Formularios parroquiales",
             "description": "Inscríbase como feligrés, apúntese a la formación en la fe e "
-                           "inscríbase en OCIA. Todo se llena en línea, sin imprimir nada.",
+                           "inscríbase en OICA. Todo se llena en línea, sin imprimir nada.",
             "main": forms_index("es"),
         },
     },
@@ -260,12 +263,12 @@ PAGES = [
                 "we will take your information over the phone"),
         },
         "es": {
-            "title": "Consulta sobre OCIA",
+            "title": "Consulta sobre OICA",
             "description": "Para adultos que desean conocer la fe católica, completar sus "
                            "sacramentos o volver a la Iglesia en Cle Elum y Roslyn. "
                            "Pregunte lo que quiera.",
             "main": form_page(
-                "es", "ocia-participant", "Consulta sobre OCIA",
+                "es", "ocia-participant", "Consulta sobre OICA",
                 "Algunas preguntas son personales. Conteste lo que pueda y deje el resto en "
                 "blanco. Enviarlo no lo compromete a nada.",
                 "tomaremos sus datos por teléfono"),
@@ -290,7 +293,7 @@ PAGES = [
                            "en La Inmaculada Concepción en Roslyn o en San Juan Bautista en "
                            "Cle Elum.",
             "main": form_page(
-                "es", "ocia-sponsor", "Padrino o madrina de OCIA",
+                "es", "ocia-sponsor", "Padrino o madrina de OICA",
                 "Los padrinos acompañan a un candidato durante un año. El primer paso explica "
                 "lo que eso significa antes de pedirle cualquier dato.",
                 "tomaremos sus datos por teléfono"),
@@ -392,10 +395,11 @@ def render(lang: str, tree: dict, page: dict, head: str, body_open: str,
     if extras:
         new_head = new_head.replace("<script src=", extras + "<script src=", 1)
 
-    # An unlinked form should stay out of search results too.
-    noindex = page.get("form") and not FORMS_LIVE
-    if noindex:
-        new_head += '  <meta name="robots" content="noindex">\n'
+    # A form itself has nothing to rank on and would read as a doorway page, so
+    # only the picker at /forms/ is offered to search. Everything the crawler
+    # would find beyond a form is already reachable from the picker.
+    if page.get("form"):
+        new_head += '  <meta name="robots" content="noindex, nofollow">\n'
 
     # The utility bar's language toggle inherits the source page's target.
     other = (prefix + "es/" + rel) if lang == "en" else (prefix + rel)
