@@ -14,12 +14,14 @@
 (function (global) {
   'use strict';
 
-  var DISCLOSURE = [
-    'You are agreeing to sign this form electronically instead of on paper. Your typed name,',
-    'together with the date and time we receive this form, makes up your signature. We will',
-    'email you a PDF copy for your records. If you would rather sign on paper, call the parish',
-    'office at (509) 674-2531 and we will mail you a form.',
-  ].join(' ');
+  /* This block is what someone actually agrees to, so it is the last place that
+   * should be stuck in one language. */
+  function T(key, vars) {
+    var i18n = global.UKCFormsI18n;
+    var t = (global.ukcFormEngine && global.ukcFormEngine.t)
+      || (i18n && new i18n.Translator('en', null));
+    return t ? t.t(key, vars) : '';
+  }
 
   function el(tag, attrs, children) {
     var node = document.createElement(tag);
@@ -42,36 +44,32 @@
 
     var typed = el('input', {
       type: 'text', id: idBase + '-typed', class: 'ukcf-input ukcf-siginput',
-      autocomplete: 'name', placeholder: 'Type your full legal name',
+      autocomplete: 'name', placeholder: T('sign.namePlaceholder'),
     });
 
     var intent = el('input', { type: 'checkbox', id: idBase + '-intent' });
     var econsent = el('input', { type: 'checkbox', id: idBase + '-econsent' });
 
     var node = el('fieldset', { class: 'ukcf-fieldset ukcf-signature' }, [
-      el('legend', { class: 'ukcf-legend', text: field.label || 'Signature' }),
+      el('legend', { class: 'ukcf-legend', text: field.label || T('sign.legend') }),
 
       el('div', { class: 'ukcf-consent' }, [
         el('label', { class: 'ukcf-check' }, [
           econsent,
-          el('span', { text: 'I agree to sign this form electronically.' }),
+          el('span', { text: T('sign.econsent') }),
         ]),
-        el('p', { class: 'ukcf-help', text: DISCLOSURE }),
+        el('p', { class: 'ukcf-help', text: T('sign.disclosure', { phone: '(509) 674-2531' }) }),
       ]),
 
       el('div', { class: 'ukcf-field' }, [
-        el('label', { class: 'ukcf-label', for: idBase + '-typed', text: 'Full legal name' }),
+        el('label', { class: 'ukcf-label', for: idBase + '-typed', text: T('sign.nameLabel') }),
         typed,
         el('div', { class: 'ukcf-msg', id: idBase + '-typed-msg', 'aria-live': 'polite' }),
       ]),
 
       el('label', { class: 'ukcf-check' }, [
         intent,
-        el('span', {
-          text: 'By typing my name above I intend this to be my electronic signature, and I '
-            + 'certify that the information I have given is true and complete to the best of '
-            + 'my knowledge.',
-        }),
+        el('span', { text: T('sign.attest') }),
       ]),
       el('div', { class: 'ukcf-msg', id: idBase + '-attest-msg', 'aria-live': 'polite' }),
     ]);
@@ -103,27 +101,27 @@
         issues.push({
           path: idBase + '-econsent',
           severity: 'error',
-          message: 'Please agree to sign electronically, or call the office to sign on paper.',
+          message: T('sign.consent'),
         });
       }
       if (!typed.value.trim()) {
         issues.push({
           path: idBase + '-typed',
           severity: 'error',
-          message: 'Please type your full legal name.',
+          message: T('sign.required'),
         });
       } else if (typed.value.trim().split(/\s+/).length < 2) {
         issues.push({
           path: idBase + '-typed',
           severity: 'warning',
-          message: 'That looks like a single name. Please use your first and last name.',
+          message: T('sign.fullName'),
         });
       }
       if (!intent.checked) {
         issues.push({
           path: idBase + '-intent',
           severity: 'error',
-          message: 'Please confirm that this is your electronic signature.',
+          message: T('sign.intent'),
         });
       }
       return issues;
@@ -156,5 +154,10 @@
     };
   }
 
-  global.UKCSignature = { build: build, DISCLOSURE: DISCLOSURE };
+  // Exposed so a caller can record which wording was shown, which is now a
+  // function of the language the person was reading.
+  global.UKCSignature = {
+    build: build,
+    disclosure: function () { return T('sign.disclosure', { phone: '(509) 674-2531' }); },
+  };
 }(typeof window !== 'undefined' ? window : globalThis));

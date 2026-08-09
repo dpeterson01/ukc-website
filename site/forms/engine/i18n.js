@@ -21,6 +21,11 @@
       'btn.addAnother': 'Add another',
       'btn.remove': 'Remove',
       'choose.one': 'Choose one…',
+      'date.month': 'Month',
+      'date.day': 'Day',
+      'date.year': 'Year',
+      'date.monthOptional': 'Month (optional)',
+      'date.dayOptional': 'Day (optional)',
       'loading': 'Loading the form…',
       'progress': 'Step {current} of {total}',
       'errors.heading': 'One thing needs your attention',
@@ -50,9 +55,16 @@
       'validate.thisField': 'This field',
       'validate.contactMethods': 'Please give us at least one way to reach you.',
       'validate.gradeAge': 'Grade ',
-      'sign.required': 'Please type your name to sign.',
-      'sign.intent': 'Please confirm you intend to sign.',
-      'sign.consent': 'Please agree to sign electronically.',
+      'sign.required': 'Please type your full legal name.',
+      'sign.fullName': 'That looks like a single name. Please use your first and last name.',
+      'sign.intent': 'Please confirm that this is your electronic signature.',
+      'sign.consent': 'Please agree to sign electronically, or call the office to sign on paper.',
+      'sign.legend': 'Signature',
+      'sign.nameLabel': 'Full legal name',
+      'sign.namePlaceholder': 'Type your full legal name',
+      'sign.econsent': 'I agree to sign this form electronically.',
+      'sign.attest': 'By typing my name above I intend this to be my electronic signature, and I certify that the information I have given is true and complete to the best of my knowledge.',
+      'sign.disclosure': 'You are agreeing to sign this form electronically instead of on paper. Your typed name, together with the date and time we receive this form, makes up your signature. We will email you a PDF copy for your records. If you would rather sign on paper, call the parish office at {phone} and we will mail you a form.',
       'sacrament.baptism': 'Baptism',
       'sacrament.eucharist': 'First Eucharist',
       'sacrament.confirmation': 'Confirmation',
@@ -67,6 +79,11 @@
       'btn.addAnother': 'Agregar otro',
       'btn.remove': 'Quitar',
       'choose.one': 'Elija una opción…',
+      'date.month': 'Mes',
+      'date.day': 'Día',
+      'date.year': 'Año',
+      'date.monthOptional': 'Mes (opcional)',
+      'date.dayOptional': 'Día (opcional)',
       'loading': 'Cargando el formulario…',
       'progress': 'Paso {current} de {total}',
       'errors.heading': 'Falta corregir un dato',
@@ -96,9 +113,16 @@
       'validate.thisField': 'Este campo',
       'validate.contactMethods': 'Déjenos al menos una forma de comunicarnos con usted.',
       'validate.gradeAge': 'Grado ',
-      'sign.required': 'Escriba su nombre para firmar.',
-      'sign.intent': 'Confirme que tiene la intención de firmar.',
-      'sign.consent': 'Acepte firmar electrónicamente.',
+      'sign.required': 'Escriba su nombre legal completo.',
+      'sign.fullName': 'Eso parece un solo nombre. Por favor escriba su nombre y apellido.',
+      'sign.intent': 'Confirme que esta es su firma electrónica.',
+      'sign.consent': 'Acepte firmar electrónicamente, o llame a la oficina para firmar en papel.',
+      'sign.legend': 'Firma',
+      'sign.nameLabel': 'Nombre legal completo',
+      'sign.namePlaceholder': 'Escriba su nombre legal completo',
+      'sign.econsent': 'Acepto firmar este formulario electrónicamente.',
+      'sign.attest': 'Al escribir mi nombre arriba, es mi intención que esta sea mi firma electrónica, y certifico que los datos que he dado son verdaderos y completos según mi leal saber y entender.',
+      'sign.disclosure': 'Usted está aceptando firmar este formulario electrónicamente en lugar de en papel. Su nombre escrito, junto con la fecha y la hora en que recibimos este formulario, constituye su firma. Le enviaremos una copia en PDF por correo electrónico para sus archivos. Si prefiere firmar en papel, llame a la oficina parroquial al {phone} y le enviaremos un formulario.',
       'sacrament.baptism': 'Bautismo',
       'sacrament.eucharist': 'Primera Comunión',
       'sacrament.confirmation': 'Confirmación',
@@ -151,13 +175,25 @@
         }
       });
       // `options` is a choice list on a radio or select, and a bag of
-      // interpolation variables on a block reference. Only the first is text a
+      // interpolation variables on a block reference. Both can hold words a
       // person reads.
       if (Array.isArray(field.options)) {
         field.options.forEach(function (option, i) {
-          if (option && typeof option.label === 'string') {
-            var value = option.value === undefined ? i : option.value;
+          if (!option || typeof option !== 'object') return;
+          var value = option.value === undefined ? i : option.value;
+          if (typeof option.label === 'string') {
             option.label = t.content_(base + '.option.' + value, option.label);
+          }
+          if (typeof option.help === 'string') {
+            option.help = t.content_(base + '.option.' + value + '.help', option.help);
+          }
+        });
+      } else if (field.options && typeof field.options === 'object') {
+        // These get interpolated into a label, so an untranslated one leaves an
+        // English word sitting inside a Spanish sentence.
+        Object.keys(field.options).forEach(function (key) {
+          if (typeof field.options[key] === 'string') {
+            field.options[key] = t.content_(base + '.var.' + key, field.options[key]);
           }
         });
       }

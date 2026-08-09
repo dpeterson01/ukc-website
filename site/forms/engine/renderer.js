@@ -376,9 +376,9 @@
       // than leaving someone guessing whether they can be left empty.
       var loose = field.approximate === true;
       [
-        { key: 'month', label: loose ? 'Month (optional)' : 'Month', max: 2, ph: 'MM' },
-        { key: 'day', label: loose ? 'Day (optional)' : 'Day', max: 2, ph: 'DD' },
-        { key: 'year', label: 'Year', max: 4, ph: 'YYYY' },
+        { key: 'month', label: T(loose ? 'date.monthOptional' : 'date.month'), max: 2, ph: 'MM' },
+        { key: 'day', label: T(loose ? 'date.dayOptional' : 'date.day'), max: 2, ph: 'DD' },
+        { key: 'year', label: T('date.year'), max: 4, ph: 'YYYY' },
       ].forEach(function (p) {
         var input = el('input', {
           type: 'text', inputmode: 'numeric', class: 'ukcf-input ukcf-date-part',

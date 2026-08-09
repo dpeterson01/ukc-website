@@ -73,23 +73,39 @@ check('the engine chrome is in Spanish', esBtn === 'Continuar', esBtn);
 const langAttr = await page.locator('[data-ukc-form]').getAttribute('data-lang');
 check('the mount carries the language', langAttr === 'es', langAttr);
 
-// The whole point of falling back: an untranslated field stays readable. This
-// picks a step deliberately left out of the Spanish file, so it proves the
-// fallback rather than accidentally reading a translated string.
+// Every string is translated now, so the fallback cannot be proven by finding an
+// untranslated one. Ask the translator directly for a key that does not exist.
 const fallback = await page.evaluate(() => {
-  const e = window.ukcFormEngine;
-  const step = e.schema.steps.find((s) => s.id === 'head-sacraments');
-  return step ? step.title : null;
+  const t = window.ukcFormEngine.t;
+  return {
+    missingKey: t.content_('step.does-not-exist.title', 'Readable English'),
+    missingChrome: t.t('no.such.key'),
+    realChrome: t.t('btn.continue'),
+  };
 });
-check('an untranslated string falls back to readable English',
-  fallback === 'Sacramental record', fallback);
+check('a key with no translation falls back to readable English',
+  fallback.missingKey === 'Readable English', fallback.missingKey);
+check('a chrome key that does not exist returns nothing rather than its own name',
+  fallback.missingChrome === '', JSON.stringify(fallback.missingChrome));
+check('a chrome key that does exist is Spanish',
+  fallback.realChrome === 'Continuar', fallback.realChrome);
 
-// --- an entirely missing translation file --------------------------------
-await load(`http://localhost:${PORT}/es/forms/ocia-sponsor/`);
-check('a form with no Spanish yet still renders', await page.locator('.ukcf-form').isVisible());
-const fallbackTitle = (await visibleStep().locator('.ukcf-step-title').innerText()).trim();
-check('and shows readable English rather than key names',
-  fallbackTitle.length > 3 && !fallbackTitle.includes('.'), fallbackTitle);
+// Nothing English should be showing on a Spanish page now that the files are full.
+const esBody = await visibleStep().innerText();
+check('no English leaks into the visible Spanish step',
+  !/\b(Getting started|Continue|First name|Date of birth|Yes|No thanks)\b/.test(esBody),
+  esBody.split('\n').slice(0, 3).join(' / '));
+
+// --- every form, in Spanish ----------------------------------------------
+for (const [slug, expected] of [
+  ['ocia-sponsor', 'Lo que hace un padrino o madrina'],
+  ['faith-formation', 'Para empezar'],
+  ['ocia-participant', 'Para empezar'],
+]) {
+  await load(`http://localhost:${PORT}/es/forms/${slug}/`);
+  const title = (await visibleStep().locator('.ukcf-step-title').innerText()).trim();
+  check(`es/${slug} opens in Spanish`, title === expected, title);
+}
 
 check('no console errors', problems.length === 0, problems.slice(0, 3).join(' | '));
 

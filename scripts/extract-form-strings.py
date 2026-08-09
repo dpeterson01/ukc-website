@@ -36,12 +36,23 @@ def walk_fields(fields, prefix, out):
             if isinstance(field.get(key), str) and field[key].strip():
                 out[f"{base}.{key}"] = field[key]
         # `options` is a choice list on a radio or select, and a bag of
-        # interpolation variables on a block reference. Only the first is read.
+        # interpolation variables on a block reference. Both can hold words a
+        # person reads: the second gets injected into a label, so an English
+        # value there leaves an English word inside a Spanish sentence.
         options = field.get("options")
         if isinstance(options, list):
             for i, option in enumerate(options):
-                if isinstance(option, dict) and isinstance(option.get("label"), str):
-                    out[f"{base}.option.{option.get('value', i)}"] = option["label"]
+                if not isinstance(option, dict):
+                    continue
+                value = option.get("value", i)
+                if isinstance(option.get("label"), str):
+                    out[f"{base}.option.{value}"] = option["label"]
+                if isinstance(option.get("help"), str) and option["help"].strip():
+                    out[f"{base}.option.{value}.help"] = option["help"]
+        elif isinstance(options, dict):
+            for key, value in options.items():
+                if isinstance(value, str) and value.strip():
+                    out[f"{base}.var.{key}"] = value
 
 
 def extract_schema(path):
