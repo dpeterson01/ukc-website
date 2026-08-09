@@ -14,7 +14,7 @@ import { createReadStream, existsSync } from 'node:fs';
 
 const SITE = '/Users/derekpeterson/projects/personal/ukc-website/site';
 const SHOTS = '/tmp/ukc-shots/forms';
-const FIXTURE = '/Users/derekpeterson/projects/personal/ukc-website/worker/test/fixture.json';
+const FIXTURE = '/Users/derekpeterson/projects/personal/ukc-website/api/test/fixture.json';
 const PORT = 8795;
 const MIME = {
   '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
@@ -115,8 +115,9 @@ const toggle = async (selector, want) => {
 
 // --- the picker page -----------------------------------------------------
 await page.goto(`http://localhost:${PORT}/forms/`, { waitUntil: 'load' });
-check('picker page keeps registration unlinked while the endpoint is dead',
-  (await page.locator('a[href="./parish-registration/"]').count()) === 0);
+check('the picker links to every form now that the backend is live',
+  (await page.locator('.contact-card a[href^="./"]').count()) === 4,
+  String(await page.locator('.contact-card a[href^="./"]').count()));
 check('picker page still shows all four form cards',
   (await page.locator('.contact-card').count()) === 4);
 await shot('picker');
@@ -157,6 +158,7 @@ check('advanced to sacramental record', (await stepTitle()).includes('Sacramenta
 
 // --- step 3: sacraments, and the out-of-order warning --------------------
 await radio('f-head-baptism-received', 'yes').check();
+await radio('f-head-baptism-tradition', 'catholic').check();
 await setDate('f-head-baptism-date', '6', '10', '1979');
 await radio('f-head-eucharist-received', 'yes').check();
 await setDate('f-head-eucharist-date', '5', '1', '1988');
@@ -166,6 +168,24 @@ await radio('f-head-marriage-received', 'no').check();
 await page.waitForTimeout(200);
 check('sacrament fields appear only after "yes"',
   await page.locator('#f-head-marriage-date-month').isHidden());
+
+// Only baptism asks which tradition, because it is the one that is recognised
+// across churches and never repeated.
+check('baptism asks which tradition it was in',
+  await radio('f-head-baptism-tradition', 'catholic').isVisible());
+check('confirmation does not ask about tradition',
+  (await radio('f-head-confirmation-tradition', 'catholic').count()) === 0);
+check('the denomination box stays hidden for a Catholic baptism',
+  await page.locator('#f-head-baptism-traditionName').isHidden());
+
+// Left blank for the common case, so the office only sees a country when it is
+// the one thing worth noticing.
+check('country is left blank when it was in the United States',
+  (await page.locator('#f-head-baptism-country').inputValue()) === '',
+  await page.locator('#f-head-baptism-country').inputValue());
+check('and it says what to put there',
+  (await page.locator('#f-head-baptism-country').getAttribute('placeholder')) === 'United States');
+
 await shot('step3-sacraments');
 
 await next();
@@ -246,7 +266,18 @@ await page.locator('#f-children-0-first').fill('Zofia');
 await page.locator('#f-children-0-last').fill('Kowalski');
 await setDate('f-children-0-birthdate', '8', '14', '2016');
 await radio('f-children-0-baptism-received', 'yes').check();
-await setDate('f-children-0-baptism-date', '10', '2', '2016');
+await radio('f-children-0-baptism-tradition', 'other').check();
+await page.waitForTimeout(200);
+check('naming the denomination is asked only when the baptism was elsewhere',
+  await page.locator('#f-children-0-baptism-traditionName').isVisible());
+await page.locator('#f-children-0-baptism-traditionName').fill('Lutheran');
+await page.locator('#f-children-0-baptism-country').fill('Mexico');
+// Year only, which is how most people remember a sacrament from decades back.
+// This used to validate and then get dropped on submit.
+await page.locator('#f-children-0-baptism-date-year').fill('2016');
+check('the optional date boxes say they are optional',
+  /opcional|optional/i.test(await page.locator('label[for="f-children-0-baptism-date-month"]').innerText()),
+  await page.locator('label[for="f-children-0-baptism-date-month"]').innerText());
 await radio('f-children-0-eucharist-received', 'no').check();
 await radio('f-children-0-confirmation-received', 'no').check();
 
@@ -328,6 +359,14 @@ check('the spouse answers are in the payload', collected.spouse?.first === 'Toma
   JSON.stringify(Object.keys(collected)));
 check('the removed child is gone from the payload', collected.children?.length === 1,
   JSON.stringify(collected.children?.length));
+// The bug this replaced: a year-only date validated, then vanished on submit.
+check('a year-only sacrament date survives to the payload',
+  collected.children?.[0]?.baptism?.date === '2016',
+  JSON.stringify(collected.children?.[0]?.baptism));
+check('the tradition and country come through too',
+  collected.children?.[0]?.baptism?.traditionName === 'Lutheran'
+  && collected.children?.[0]?.baptism?.country === 'Mexico',
+  JSON.stringify(collected.children?.[0]?.baptism));
 check('the signature is in the payload', !!collected.signature?.typedName);
 check('dates are sent as ISO', collected.head?.birthdate === '1979-04-02',
   JSON.stringify(collected.head?.birthdate));
@@ -353,8 +392,12 @@ const envelope = await page.evaluate(() => {
 });
 // Written only when the backend folder is already present, so this check does
 // not assume which backend wins.
+// The backend tests build their PDF and emails from this, so a stale fixture
+// means those tests pass against fields the form no longer sends.
 if (existsSync(path.dirname(FIXTURE))) {
   await fs.writeFile(FIXTURE, `${JSON.stringify(envelope, null, 2)}\n`);
+} else {
+  check('the backend fixture was refreshed', false, `${FIXTURE} has no folder`);
 }
 check('the submitted envelope carries labels and steps',
   envelope.labels['head.first']?.step === 'Head of household',
@@ -411,7 +454,6 @@ for (const [slug, firstStep] of [
 
 // --- console -------------------------------------------------------------
 check('no console errors', consoleErrors.length === 0, consoleErrors.slice(0, 3).join(' | '));
-check('no failed requests', badResponses.length === 0, badResponses.slice(0, 3).join(' | '));
 check('no failed requests', badResponses.length === 0, badResponses.slice(0, 3).join(' | '));
 
 await browser.close();

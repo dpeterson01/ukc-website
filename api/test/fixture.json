@@ -3,7 +3,7 @@
   "formTitle": "Parish Registration",
   "version": "1.0.0",
   "subjectPrefix": "Parish Registration",
-  "submittedAt": "2026-08-01T20:36:58.115Z",
+  "submittedAt": "2026-08-09T10:58:34.447Z",
   "elapsedMs": 91000,
   "data": {
     "intent": "new",
@@ -15,6 +15,7 @@
       "birthplace": "Yakima, WA",
       "baptism": {
         "received": "yes",
+        "tradition": "catholic",
         "date": "1979-06-10"
       },
       "eucharist": {
@@ -70,7 +71,10 @@
         "birthdate": "2016-08-14",
         "baptism": {
           "received": "yes",
-          "date": "2016-10-02"
+          "tradition": "other",
+          "traditionName": "Lutheran",
+          "date": "2016",
+          "country": "Mexico"
         },
         "eucharist": {
           "received": "no"
@@ -85,7 +89,7 @@
       "intentToSign": true,
       "electronicRecordsConsent": true,
       "disclosureVersion": "1.0",
-      "signedAtClient": "2026-08-01T20:36:58.115Z"
+      "signedAtClient": "2026-08-09T10:58:34.447Z"
     }
   },
   "labels": {
@@ -139,23 +143,33 @@
       "step": "Sacramental record",
       "display": "Yes"
     },
+    "head.baptism.tradition": {
+      "label": "In what tradition?",
+      "step": "Sacramental record",
+      "display": "Catholic"
+    },
     "head.baptism.date": {
       "label": "Date of baptism",
       "step": "Sacramental record",
       "display": "1979-06-10"
     },
     "head.baptism.parish": {
-      "label": "Parish name",
+      "label": "Parish or church name",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.baptism.cityState": {
+      "label": "City and state or province",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.baptism.country": {
+      "label": "Country",
       "step": "Sacramental record",
       "display": ""
     },
     "head.baptism.celebrant": {
       "label": "Celebrant's name",
-      "step": "Sacramental record",
-      "display": ""
-    },
-    "head.baptism.cityState": {
-      "label": "City and state",
       "step": "Sacramental record",
       "display": ""
     },
@@ -170,17 +184,22 @@
       "display": "1988-05-01"
     },
     "head.eucharist.parish": {
-      "label": "Parish name",
+      "label": "Parish or church name",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.eucharist.cityState": {
+      "label": "City and state or province",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.eucharist.country": {
+      "label": "Country",
       "step": "Sacramental record",
       "display": ""
     },
     "head.eucharist.celebrant": {
       "label": "Celebrant's name",
-      "step": "Sacramental record",
-      "display": ""
-    },
-    "head.eucharist.cityState": {
-      "label": "City and state",
       "step": "Sacramental record",
       "display": ""
     },
@@ -195,17 +214,22 @@
       "display": "1986-03-01"
     },
     "head.confirmation.parish": {
-      "label": "Parish name",
+      "label": "Parish or church name",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.confirmation.cityState": {
+      "label": "City and state or province",
+      "step": "Sacramental record",
+      "display": ""
+    },
+    "head.confirmation.country": {
+      "label": "Country",
       "step": "Sacramental record",
       "display": ""
     },
     "head.confirmation.celebrant": {
       "label": "Celebrant's name",
-      "step": "Sacramental record",
-      "display": ""
-    },
-    "head.confirmation.cityState": {
-      "label": "City and state",
       "step": "Sacramental record",
       "display": ""
     },
@@ -389,23 +413,38 @@
       "step": "Children",
       "display": "Yes"
     },
+    "children.0.baptism.tradition": {
+      "label": "In what tradition?",
+      "step": "Children",
+      "display": "Another Christian tradition"
+    },
+    "children.0.baptism.traditionName": {
+      "label": "Which church or denomination?",
+      "step": "Children",
+      "display": "Lutheran"
+    },
     "children.0.baptism.date": {
       "label": "Date of baptism",
       "step": "Children",
-      "display": "2016-10-02"
+      "display": "2016"
     },
     "children.0.baptism.parish": {
-      "label": "Parish name",
-      "step": "Children",
-      "display": ""
-    },
-    "children.0.baptism.celebrant": {
-      "label": "Celebrant's name",
+      "label": "Parish or church name",
       "step": "Children",
       "display": ""
     },
     "children.0.baptism.cityState": {
-      "label": "City and state",
+      "label": "City and state or province",
+      "step": "Children",
+      "display": ""
+    },
+    "children.0.baptism.country": {
+      "label": "Country",
+      "step": "Children",
+      "display": "Mexico"
+    },
+    "children.0.baptism.celebrant": {
+      "label": "Celebrant's name",
       "step": "Children",
       "display": ""
     },
