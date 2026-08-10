@@ -92,6 +92,23 @@
   color: var(--color-gold-screen);
 }
 
+/* The parish choice is single-select, so its chips take a round mark. The group
+   also needs a visible label, which the preference chips do without. */
+.chip--radio::before {
+  border-radius: 999px;
+}
+
+.footer__signup-prefs-label {
+  flex: 1 0 100%;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-inverse-muted);
+}
+
 /* Language toggle. Sits in the utility bar next to the phone and email, and is
    cloned into the mobile drawer by site.js. */
 .utility-bar__lang {

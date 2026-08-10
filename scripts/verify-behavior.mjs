@@ -68,7 +68,6 @@ const check = (name, pass, detail = '') => {
 
   const expected = {
     hello: [], other: [],
-    register: ['#cf-parish', '#cf-phone', '#cf-heard-about'],
     prayer: ['#cf-prayer-for', '#cf-requester-contact'],
     sacrament: ['#cf-sacrament', '#cf-timeframe'],
   };
@@ -82,19 +81,11 @@ const check = (name, pass, detail = '') => {
       ids.length ? found.join(' ') : 'no extra fields');
   }
 
-  await page.selectOption('#cf-reason', 'register');
-  await page.waitForTimeout(150);
-  await page.screenshot({ path: path.join(SHOTS, 'contact-register-fields.png'), fullPage: true });
-
-  // chips should toggle their checked state and their styling
-  const chip = page.locator('.form__conditional label:has(input[type=checkbox])').first();
-  if (await chip.count()) {
-    const before = await chip.evaluate((el) => el.querySelector('input')?.checked);
-    await chip.click();
-    await page.waitForTimeout(100);
-    const after = await chip.evaluate((el) => el.querySelector('input')?.checked);
-    check('conditional chip toggles', before !== after);
-  }
+  check('contact has no registration reason',
+    (await page.locator('#cf-reason option[value="register"]').count()) === 0);
+  check('contact links to parish registration',
+    await page.locator('a[href="../forms/parish-registration/"]').count() === 1);
+  await page.screenshot({ path: path.join(SHOTS, 'contact-form.png'), fullPage: true });
 
   // empty submit should surface inline errors, not navigate away
   await page.selectOption('#cf-reason', 'hello');
@@ -123,9 +114,24 @@ const check = (name, pass, detail = '') => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
   await page.goto(`http://localhost:${PORT}/mass/`, { waitUntil: 'load' });
   await page.waitForTimeout(300);
+
+  const parishChips = page.locator('.footer__signup-parish .chip');
+  check('the signup asks which parish', (await parishChips.count()) === 3);
+  check('it defaults to both rather than one parish or none',
+    (await page.locator('.footer__signup-parish input:checked').getAttribute('value')) === 'both');
+
   await page.locator('form.footer__signup-form button[type=submit]').click();
   await page.waitForTimeout(250);
   check('signup rejects empty email', (await page.locator('.footer__signup-form .form__error').count()) === 1);
+
+  await parishChips.nth(1).click();
+  await page.waitForTimeout(150);
+  check('choosing a parish moves the highlight rather than adding one',
+    (await page.locator('.footer__signup-parish .chip.is-on').count()) === 1);
+  check('and the choice is the one that was clicked',
+    (await page.locator('.footer__signup-parish input:checked').getAttribute('value')) === 'ic');
+
+  await page.locator('.footer__signup').screenshot({ path: path.join(SHOTS, 'footer-signup.png') });
   await page.close();
 }
 
