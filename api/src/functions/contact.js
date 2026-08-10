@@ -5,6 +5,10 @@
  * the person they were "shared only with Father and the parish office". They go
  * to the parish mailbox directly now, so the page is telling the truth.
  *
+ * A signup goes to Brevo instead, once a list is configured, so the person gets
+ * the confirmation email and the parish gets a consent record it can defend.
+ * The mailbox is what catches it when Brevo is unconfigured or unreachable.
+ *
  * Deliberately simpler than /submit: no PDF, no signature, no fingerprint.
  * Nothing here is signed, so there is nothing to prove was not altered.
  */
@@ -12,6 +16,7 @@
 import { app } from '@azure/functions';
 import { escapeHtml, shell, sendRaw } from '../email.js';
 import { checkRate } from '../ratelimit.js';
+import { brevoConfigured, inviteContact } from '../brevo.js';
 
 const PARISH_NAME = 'Catholic Parishes of Upper Kittitas County';
 const OFFICE = 'parish@ukccatholic.org';
@@ -82,6 +87,8 @@ const emailIn = (entries) => {
   return found ? found[1].trim() : '';
 };
 
+const valueIn = (entries, label) => (entries.find(([l]) => l === label) || [])[1] || '';
+
 function body(entries) {
   const rows = entries.filter(([, v]) => v.trim()).map(([label, value]) => `
     <tr>
@@ -107,13 +114,33 @@ export async function contactHandler(request, context) {
       throw new Refused('That is several messages in a short time. Please call the parish office at (509) 674-2531.', 429);
     }
 
-    if (!process.env.RESEND_API_KEY) {
-      throw new Refused('The parish mail service is not configured yet.', 503);
-    }
-
     const subject = String(payload.subject || 'Message from the parish website').slice(0, 200);
     const replyTo = emailIn(entries);
     const receivedAt = new Date().toISOString();
+
+    let listRefused = false;
+    if (payload.kind === 'signup' && brevoConfigured(process.env)) {
+      if (!replyTo) throw new Refused('We need an email address to sign you up.');
+      try {
+        const outcome = await inviteContact(
+          process.env,
+          replyTo,
+          valueIn(entries, 'Subscriptions'),
+          valueIn(entries, 'Parish'),
+        );
+        context.log(JSON.stringify({ event: 'contact', kind: 'signup', brevo: outcome }));
+        return { status: 200, jsonBody: { ok: true }, headers };
+      } catch (err) {
+        // The address is worth more than the invitation. Fall through to the
+        // mailbox so the office can add it by hand rather than lose it.
+        context.error('brevo invite failed', err && err.stack ? err.stack : String(err));
+        listRefused = true;
+      }
+    }
+
+    if (!process.env.RESEND_API_KEY) {
+      throw new Refused('The parish mail service is not configured yet.', 503);
+    }
 
     await sendRaw(process.env, {
       from: process.env.MAIL_FROM,
@@ -123,9 +150,12 @@ export async function contactHandler(request, context) {
       html: shell(
         PARISH_NAME,
         payload.kind === 'signup' ? 'Email list signup' : 'Message from the website',
-        replyTo
-          ? `Reply to this email and it goes straight back to <strong>${escapeHtml(replyTo)}</strong>.`
-          : 'No email address was given, so there is no reply path.',
+        listRefused
+          ? `The mailing list would not take <strong>${escapeHtml(replyTo)}</strong>, so this one `
+            + 'needs adding in Brevo by hand.'
+          : replyTo
+            ? `Reply to this email and it goes straight back to <strong>${escapeHtml(replyTo)}</strong>.`
+            : 'No email address was given, so there is no reply path.',
         body(entries),
         `Received ${escapeHtml(new Date(receivedAt).toUTCString().replace('GMT', 'UTC'))}<br>`
         + 'Sent from the parish website. Nothing about it is stored outside this mailbox.',

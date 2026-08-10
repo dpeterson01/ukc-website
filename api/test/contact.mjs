@@ -12,7 +12,18 @@ process.env.FINGERPRINT_SECRET = 'test-secret';
 delete process.env.AzureWebJobsStorage;
 
 const sent = [];
+const invites = [];
+let brevoAnswers = { ok: true, status: 201, body: '' };
 globalThis.fetch = async (url, init) => {
+  if (String(url).includes('brevo.com')) {
+    invites.push(JSON.parse(init.body));
+    return {
+      ok: brevoAnswers.ok,
+      status: brevoAnswers.status,
+      json: async () => ({}),
+      text: async () => brevoAnswers.body,
+    };
+  }
   sent.push(JSON.parse(init.body));
   return { ok: true, status: 200, json: async () => ({ id: 'stub' }), text: async () => '' };
 };
@@ -96,6 +107,79 @@ const signup = await post({
 });
 check('a signup is accepted', signup.status === 200, String(signup.status));
 check('the signup email is titled as one', /Email list signup/.test(sent[0]?.html || ''));
+check('with no list configured, nothing is sent to brevo', invites.length === 0);
+
+// --- signup, once a brevo list exists ------------------------------------
+process.env.BREVO_API_KEY = 'xkeysib-test';
+process.env.BREVO_LIST_ID = '7';
+process.env.BREVO_DOI_TEMPLATE_ID = '3';
+
+const joining = {
+  kind: 'signup',
+  subject: 'Email signup: someone@example.com',
+  website: '',
+  elapsedMs: 9000,
+  fields: {
+    Email: 'someone@example.com',
+    Parish: 'Immaculate Conception (Roslyn)',
+    Subscriptions: 'Weekly bulletin, Holy-day reminders',
+  },
+};
+
+sent.length = 0;
+invites.length = 0;
+const joined = await post(joining);
+check('a signup is accepted', joined.status === 200, String(joined.status));
+check('it is handed to brevo', invites.length === 1, String(invites.length));
+check('brevo gets the address', invites[0]?.email === 'someone@example.com', invites[0]?.email);
+check('it joins the parish list', JSON.stringify(invites[0]?.includeListIds) === '[7]');
+check('the confirmation email is the one we built', invites[0]?.templateId === 3);
+check('the boxes they ticked come through as attributes',
+  invites[0]?.attributes?.WEEKLY_BULLETIN === true
+  && invites[0]?.attributes?.HOLY_DAY_REMINDERS === true);
+check('a box they left alone is recorded as declined, not omitted',
+  invites[0]?.attributes?.QUARTERLY_NEWSLETTER === false);
+check('the parish arrives as a segment code, not a display name',
+  invites[0]?.attributes?.PARISH === 'IC', invites[0]?.attributes?.PARISH);
+check('the office inbox is left out of it', sent.length === 0, String(sent.length));
+
+// The footer preselects a parish, but the hosted form and CSV imports need not,
+// and the endpoint is public. A missing parish stays missing.
+invites.length = 0;
+await post({ ...joining, fields: { Email: 'nobody@example.com', Subscriptions: 'Weekly bulletin' } });
+check('a signup with no parish still joins the list', invites.length === 1);
+check('and leaves the parish unset rather than guessing',
+  !('PARISH' in (invites[0]?.attributes || {})));
+
+// Brevo answers 400 to an address already on the list. To the person that is a
+// success, so it must not read as an error or land in the office inbox.
+sent.length = 0;
+invites.length = 0;
+brevoAnswers = { ok: false, status: 400, body: '{"code":"duplicate_parameter"}' };
+const again = await post(joining);
+check('signing up twice still thanks the person', again.status === 200, String(again.status));
+check('and does not bother the office', sent.length === 0, String(sent.length));
+
+// Losing an address because Brevo had a bad day is the one outcome worth
+// avoiding, so it falls back to the mailbox.
+sent.length = 0;
+brevoAnswers = { ok: false, status: 500, body: 'upstream on fire' };
+const degraded = await post(joining);
+check('a brevo outage still accepts the signup', degraded.status === 200, String(degraded.status));
+check('the address goes to the office instead', sent.length === 1, String(sent.length));
+check('the office is told it needs adding by hand',
+  /adding in Brevo by hand/.test(sent[0]?.html || ''));
+
+sent.length = 0;
+invites.length = 0;
+brevoAnswers = { ok: true, status: 201, body: '' };
+await post(good);
+check('a contact message never touches the mailing list', invites.length === 0);
+check('and still reaches the office', sent.length === 1, String(sent.length));
+
+delete process.env.BREVO_API_KEY;
+delete process.env.BREVO_LIST_ID;
+delete process.env.BREVO_DOI_TEMPLATE_ID;
 
 // --- cors ----------------------------------------------------------------
 const pre = await contactHandler(req('', 'OPTIONS'), ctx);

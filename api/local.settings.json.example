@@ -8,6 +8,10 @@
     "PARISH_PHONE": "(509) 674-2531",
     "ALLOWED_ORIGINS": "https://ukccatholic.org,https://www.ukccatholic.org,https://dpeterson01.github.io,http://localhost:8765",
     "EXTRA_ALLOWED_RECIPIENTS": "",
+    "BREVO_API_KEY": "",
+    "BREVO_LIST_ID": "",
+    "BREVO_DOI_TEMPLATE_ID": "",
+    "BREVO_DOI_REDIRECT_URL": "https://ukccatholic.org/",
     "FORMS_DRY_RUN": "true",
     "FINGERPRINT_SECRET": "development-only-secret"
   }
