@@ -1,0 +1,73 @@
+<!--
+  Brevo double opt-in confirmation email.
+
+  Paste into Brevo as an HTML template (Campaigns > Templates > HTML custom
+  code). This file is the source of truth: edit here, then paste, so the parish
+  keeps its templates if it ever leaves Brevo.
+
+  `{{ doubleoptin }}` is Brevo's confirmation link and appears twice, on the
+  button and as visible fallback text. A template without it cannot be used as a
+  double opt-in template. Re-check both after any wording change; losing the
+  link while editing button text is the usual way this breaks.
+
+  The button is a table cell rather than a padded anchor because Outlook for
+  Windows ignores padding on anchors.
+
+  Colours and type match api/src/email.js, so a family that registers and then
+  subscribes gets two emails that look like they came from the same parish.
+-->
+<div style="background:#F7F5F0;padding:24px 0;">
+  <div style="max-width:640px;margin:0 auto;background:#ffffff;">
+
+    <div style="background:#1A3A52;padding:26px 32px 22px;">
+      <div style="font:700 22px/1.2 Georgia,'Times New Roman',serif;color:#ffffff;">
+        Confirm your email address
+      </div>
+      <div style="font:400 12px/1.5 Helvetica,Arial,sans-serif;color:#c9d6e2;margin-top:4px;">
+        Catholic Parishes of Upper Kittitas County
+      </div>
+    </div>
+    <div style="height:4px;background:#B8945F;"></div>
+
+    <div style="padding:8px 32px 32px;">
+      <p style="font:400 15px/1.55 Georgia,'Times New Roman',serif;color:#333333;">
+        Thank you for signing up for news from the Catholic Parishes of Upper
+        Kittitas County.
+      </p>
+      <p style="font:400 15px/1.55 Georgia,'Times New Roman',serif;color:#333333;">
+        Click below to confirm your email address. We won't send you anything
+        until you do.
+      </p>
+
+      <table cellpadding="0" cellspacing="0" style="margin:26px 0;border-collapse:collapse;">
+        <tr>
+          <td style="background:#1A3A52;">
+            <a href="{{ doubleoptin }}"
+               style="display:inline-block;padding:14px 28px;font:700 15px/1 Helvetica,Arial,sans-serif;color:#ffffff;text-decoration:none;">
+              Confirm my email
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <p style="font:400 13px/1.5 Helvetica,Arial,sans-serif;color:#6b6b6b;">
+        If the button doesn't work, paste this into your browser:<br>
+        <!-- Real confirmation tokens run past 100 characters and blow the layout
+             out sideways without this. -->
+        <a href="{{ doubleoptin }}"
+           style="color:#2E5E8A;word-break:break-all;word-wrap:break-word;">{{ doubleoptin }}</a>
+      </p>
+
+      <p style="font:400 13px/1.5 Helvetica,Arial,sans-serif;color:#6b6b6b;">
+        Didn't sign up? Ignore this message and you won't hear from us again.
+      </p>
+
+      <div style="margin-top:34px;padding-top:14px;border-top:1px solid #dddddd;font:400 11px/1.6 Helvetica,Arial,sans-serif;color:#6b6b6b;">
+        Catholic Parishes of Upper Kittitas County<br>
+        303 W. 2nd St., Cle Elum, WA 98922<br>
+        (509) 674-2531 &middot; ukccatholic.org
+      </div>
+    </div>
+
+  </div>
+</div>
