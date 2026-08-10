@@ -53,9 +53,13 @@
 
     'btn.send': 'Send message',
     'btn.sending': 'Sending…',
-    'btn.signUp': 'Keep me posted',
+    'btn.signUp': 'Sign me up',
     'btn.signingUp': 'Sending…',
-    'signup.thanks': "Thank you. We'll email you as soon as the bulletin is ready to send.",
+    'signup.parish.label': 'Which parish?',
+    'signup.parish.sjb': 'St. John the Baptist (Cle Elum)',
+    'signup.parish.ic': 'Immaculate Conception (Roslyn)',
+    'signup.parish.both': 'Both',
+    'signup.thanks': 'Almost there. Check your email and click the link to confirm.',
   };
 
   /* Translator: fill in the values below. Leave a value as '' to keep English.
@@ -65,7 +69,7 @@
     'contact.prayerFor.placeholder': 'Nombre o iniciales',
     'contact.requester.label': 'Datos de contacto de quien solicita',
     'contact.requester.placeholder': 'Correo electrónico o teléfono para responderle',
-    'contact.prayer.note': 
+    'contact.prayer.note':
       'Su petición es confidencial y solo se comparte con el Padre Higuera y la '
       + 'oficina parroquial.',
 
@@ -80,31 +84,35 @@
     'contact.timeframe.label': 'Fecha o periodo preferido',
     'contact.timeframe.placeholder': 'Una fecha, un mes o un periodo aproximado',
 
-    'message.placeholder.default': 
+    'message.placeholder.default':
       'Planear un sacramento, compartir una petición de oración o simplemente '
       + 'saludar…',
-    'message.placeholder.prayer': 
+    'message.placeholder.prayer':
       'Comparta su intención. Todas las peticiones se tratan de forma confidencial.',
 
     'error.email': 'Ingrese un correo electrónico válido.',
     'error.required': 'Este campo es obligatorio.',
-    'error.send': 
+    'error.send':
       'No se pudo enviar. Vuelva a intentarlo o llame a la oficina parroquial al {phone}.',
 
     'success.friend': 'amigo',
-    'success.prayer': 
+    'success.prayer':
       'Gracias. Hemos recibido su intención y la llevaremos en oración, de forma '
       + 'confidencial.',
-    'success.default': 
+    'success.default':
       'Gracias, {name}. Su mensaje va camino a la oficina parroquial. Le responderemos '
       + 'en horario de oficina; si es algo urgente, llame al {phone}.',
 
     'btn.send': 'Enviar mensaje',
     'btn.sending': 'Enviando…',
-    'btn.signUp': 'Manténgame informado',
+    'btn.signUp': 'Suscribirme',
     'btn.signingUp': 'Enviando…',
-    'signup.thanks': 
-      'Gracias. Le enviaremos un correo en cuanto el boletín esté listo.',
+    'signup.parish.label': '¿Cuál parroquia?',
+    'signup.parish.sjb': 'San Juan Bautista (Cle Elum)',
+    'signup.parish.ic': 'Inmaculada Concepción (Roslyn)',
+    'signup.parish.both': 'Ambas',
+    'signup.thanks':
+      'Ya casi. Revise su correo y haga clic en el enlace para confirmar.',
   };
 
   var TABLES = { en: EN, es: ES };
