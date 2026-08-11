@@ -55,10 +55,10 @@
     'btn.sending': 'Sending…',
     'btn.signUp': 'Sign me up',
     'btn.signingUp': 'Sending…',
-    'signup.parish.label': 'Which parish?',
+    'signup.parish.label': 'News from',
     'signup.parish.sjb': 'St. John the Baptist (Cle Elum)',
     'signup.parish.ic': 'Immaculate Conception (Roslyn)',
-    'signup.parish.both': 'Both',
+    'signup.parish.both': 'Both parishes',
     'signup.thanks': 'Almost there. Check your email and click the link to confirm.',
   };
 
@@ -107,10 +107,10 @@
     'btn.sending': 'Enviando…',
     'btn.signUp': 'Suscribirme',
     'btn.signingUp': 'Enviando…',
-    'signup.parish.label': '¿Cuál parroquia?',
+    'signup.parish.label': 'Noticias de',
     'signup.parish.sjb': 'San Juan Bautista (Cle Elum)',
     'signup.parish.ic': 'Inmaculada Concepción (Roslyn)',
-    'signup.parish.both': 'Ambas',
+    'signup.parish.both': 'Ambas parroquias',
     'signup.thanks':
       'Ya casi. Revise su correo y haga clic en el enlace para confirmar.',
   };

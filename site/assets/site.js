@@ -89,7 +89,7 @@
   }
 
   function syncChip(label) {
-    var input = $('input[type="checkbox"], input[type="radio"]', label);
+    var input = $('input[type="checkbox"]', label);
     if (!input) return;
     var on = input.checked;
     if (label.classList.contains('chip')) {
@@ -103,16 +103,11 @@
 
   function initChips(root) {
     $$('label.chip, label[style*="border-radius:999px"]', root).forEach(function (label) {
-      var input = $('input[type="checkbox"], input[type="radio"]', label);
+      var input = $('input[type="checkbox"]', label);
       if (!input || input.dataset.chipBound) return;
       input.dataset.chipBound = '1';
       syncChip(label);
-      input.addEventListener('change', function () {
-        // Choosing a radio clears its siblings without firing their events, so
-        // the whole group has to be re-read rather than just this label.
-        if (input.type === 'radio') $$('label.chip', input.form || root).forEach(syncChip);
-        else syncChip(label);
-      });
+      input.addEventListener('change', function () { syncChip(label); });
     });
   }
 
@@ -339,15 +334,13 @@
 
   /* ------------------------------------------------------------ footer signup */
 
-  /* ------------------------------------------------------------ footer signup */
-
   /* The signup holds its own parish wording rather than borrowing the contact
      form's, so the two can change independently. `en` is what the office and the
      mailing list read, whatever language the page was in. */
   var SIGNUP_PARISHES = [
+    { value: 'both', key: 'signup.parish.both', en: 'Both parishes' },
     { value: 'sjb', key: 'signup.parish.sjb', en: 'St. John the Baptist (Cle Elum)' },
     { value: 'ic', key: 'signup.parish.ic', en: 'Immaculate Conception (Roslyn)' },
-    { value: 'both', key: 'signup.parish.both', en: 'Both parishes' },
   ];
 
   function parishLabel(value) {
@@ -357,25 +350,31 @@
     return '';
   }
 
+  /* Someone signing up from a parish page almost always means that parish, so the
+     page picks the default and the control never has to be touched. */
+  function defaultParish() {
+    var match = /\/(sjb|ic)(?:-history)?\//.exec(location.pathname);
+    return match ? match[1] : 'both';
+  }
+
   /* Injected for the same reason as the honeypot: the footer is copied into every
      page in both languages, and building it here keeps the copies from drifting.
-     Both parishes is preselected, so the default is everything rather than one
-     parish over the other, and nobody is asked to choose before subscribing. */
+     One line of small print under the button rather than a row of chips above it,
+     because the default is already right for nearly everyone. */
   function addParishChoice(form) {
-    var group = document.createElement('div');
-    group.className = 'footer__signup-prefs footer__signup-parish';
-    group.setAttribute('role', 'radiogroup');
-    group.setAttribute('aria-label', t('signup.parish.label'));
-    group.innerHTML = '<span class="footer__signup-prefs-label">'
-      + esc(t('signup.parish.label')) + '</span>'
+    var line = document.createElement('label');
+    line.className = 'footer__signup-parish';
+    var current = defaultParish();
+    line.innerHTML = esc(t('signup.parish.label')) + ': '
+      + '<select name="parish">'
       + SIGNUP_PARISHES.map(function (p) {
-        return '<label class="chip chip--radio" data-en="' + esc(p.en) + '">'
-          + '<input type="radio" name="parish" value="' + p.value + '"'
-          + (p.value === 'both' ? ' checked' : '') + '>'
-          + '<span>' + esc(t(p.key)) + '</span></label>';
-      }).join('');
-    form.insertBefore(group, $('.footer__signup-prefs', form) || form.firstChild);
-    return group;
+        return '<option value="' + p.value + '"'
+          + (p.value === current ? ' selected' : '') + '>'
+          + esc(t(p.key)) + '</option>';
+      }).join('')
+      + '</select>';
+    form.appendChild(line);
+    return line;
   }
 
   function initSignup(form) {
@@ -401,7 +400,7 @@
       }
       setError(email, false);
 
-      var parish = $('input[name="parish"]:checked', form);
+      var parish = $('select[name="parish"]', form);
 
       var prefs = $$('.chip', form).filter(function (c) {
         var input = $('input[type="checkbox"]', c);
