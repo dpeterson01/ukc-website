@@ -57,5 +57,5 @@ Pages rebuilds in about a minute. Hard-refresh (⌘⇧R) to bust the CSS cache.
 
 ## Still to do
 
-- Replace `assets/photos/*-exterior-placeholder.svg` with real photographs
-  (same filenames = no code change needed).
+- Nothing outstanding. The parish exterior photographs are in place at
+  `assets/photos/ic-exterior.jpg` and `assets/photos/sjb-exterior.jpg`.
