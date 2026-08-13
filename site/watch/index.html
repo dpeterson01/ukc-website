@@ -111,7 +111,8 @@
 
     <section class="section section--narrow">
       <div style="position: relative; width: 100%; aspect-ratio: 16 / 9; background: var(--color-navy); border: 1px solid var(--border-hairline);">
-        <iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=UU_2o4dV4dCBxhmNOUYlum1w" title="Sunday Mass livestream and recent Masses" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" style="position: absolute; inset: 0px; width: 100%; height: 100%; border: 0px;"></iframe>
+        <p data-youtube-fallback style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; margin: 0; padding: 24px; text-align: center; color: var(--color-warm-white);">The video is loading. If it does not appear, visit our YouTube channel below.</p>
+        <iframe data-youtube-player src="about:blank" title="Sunday Mass livestream and recent Masses" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" hidden style="position: absolute; inset: 0px; width: 100%; height: 100%; border: 0px;"></iframe>
       </div>
       <p class="feature__body" style="text-align: center; margin-top: 18px;">
         The player shows our livestream when it is available and the most recent Mass between

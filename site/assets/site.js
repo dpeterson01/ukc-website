@@ -8,6 +8,7 @@
   'use strict';
 
   var CONTACT_ENDPOINT = 'https://forms.ukccatholic.org/contact';
+  var YOUTUBE_ENDPOINT = 'https://forms.ukccatholic.org/youtube';
   var OFFICE_PHONE = '(509) 674-2531';
   // Both forms report how long the person took, so the server can apply the
   // same too-fast check the form engine uses.
@@ -68,6 +69,31 @@
     toggle.addEventListener('click', function () { setOpen(drawer.hidden); });
     drawer.addEventListener('click', function (e) { if (e.target.tagName === 'A') setOpen(false); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !drawer.hidden) setOpen(false); });
+  }
+
+  /* ---------------------------------------------------------- YouTube player */
+
+  function initYouTubePlayer() {
+    var player = $('[data-youtube-player]');
+    if (!player) return;
+
+    fetch(YOUTUBE_ENDPOINT, { headers: { Accept: 'application/json' } })
+      .then(function (response) {
+        if (!response.ok) throw new Error('The server responded ' + response.status);
+        return response.json();
+      })
+      .then(function (video) {
+        if (!video || !/^[\w-]{11}$/.test(video.videoId || '')) {
+          throw new Error('YouTube returned an invalid video');
+        }
+        player.src = 'https://www.youtube-nocookie.com/embed/' + video.videoId;
+        player.hidden = false;
+        var fallback = $('[data-youtube-fallback]');
+        if (fallback) fallback.style.display = 'none';
+      })
+      .catch(function () {
+        // The visible channel link remains usable when the resolver is unavailable.
+      });
   }
 
   /* --------------------------------------------------------- preference chips */
@@ -448,6 +474,7 @@
 
   function init() {
     initDrawer();
+    initYouTubePlayer();
     $$('form.form').forEach(initContactForm);
     $$('form.footer__signup-form').forEach(initSignup);
   }

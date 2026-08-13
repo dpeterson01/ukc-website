@@ -78,3 +78,6 @@ jobs:
 
       - name: Contact form
         run: node test/contact.mjs
+
+      - name: YouTube resolver
+        run: node test/youtube.mjs
