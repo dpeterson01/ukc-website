@@ -60,6 +60,9 @@
     'signup.parish.ic': 'Immaculate Conception (Roslyn)',
     'signup.parish.both': 'Both parishes',
     'signup.thanks': 'Almost there. Check your email and click the link to confirm.',
+
+    'announce.regionLabel': 'Parish announcement',
+    'announce.dismiss': 'Dismiss this announcement',
   };
 
   /* Translator: fill in the values below. Leave a value as '' to keep English.
@@ -113,6 +116,9 @@
     'signup.parish.both': 'Ambas parroquias',
     'signup.thanks':
       'Ya casi. Revise su correo y haga clic en el enlace para confirmar.',
+
+    'announce.regionLabel': 'Aviso parroquial',
+    'announce.dismiss': 'Cerrar este aviso',
   };
 
   var TABLES = { en: EN, es: ES };

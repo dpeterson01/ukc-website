@@ -23,6 +23,90 @@
   function t(key, vars) { return I18N.t(key, vars); }
   function esc(value) { return I18N.esc(value); }
 
+  /* ---------------------------------------------------------------- notice bar */
+
+  var ANNOUNCE_KEY = 'ukc-announce-dismissed';
+
+  // Local calendar date, so a notice starts and ends on the reader's day.
+  function todayISO() {
+    var d = new Date();
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+
+  function dismissedId() {
+    try { return localStorage.getItem(ANNOUNCE_KEY); } catch (e) { return null; }
+  }
+
+  function safeHref(href) {
+    return typeof href === 'string' && /^(https:\/\/|\.\.?\/|\/)/.test(href);
+  }
+
+  function initAnnouncement() {
+    var list = window.UKC_ANNOUNCEMENTS;
+    var header = $('.nav');
+    var inner = header && $('.nav__inner', header);
+    if (!list || !list.length || !inner) return;
+
+    var today = todayISO();
+    var entry = null;
+    for (var i = 0; i < list.length && !entry; i++) {
+      if (list[i] && list[i].start <= today && today <= list[i].end) entry = list[i];
+    }
+    if (!entry || dismissedId() === entry.id) return;
+
+    // No cross-language fallback: English in the Spanish bar would be worse
+    // than no bar at all.
+    var copy = entry[I18N.lang()];
+    if (!copy || !copy.text) return;
+
+    var bar = document.createElement('div');
+    bar.className = 'announce';
+    bar.setAttribute('role', 'region');
+    bar.setAttribute('aria-label', t('announce.regionLabel'));
+
+    var row = document.createElement('div');
+    row.className = 'announce__inner';
+
+    var body = document.createElement('p');
+    body.className = 'announce__body';
+
+    if (copy.label) {
+      var label = document.createElement('span');
+      label.className = 'announce__label';
+      label.textContent = copy.label;
+      body.appendChild(label);
+    }
+
+    var text = document.createElement('span');
+    text.className = 'announce__text';
+    text.textContent = copy.text;
+    body.appendChild(text);
+
+    if (copy.cta && copy.cta.text && safeHref(copy.cta.href)) {
+      var link = document.createElement('a');
+      link.className = 'announce__cta';
+      link.href = copy.cta.href;
+      link.textContent = copy.cta.text;
+      body.appendChild(link);
+    }
+
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'announce__close';
+    close.setAttribute('aria-label', t('announce.dismiss'));
+    close.textContent = '\u00D7';
+    close.addEventListener('click', function () {
+      try { localStorage.setItem(ANNOUNCE_KEY, entry.id); } catch (e) { /* private mode */ }
+      if (bar.parentNode) bar.parentNode.removeChild(bar);
+    });
+
+    row.appendChild(body);
+    row.appendChild(close);
+    bar.appendChild(row);
+    header.insertBefore(bar, inner);
+  }
+
   /* ---------------------------------------------------------------- nav drawer */
 
   function initDrawer() {
@@ -473,6 +557,7 @@
   /* -------------------------------------------------------------------- start */
 
   function init() {
+    initAnnouncement();
     initDrawer();
     initYouTubePlayer();
     $$('form.form').forEach(initContactForm);
