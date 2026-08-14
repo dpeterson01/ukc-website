@@ -57,6 +57,85 @@
   }
 }
 
+/* Notice bar. It lives inside .nav, which is already sticky, so it must not
+   position itself or the two would fight over the same offset. */
+.announce {
+  /* The close button aligns to this, so body and label must share it. */
+  --announce-line: 21px;
+  background: var(--bg-surface-alt);
+  border-bottom: var(--border-w-banner) solid var(--color-gold-screen);
+}
+
+.announce__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 12px;
+}
+
+/* Wrapping is expected at narrow widths, so nothing here clips or truncates:
+   a cut-off Mass time is worse than a taller header. */
+.announce__body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: var(--announce-line);
+  color: var(--color-charcoal);
+}
+
+.announce__label {
+  margin-right: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: var(--announce-line);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-navy);
+}
+
+.announce__cta {
+  margin-left: 8px;
+  color: var(--color-navy);
+  white-space: nowrap;
+}
+
+.announce__close {
+  position: relative;
+  height: var(--announce-line);
+  padding: 0;
+  border: 0;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: var(--font-sans);
+  font-size: 20px;
+  line-height: var(--announce-line);
+  color: var(--fg-muted);
+  cursor: pointer;
+}
+
+/* The box is one line tall so the glyph sits on the first line of text; the
+   finger-sized hit target is restored here rather than by growing the box. */
+.announce__close::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+}
+
+.announce__close:hover {
+  color: var(--color-charcoal);
+}
+
+@media (max-width: 480px) {
+  .announce__label {
+    display: block;
+    margin: 0 0 2px;
+  }
+}
+
 .form__error {
   margin: 6px 0 0;
   font-family: var(--font-sans);
