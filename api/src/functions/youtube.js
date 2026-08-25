@@ -36,6 +36,16 @@ function startedAt(video) {
   return Date.parse(video.liveStreamingDetails?.actualStartTime || video.snippet?.publishedAt || 0);
 }
 
+// One-off broadcasts (funerals, weddings) shouldn't stand in for the parish's
+// regular Mass schedule once they're over, even though they're still the most
+// recent completed livestream. Titles consistently name these ("Funeral Mass
+// for...", "Wedding Mass for..."), so a title match is enough to tell them apart.
+const SPECIAL_EVENT_PATTERN = /\b(funeral|wedding|marriage)\b/i;
+
+function isSpecialEvent(video) {
+  return SPECIAL_EVENT_PATTERN.test(video.snippet?.title || '');
+}
+
 export function selectVideo(videos) {
   const live = videos.find((video) => video.snippet?.liveBroadcastContent === 'live');
   if (live) return { video: live, state: 'live' };
@@ -43,7 +53,13 @@ export function selectVideo(videos) {
   const completed = videos
     .filter((video) => video.liveStreamingDetails?.actualEndTime)
     .sort((left, right) => startedAt(right) - startedAt(left));
-  return completed.length ? { video: completed[0], state: 'recorded' } : null;
+  if (!completed.length) return null;
+
+  // Prefer the most recent regular Mass; only fall back to a special-event
+  // recording if nothing else is available, so the player never shows nothing.
+  const regular = completed.filter((video) => !isSpecialEvent(video));
+  const chosen = regular.length ? regular[0] : completed[0];
+  return { video: chosen, state: 'recorded' };
 }
 
 export async function resolveVideo(apiKey) {

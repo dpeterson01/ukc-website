@@ -75,6 +75,41 @@ selected = selectVideo([upcoming, latest, active]);
 check('an active livestream wins', selected.video.id === 'active', selected.video.id);
 check('an active livestream is labeled live', selected.state === 'live', selected.state);
 
+const funeral = {
+  id: 'funeral',
+  snippet: { title: 'LIVE - Funeral Mass for Jerry E. Hein', liveBroadcastContent: 'none' },
+  liveStreamingDetails: {
+    actualStartTime: '2026-08-18T18:00:00Z',
+    actualEndTime: '2026-08-18T19:00:00Z',
+  },
+};
+const wedding = {
+  id: 'wedding',
+  snippet: { title: 'LIVE - Wedding Mass for Smith and Jones', liveBroadcastContent: 'none' },
+  liveStreamingDetails: {
+    actualStartTime: '2026-08-22T18:00:00Z',
+    actualEndTime: '2026-08-22T19:00:00Z',
+  },
+};
+const liveFuneral = {
+  id: 'live-funeral',
+  snippet: { title: 'LIVE - Funeral Mass for Jane Doe', liveBroadcastContent: 'live' },
+  liveStreamingDetails: { actualStartTime: '2026-08-24T17:00:00Z' },
+};
+
+selected = selectVideo([older, latest, funeral]);
+check('a more recent funeral is skipped in favor of the last regular Mass',
+  selected.video.id === 'latest', selected.video.id);
+selected = selectVideo([older, latest, wedding]);
+check('a more recent wedding is skipped in favor of the last regular Mass',
+  selected.video.id === 'latest', selected.video.id);
+selected = selectVideo([funeral, wedding]);
+check('a special event is still shown when no regular Mass is available',
+  selected.video.id === 'wedding', selected.video.id);
+selected = selectVideo([older, latest, liveFuneral]);
+check('a funeral that is currently live still wins', selected.video.id === 'live-funeral', selected.video.id);
+check('a live funeral is labeled live', selected.state === 'live', selected.state);
+
 process.env.YOUTUBE_API_KEY = 'test-key';
 videoItems = [upcoming, older, latest];
 apiCalls.length = 0;
