@@ -9,7 +9,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createReadStream } from 'node:fs';
 
-const SITE = '/Users/derekpeterson/projects/personal/ukc-website/site';
+const SITE = '/Users/derekpeterson/projects/personal/church/ukc-website/site';
 const SHOTS = '/tmp/ukc-shots';
 const PORT = 8793;
 const MIME = {
@@ -115,23 +115,39 @@ const check = (name, pass, detail = '') => {
   await page.goto(`http://localhost:${PORT}/mass/`, { waitUntil: 'load' });
   await page.waitForTimeout(300);
 
-  const parishChips = page.locator('.footer__signup-parish .chip');
-  check('the signup asks which parish', (await parishChips.count()) === 3);
-  check('it defaults to both rather than one parish or none',
-    (await page.locator('.footer__signup-parish input:checked').getAttribute('value')) === 'both');
+  const firstName = page.locator('.footer__signup-form input[name="first_name"]');
+  const lastName = page.locator('.footer__signup-form input[name="last_name"]');
+  check('the signup asks for separate first and last names',
+    (await firstName.count()) === 1 && (await lastName.count()) === 1);
+  check('the name fields support browser autocomplete',
+    (await firstName.getAttribute('autocomplete')) === 'given-name'
+    && (await lastName.getAttribute('autocomplete')) === 'family-name');
 
+  check('the signup does not ask for scope preferences',
+    (await page.locator('.footer__signup-prefs:visible, .footer__signup-parish').count()) === 0);
+
+  await firstName.fill('Maria');
+  await lastName.fill('Santos');
   await page.locator('form.footer__signup-form button[type=submit]').click();
   await page.waitForTimeout(250);
   check('signup rejects empty email', (await page.locator('.footer__signup-form .form__error').count()) === 1);
 
-  await parishChips.nth(1).click();
-  await page.waitForTimeout(150);
-  check('choosing a parish moves the highlight rather than adding one',
-    (await page.locator('.footer__signup-parish .chip.is-on').count()) === 1);
-  check('and the choice is the one that was clicked',
-    (await page.locator('.footer__signup-parish input:checked').getAttribute('value')) === 'ic');
-
   await page.locator('.footer__signup').screenshot({ path: path.join(SHOTS, 'footer-signup.png') });
+
+  let signupPayload;
+  await page.route('https://forms.ukccatholic.org/contact', async (route) => {
+    signupPayload = route.request().postDataJSON();
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+  });
+  await page.locator('.footer__signup-input[type="email"]').fill('maria@example.com');
+  await page.locator('form.footer__signup-form button[type=submit]').click();
+  await page.waitForTimeout(150);
+  check('first and last name are submitted separately',
+    signupPayload?.fields?.['First name'] === 'Maria'
+    && signupPayload?.fields?.['Last name'] === 'Santos');
+  check('the signup sends no client-controlled scope',
+    !('Parish' in (signupPayload?.fields || {}))
+    && !('Subscriptions' in (signupPayload?.fields || {})));
   await page.close();
 }
 

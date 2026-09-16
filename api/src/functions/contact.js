@@ -89,6 +89,22 @@ const emailIn = (entries) => {
 
 const valueIn = (entries, label) => (entries.find(([l]) => l === label) || [])[1] || '';
 
+function signupIn(entries) {
+  const email = valueIn(entries, 'Email').trim();
+  const firstName = valueIn(entries, 'First name').trim();
+  const lastName = valueIn(entries, 'Last name').trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    throw new Refused('We need a valid email address to sign you up.');
+  }
+  if (!firstName || !lastName) {
+    throw new Refused('We need your first and last name to sign you up.');
+  }
+  if (firstName.length > 100 || lastName.length > 100) {
+    throw new Refused('That name is too long.');
+  }
+  return { email, firstName, lastName };
+}
+
 function body(entries) {
   const rows = entries.filter(([, v]) => v.trim()).map(([label, value]) => `
     <tr>
@@ -115,18 +131,18 @@ export async function contactHandler(request, context) {
     }
 
     const subject = String(payload.subject || 'Message from the parish website').slice(0, 200);
-    const replyTo = emailIn(entries);
+    const signup = payload.kind === 'signup' ? signupIn(entries) : null;
+    const replyTo = signup ? signup.email : emailIn(entries);
     const receivedAt = new Date().toISOString();
 
     let listRefused = false;
-    if (payload.kind === 'signup' && brevoConfigured(process.env)) {
-      if (!replyTo) throw new Refused('We need an email address to sign you up.');
+    if (signup && brevoConfigured(process.env)) {
       try {
         const outcome = await inviteContact(
           process.env,
           replyTo,
-          valueIn(entries, 'Subscriptions'),
-          valueIn(entries, 'Parish'),
+          signup.firstName,
+          signup.lastName,
         );
         context.log(JSON.stringify({ event: 'contact', kind: 'signup', brevo: outcome }));
         return { status: 200, jsonBody: { ok: true }, headers };

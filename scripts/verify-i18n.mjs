@@ -82,7 +82,9 @@ function checkPage(page, lang) {
   else if (siteAt >= 0 && stringsAt > siteAt) fail(id, 'strings.js must load before site.js');
 
   const chips = html.match(/<label class="chip(?: is-on)?" data-en="[^"]+"/g) || [];
-  if (chips.length !== 3) fail(id, `expected 3 footer chips with data-en, found ${chips.length}`);
+  if (chips.length !== 0 && chips.length !== 3) {
+    fail(id, `expected either the legacy 3 footer chips or none, found ${chips.length}`);
+  }
 
   /* Relative asset references have to resolve, since the Spanish tree sits one
      level deeper and every ../ had to be adjusted. */

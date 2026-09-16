@@ -5,7 +5,7 @@
   "main": "src/functions/*.js",
   "scripts": {
     "start": "func start",
-    "test": "node test/run.mjs && node test/youtube.mjs",
+    "test": "node test/run.mjs && node test/http.mjs && node test/guards.mjs && node test/contact.mjs && node test/youtube.mjs",
     "smoke": "node test/smoke.mjs"
   },
   "dependencies": {

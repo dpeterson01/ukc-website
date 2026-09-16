@@ -9,13 +9,14 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createReadStream } from 'node:fs';
 
-const SITE = '/Users/derekpeterson/projects/personal/ukc-website/site';
+const SITE = '/Users/derekpeterson/projects/personal/church/ukc-website/site';
 const SHOTS = '/tmp/ukc-shots';
 const PORT = 8792;
 
 const ROUTES = [
   '', 'new', 'mass', 'about', 'sjb', 'ic', 'sjb-history', 'ic-history',
   'sacraments', 'formation', 'giving', 'watch', 'contact', 'prayer',
+  'email', 'es/email',
 ];
 
 const MIME = {
@@ -44,7 +45,7 @@ const browser = await chromium.launch();
 let problems = 0;
 
 for (const route of ROUTES) {
-  const name = route || 'home';
+  const name = (route || 'home').replaceAll('/', '-');
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   const errors = [];
   page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
