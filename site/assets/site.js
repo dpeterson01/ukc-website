@@ -444,53 +444,28 @@
 
   /* ------------------------------------------------------------ footer signup */
 
-  /* The signup holds its own parish wording rather than borrowing the contact
-     form's, so the two can change independently. `en` is what the office and the
-     mailing list read, whatever language the page was in. */
-  var SIGNUP_PARISHES = [
-    { value: 'both', key: 'signup.parish.both', en: 'Both parishes' },
-    { value: 'sjb', key: 'signup.parish.sjb', en: 'St. John the Baptist (Cle Elum)' },
-    { value: 'ic', key: 'signup.parish.ic', en: 'Immaculate Conception (Roslyn)' },
-  ];
-
-  function parishLabel(value) {
-    for (var i = 0; i < SIGNUP_PARISHES.length; i++) {
-      if (SIGNUP_PARISHES[i].value === value) return SIGNUP_PARISHES[i].en;
-    }
-    return '';
-  }
-
-  /* Someone signing up from a parish page almost always means that parish, so the
-     page picks the default and the control never has to be touched. */
-  function defaultParish() {
-    var match = /\/(sjb|ic)(?:-history)?\//.exec(location.pathname);
-    return match ? match[1] : 'both';
-  }
-
-  /* Injected for the same reason as the honeypot: the footer is copied into every
-     page in both languages, and building it here keeps the copies from drifting.
-     One line of small print under the button rather than a row of chips above it,
-     because the default is already right for nearly everyone. */
-  function addParishChoice(form) {
-    var line = document.createElement('label');
-    line.className = 'footer__signup-parish';
-    var current = defaultParish();
-    line.innerHTML = esc(t('signup.parish.label')) + ': '
-      + '<select name="parish">'
-      + SIGNUP_PARISHES.map(function (p) {
-        return '<option value="' + p.value + '"'
-          + (p.value === current ? ' selected' : '') + '>'
-          + esc(t(p.key)) + '</option>';
-      }).join('')
-      + '</select>';
-    form.appendChild(line);
-    return line;
+  function addSignupNames(form) {
+    var row = $('.footer__signup-row', form);
+    row.classList.add('footer__signup-fields');
+    row.insertAdjacentHTML('afterbegin', '<input class="footer__signup-input" id="signup-first-name"'
+      + ' name="first_name" type="text" autocomplete="given-name" required maxlength="100"'
+      + ' placeholder="' + esc(t('signup.firstName')) + '"'
+      + ' aria-label="' + esc(t('signup.firstName')) + '">'
+      + '<input class="footer__signup-input" id="signup-last-name"'
+      + ' name="last_name" type="text" autocomplete="family-name" required maxlength="100"'
+      + ' placeholder="' + esc(t('signup.lastName')) + '"'
+      + ' aria-label="' + esc(t('signup.lastName')) + '">');
   }
 
   function initSignup(form) {
-    addParishChoice(form);
-    initChips(form);
-    var email = $('.footer__signup-input', form);
+    form.noValidate = true;
+    var preferences = $('.footer__signup-prefs', form);
+    if (preferences) preferences.remove();
+    addSignupNames(form);
+    var email = $('.footer__signup-input[type="email"]', form);
+    email.name = 'email';
+    email.required = true;
+    email.autocomplete = 'email';
     var honeypot = addHoneypot(form);
 
     // The label is also baked into every static footer. Taking it from
@@ -503,19 +478,29 @@
       e.preventDefault();
       var stale = $('.form__send-error', form);
       if (stale) stale.remove();
+      var submitted = new FormData(form);
+      var firstNameInput = $('input[name="first_name"]', form);
+      var lastNameInput = $('input[name="last_name"]', form);
+      var firstName = String(submitted.get('first_name') || '').trim();
+      var lastName = String(submitted.get('last_name') || '').trim();
+      if (!firstName) {
+        setError(firstNameInput, true);
+        firstNameInput.focus();
+        return;
+      }
+      setError(firstNameInput, false);
+      if (!lastName) {
+        setError(lastNameInput, true);
+        lastNameInput.focus();
+        return;
+      }
+      setError(lastNameInput, false);
       if (!validEmail(email.value)) {
         setError(email, true);
         email.focus();
         return;
       }
       setError(email, false);
-
-      var parish = $('select[name="parish"]', form);
-
-      var prefs = $$('.chip', form).filter(function (c) {
-        var input = $('input[type="checkbox"]', c);
-        return input && input.checked;
-      }).map(chipValue);
 
       var btn = $('.footer__signup-btn', form);
       if (btn) { btn.disabled = true; btn.textContent = t('btn.signingUp'); }
@@ -530,8 +515,8 @@
           elapsedMs: Date.now() - LOADED_AT,
           fields: {
             Email: email.value.trim(),
-            Parish: parish ? parishLabel(parish.value) : '',
-            Subscriptions: prefs.join(', ') || 'None selected',
+            'First name': firstName,
+            'Last name': lastName,
           },
         }),
       }).then(function (res) {

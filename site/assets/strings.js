@@ -55,10 +55,8 @@
     'btn.sending': 'Sending…',
     'btn.signUp': 'Sign me up',
     'btn.signingUp': 'Sending…',
-    'signup.parish.label': 'News from',
-    'signup.parish.sjb': 'St. John the Baptist (Cle Elum)',
-    'signup.parish.ic': 'Immaculate Conception (Roslyn)',
-    'signup.parish.both': 'Both parishes',
+    'signup.firstName': 'First name',
+    'signup.lastName': 'Last name',
     'signup.thanks': 'Almost there. Check your email and click the link to confirm.',
 
     'announce.regionLabel': 'Parish announcement',
@@ -110,10 +108,8 @@
     'btn.sending': 'Enviando…',
     'btn.signUp': 'Suscribirme',
     'btn.signingUp': 'Enviando…',
-    'signup.parish.label': 'Noticias de',
-    'signup.parish.sjb': 'San Juan Bautista (Cle Elum)',
-    'signup.parish.ic': 'Inmaculada Concepción (Roslyn)',
-    'signup.parish.both': 'Ambas parroquias',
+    'signup.firstName': 'Nombre',
+    'signup.lastName': 'Apellido',
     'signup.thanks':
       'Ya casi. Revise su correo y haga clic en el enlace para confirmar.',
 

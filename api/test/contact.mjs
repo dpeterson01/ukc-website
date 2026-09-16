@@ -121,8 +121,8 @@ const joining = {
   elapsedMs: 9000,
   fields: {
     Email: 'someone@example.com',
-    Parish: 'Immaculate Conception (Roslyn)',
-    Subscriptions: 'Weekly bulletin, Holy-day reminders',
+    'First name': 'Maria',
+    'Last name': 'Santos',
   },
 };
 
@@ -134,22 +134,21 @@ check('it is handed to brevo', invites.length === 1, String(invites.length));
 check('brevo gets the address', invites[0]?.email === 'someone@example.com', invites[0]?.email);
 check('it joins the parish list', JSON.stringify(invites[0]?.includeListIds) === '[7]');
 check('the confirmation email is the one we built', invites[0]?.templateId === 3);
-check('the boxes they ticked come through as attributes',
+check('first and last name reach the contact record',
+  invites[0]?.attributes?.FIRSTNAME === 'Maria'
+  && invites[0]?.attributes?.LASTNAME === 'Santos');
+check('a simple signup receives every newsletter stream',
   invites[0]?.attributes?.WEEKLY_BULLETIN === true
+  && invites[0]?.attributes?.QUARTERLY_NEWSLETTER === true
   && invites[0]?.attributes?.HOLY_DAY_REMINDERS === true);
-check('a box they left alone is recorded as declined, not omitted',
-  invites[0]?.attributes?.QUARTERLY_NEWSLETTER === false);
-check('the parish arrives as a segment code, not a display name',
-  invites[0]?.attributes?.PARISH === 'IC', invites[0]?.attributes?.PARISH);
+check('a simple signup receives news from both parishes',
+  invites[0]?.attributes?.PARISH === 'BOTH'
+  && invites[0]?.attributes?.PARISH_PREFERENCE === 1,
+  JSON.stringify({
+    legacy: invites[0]?.attributes?.PARISH,
+    preference: invites[0]?.attributes?.PARISH_PREFERENCE,
+  }));
 check('the office inbox is left out of it', sent.length === 0, String(sent.length));
-
-// The footer preselects a parish, but the hosted form and CSV imports need not,
-// and the endpoint is public. A missing parish stays missing.
-invites.length = 0;
-await post({ ...joining, fields: { Email: 'nobody@example.com', Subscriptions: 'Weekly bulletin' } });
-check('a signup with no parish still joins the list', invites.length === 1);
-check('and leaves the parish unset rather than guessing',
-  !('PARISH' in (invites[0]?.attributes || {})));
 
 // Brevo answers 400 to an address already on the list. To the person that is a
 // success, so it must not read as an error or land in the office inbox.

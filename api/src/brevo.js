@@ -12,39 +12,27 @@
 
 const DOUBLE_OPTIN = 'https://api.brevo.com/v3/contacts/doubleOptinConfirmation';
 
-/* The chips carry their English label in data-en whatever language the page is
- * showing, so these are the strings that actually arrive. */
-const ATTRIBUTES = {
-  'Weekly bulletin': 'WEEKLY_BULLETIN',
-  'Quarterly newsletter': 'QUARTERLY_NEWSLETTER',
-  'Holy-day reminders': 'HOLY_DAY_REMINDERS',
-};
-
-/* Short codes rather than the full parish name, because this is what the segment
- * filters get written against. */
-const PARISH_CODES = {
-  'St. John the Baptist (Cle Elum)': 'SJB',
-  'Immaculate Conception (Roslyn)': 'IC',
-  'Both parishes': 'BOTH',
-};
-
 export const brevoConfigured = (env) => Boolean(
   env.BREVO_API_KEY && env.BREVO_LIST_ID && env.BREVO_DOI_TEMPLATE_ID,
 );
 
-/* One list with an attribute per interest, rather than a list each. Someone
- * changing what they get should stay one contact with one consent history. */
-export function contactAttributes(subscriptions, parish) {
-  const chosen = new Set(String(subscriptions || '').split(',').map((s) => s.trim()));
-  const attributes = { SIGNUP_SOURCE: 'website footer' };
-  for (const [label, name] of Object.entries(ATTRIBUTES)) attributes[name] = chosen.has(label);
-  // Left unset rather than guessed, so an empty PARISH means nobody answered.
-  const code = PARISH_CODES[String(parish || '').trim()];
-  if (code) attributes.PARISH = code;
+/* Signup is intentionally simple. Everyone starts with the complete parish
+ * update stream and can narrow it later through Brevo's profile-update form. */
+export function contactAttributes(firstName, lastName) {
+  const attributes = {
+    SIGNUP_SOURCE: 'website footer',
+    WEEKLY_BULLETIN: true,
+    QUARTERLY_NEWSLETTER: true,
+    HOLY_DAY_REMINDERS: true,
+    PARISH: 'BOTH',
+    PARISH_PREFERENCE: 1,
+  };
+  if (String(firstName || '').trim()) attributes.FIRSTNAME = String(firstName).trim();
+  if (String(lastName || '').trim()) attributes.LASTNAME = String(lastName).trim();
   return attributes;
 }
 
-export async function inviteContact(env, email, subscriptions, parish) {
+export async function inviteContact(env, email, firstName, lastName) {
   const res = await fetch(DOUBLE_OPTIN, {
     method: 'POST',
     headers: {
@@ -54,7 +42,7 @@ export async function inviteContact(env, email, subscriptions, parish) {
     },
     body: JSON.stringify({
       email,
-      attributes: contactAttributes(subscriptions, parish),
+      attributes: contactAttributes(firstName, lastName),
       includeListIds: [Number(env.BREVO_LIST_ID)],
       templateId: Number(env.BREVO_DOI_TEMPLATE_ID),
       redirectionUrl: env.BREVO_DOI_REDIRECT_URL || 'https://ukccatholic.org/',

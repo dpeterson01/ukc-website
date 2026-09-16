@@ -125,8 +125,8 @@ export async function contactHandler(request, context) {
         const outcome = await inviteContact(
           process.env,
           replyTo,
-          valueIn(entries, 'Subscriptions'),
-          valueIn(entries, 'Parish'),
+          valueIn(entries, 'First name'),
+          valueIn(entries, 'Last name'),
         );
         context.log(JSON.stringify({ event: 'contact', kind: 'signup', brevo: outcome }));
         return { status: 200, jsonBody: { ok: true }, headers };
