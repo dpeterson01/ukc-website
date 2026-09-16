@@ -103,7 +103,11 @@ const signup = await post({
   subject: 'Email signup: someone@example.com',
   website: '',
   elapsedMs: 9000,
-  fields: { Email: 'someone@example.com', Subscriptions: 'Weekly bulletin' },
+  fields: {
+    Email: 'someone@example.com',
+    'First name': 'Maria',
+    'Last name': 'Santos',
+  },
 });
 check('a signup is accepted', signup.status === 200, String(signup.status));
 check('the signup email is titled as one', /Email list signup/.test(sent[0]?.html || ''));
@@ -137,6 +141,8 @@ check('the confirmation email is the one we built', invites[0]?.templateId === 3
 check('first and last name reach the contact record',
   invites[0]?.attributes?.FIRSTNAME === 'Maria'
   && invites[0]?.attributes?.LASTNAME === 'Santos');
+check('the signup source reaches the contact record',
+  invites[0]?.attributes?.SIGNUP_SOURCE === 'website footer');
 check('a simple signup receives every newsletter stream',
   invites[0]?.attributes?.WEEKLY_BULLETIN === true
   && invites[0]?.attributes?.QUARTERLY_NEWSLETTER === true
@@ -149,6 +155,31 @@ check('a simple signup receives news from both parishes',
     preference: invites[0]?.attributes?.PARISH_PREFERENCE,
   }));
 check('the office inbox is left out of it', sent.length === 0, String(sent.length));
+
+invites.length = 0;
+const missingFirstName = await post({
+  ...joining,
+  fields: { Email: 'someone@example.com', 'Last name': 'Santos' },
+});
+const missingLastName = await post({
+  ...joining,
+  fields: { Email: 'someone@example.com', 'First name': 'Maria' },
+});
+const misplacedEmail = await post({
+  ...joining,
+  fields: {
+    'First name': 'maria@example.com',
+    'Last name': 'Santos',
+    Email: 'not-an-email',
+  },
+});
+check('a signup requires a first name', missingFirstName.status === 400,
+  String(missingFirstName.status));
+check('a signup requires a last name', missingLastName.status === 400,
+  String(missingLastName.status));
+check('a signup requires a valid Email field', misplacedEmail.status === 400,
+  String(misplacedEmail.status));
+check('invalid signup fields never reach brevo', invites.length === 0, String(invites.length));
 
 // Brevo answers 400 to an address already on the list. To the person that is a
 // success, so it must not read as an error or land in the office inbox.
