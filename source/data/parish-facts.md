@@ -2,6 +2,7 @@
 # Machine-readable canonical parish data. This frontmatter is the single source
 # of truth consumed by the bulletin pipeline (ukc-bulletin: render/sync-parish-facts.mjs
 # regenerates parish-config.yaml from it). Keep the prose below in sync with these values.
+# Informal umbrella identity, not an approved canonical or legal name.
 public_name: Catholic Parishes of Upper Kittitas County
 tagline: Two places. One faith. One future in Christ.
 diocese: Diocese of Yakima
@@ -45,7 +46,9 @@ formed:
 > The YAML frontmatter above is the machine-readable canonical copy — keep this prose in sync with it.
 
 ## Naming
-- **Public-facing umbrella name:** **Catholic Parishes of Upper Kittitas County**
+- **Informal public-facing umbrella name:** **Catholic Parishes of Upper Kittitas County**
+  - This is not an approved canonical or legal name. Formal publication identity should
+    retain both parish names.
   - (Replaces "Upper Kittitas County Catholic Churches" everywhere — site header,
     footer, copyright, page titles, social references.)
 - Tagline: *Two places. One faith. One future in Christ.*
