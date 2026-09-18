@@ -517,6 +517,7 @@
             Email: email.value.trim(),
             'First name': firstName,
             'Last name': lastName,
+            'Preferred language': document.documentElement.lang === 'es' ? 'es' : 'en',
           },
         }),
       }).then(function (res) {

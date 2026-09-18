@@ -110,9 +110,9 @@ const check = (name, pass, detail = '') => {
 }
 
 // --- footer signup -------------------------------------------------------
-{
-  const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
-  await page.goto(`http://localhost:${PORT}/mass/`, { waitUntil: 'load' });
+for (const locale of ['en', 'es']) {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 1000 }, locale: 'en-US' });
+  await page.goto(`http://localhost:${PORT}${locale === 'es' ? '/es' : ''}/mass/`, { waitUntil: 'load' });
   await page.waitForTimeout(300);
 
   const firstName = page.locator('.footer__signup-form input[name="first_name"]');
@@ -126,13 +126,26 @@ const check = (name, pass, detail = '') => {
   check('the signup does not ask for scope preferences',
     (await page.locator('.footer__signup-prefs:visible, .footer__signup-parish').count()) === 0);
 
+  const firstBox = await firstName.boundingBox();
+  const lastBox = await lastName.boundingBox();
+  const emailBox = await page.locator('.footer__signup-input[type="email"]').boundingBox();
+  const buttonBox = await page.locator('form.footer__signup-form button[type=submit]').boundingBox();
+  const copyBox = await page.locator('.footer__signup-copy').boundingBox();
+  const formBox = await page.locator('.footer__signup-form').boundingBox();
+  check(`${locale} desktop names share the first row`, Math.abs(firstBox.y - lastBox.y) < 1);
+  check(`${locale} desktop email and button share the second row`,
+    emailBox.y > firstBox.y + firstBox.height && Math.abs(emailBox.y - buttonBox.y) < 1);
+  check(`${locale} desktop signup columns have balanced widths`, Math.abs(copyBox.width - formBox.width) < 2);
+  check(`${locale} desktop signup columns are vertically centered`,
+    Math.abs(copyBox.y + copyBox.height / 2 - formBox.y - formBox.height / 2) < 2);
+
   await firstName.fill('Maria');
   await lastName.fill('Santos');
   await page.locator('form.footer__signup-form button[type=submit]').click();
   await page.waitForTimeout(250);
   check('signup rejects empty email', (await page.locator('.footer__signup-form .form__error').count()) === 1);
 
-  await page.locator('.footer__signup').screenshot({ path: path.join(SHOTS, 'footer-signup.png') });
+  await page.locator('.footer__signup').screenshot({ path: path.join(SHOTS, `footer-signup-${locale}.png`) });
 
   let signupPayload;
   await page.route('https://forms.ukccatholic.org/contact', async (route) => {
@@ -145,13 +158,125 @@ const check = (name, pass, detail = '') => {
   check('first and last name are submitted separately',
     signupPayload?.fields?.['First name'] === 'Maria'
     && signupPayload?.fields?.['Last name'] === 'Santos');
+  check(`${locale} signup sends page language, not browser language`,
+    signupPayload?.fields?.['Preferred language'] === locale);
+  check(`${locale} signup has a generic acknowledgement`,
+    await page.locator('.footer__signup-thanks[role="status"]').count() === 1);
   check('the signup sends no client-controlled scope',
     !('Parish' in (signupPayload?.fields || {}))
     && !('Subscriptions' in (signupPayload?.fields || {})));
   await page.close();
 }
 
+const bulletinIssues = ['2026-08-23', '2026-09-20', '2026-08-30', '2026-09-13', '2026-09-06']
+  .map((date) => ({ date, path: `/bulletins/2026/${date}-bulletin.pdf`, bytes: 110209 }));
+for (const locale of ['en', 'es']) {
+  const prefix = locale === 'es' ? '/es' : '';
+  for (const width of [390, 1280]) {
+    for (const routePath of ['/', '/watch/', '/bulletins/']) {
+      const page = await browser.newPage({ viewport: { width, height: 900 } });
+      let requests = 0;
+      await page.route('**/bulletins/index.json', (route) => {
+        requests += 1;
+        return route.fulfill({ json: { issues: bulletinIssues } });
+      });
+      await page.goto(`http://localhost:${PORT}${prefix}${routePath}`, { waitUntil: 'load' });
+      const isArchive = routePath === '/bulletins/';
+      const surface = page.locator(isArchive ? '[data-bulletin-archive]' : '[data-bulletin-latest]');
+      await surface.locator('a[href$="2026-09-20-bulletin.pdf"]').waitFor();
+      const label = `${locale} ${routePath} at ${width}px`;
+      const bulletinNav = page.locator('.nav__links a[href$="bulletins/"]');
+      check(`${label} keeps bulletins out of header`, await bulletinNav.count() === 0);
+      check(`${label} keeps bulletins out of mobile drawer`,
+        await page.locator('.nav__drawer-link[href$="bulletins/"]').count() === 0);
+      const connect = page.locator('.footer__col').filter({ has: page.locator('h4', { hasText: /^(Connect|Conectar|Conéctese)$/ }) });
+      check(`${label} footer keeps four links`, await connect.locator('a').count() === 4);
+      check(`${label} footer bulletin link stays in its language`,
+        await connect.locator('a[href$="bulletins/"]').evaluate((link) => new URL(link.href).pathname) === `${prefix}/bulletins/`);
+      check(`${label} footer uses compact labels`, JSON.stringify(await connect.locator('a').allTextContents()) ===
+        JSON.stringify(locale === 'es' ? ['Boletines', 'Ver Misa', 'Formularios parroquiales', 'Contacto'] : ['Bulletins', 'Watch Mass', 'Parish forms', 'Contact us']));
+      if (!isArchive) check(`${label} latest includes recent archive shortcut`,
+        await surface.locator('.bulletin-latest__recent').getAttribute('href') === `${prefix}/bulletins/`);
+      check(`${label} shows ${isArchive ? 'four' : 'one'} issues`,
+        await surface.locator('a[href$="-bulletin.pdf"]').count() === (isArchive ? 4 : 1));
+      check(`${label} selects newest first`,
+        await surface.locator('a').first().getAttribute('href') === '/bulletins/2026/2026-09-20-bulletin.pdf');
+      check(`${label} fetches the shared index once`, requests === 1);
+      check(`${label} has no horizontal overflow`, await page.evaluate(() =>
+        document.documentElement.scrollWidth <= window.innerWidth));
+      if (locale === 'es') check(`${label} identifies the English PDF`,
+        (await surface.innerText()).includes('PDF en inglés'));
+      await page.addStyleTag({ content: '.nav { position: static !important; }' });
+      await surface.screenshot({ path: path.join(SHOTS, `bulletin-${locale}-${isArchive ? 'archive' : routePath === '/' ? 'home' : 'watch'}-${width}.png`) });
+      await page.close();
+    }
+  }
+  for (const failure of [false, true]) {
+    const page = await browser.newPage();
+    await page.route('**/bulletins/index.json', (route) => route.fulfill({
+      status: failure ? 503 : 200, json: { issues: [] },
+    }));
+    await page.goto(`http://localhost:${PORT}${prefix}/`);
+    check(`${locale} latest fallback survives ${failure ? 'failure' : 'empty archive'}`,
+      await page.locator('[data-bulletin-latest] a').getAttribute('href') === 'bulletins/');
+    await page.goto(`http://localhost:${PORT}${prefix}/bulletins/`);
+    await page.waitForFunction(() => !/Loading|Cargando/.test(document.querySelector('[data-bulletin-archive]').textContent));
+    check(`${locale} archive has a ${failure ? 'failure' : 'empty'} status`,
+      await page.locator('[data-bulletin-archive] [role="status"]').count() === 1);
+    await page.close();
+  }
+  const noScript = await browser.newPage({ javaScriptEnabled: false });
+  for (const routePath of ['/', '/watch/']) {
+    await noScript.goto(`http://localhost:${PORT}${prefix}${routePath}`);
+    check(`${locale} ${routePath} no-JS fallback links to bulletins`,
+      /bulletins\/$/.test(await noScript.locator('[data-bulletin-latest] a').getAttribute('href')));
+  }
+  await noScript.close();
+}
+
+for (const locale of ['en', 'es']) {
+  for (const width of [390, 640, 768, 960, 1024, 1181, 1280, 1440]) {
+    const page = await browser.newPage({ viewport: { width, height: 1000 } });
+    const prefix = locale === 'es' ? '/es' : '';
+    await page.goto(`http://localhost:${PORT}${prefix}/`, { waitUntil: 'load' });
+    await page.locator('.footer__signup-fields').waitFor();
+    const label = `${locale} homepage at ${width}px`;
+    check(`${label} fits horizontally`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    if (await page.locator('.nav__links').isVisible()) {
+      const logo = await page.locator('.nav__logo').boundingBox();
+      const links = await page.locator('.nav__links').boundingBox();
+      check(`${label} navigation does not overlap logo`, logo.x + logo.width <= links.x);
+      check(`${label} navigation fits viewport`, links.x + links.width <= width);
+    } else {
+      await page.locator('.nav__toggle').click();
+      check(`${label} drawer has no extra bulletin item`, await page.locator('.nav__drawer-link[href$="bulletins/"]').count() === 0);
+      await page.keyboard.press('Escape');
+    }
+    const fields = await page.locator('.footer__signup-fields').boundingBox();
+    check(`${label} signup controls fit their grid`, await page.locator('.footer__signup-fields input, .footer__signup-fields button')
+      .evaluateAll((controls, bounds) => controls.every((control) => {
+        const rect = control.getBoundingClientRect();
+        return rect.left >= bounds.x - 1 && rect.right <= bounds.x + bounds.width + 1 && control.scrollWidth <= control.clientWidth + 1;
+      }), fields));
+    await page.addStyleTag({ content: '.nav { position: static !important; }' });
+    if ([390, 1280].includes(width)) {
+      await page.locator('.footer__signup').screenshot({ path: path.join(SHOTS, `footer-balanced-${locale}-${width}.png`) });
+      await page.locator('.footer__inner').screenshot({ path: path.join(SHOTS, `footer-links-${locale}-${width}.png`) });
+      await page.locator('.nav__inner').screenshot({ path: path.join(SHOTS, `nav-bulletins-${locale}-${width}.png`) });
+    }
+    await page.close();
+  }
+  for (const width of [390, 1280]) {
+    const page = await browser.newPage({ viewport: { width, height: 1000 } });
+    await page.goto(`http://localhost:${PORT}${locale === 'es' ? '/es' : ''}/email/`, { waitUntil: 'load' });
+    check(`${locale} dedicated signup at ${width}px fits`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await page.locator('.footer__signup').screenshot({ path: path.join(SHOTS, `signup-page-${locale}-${width}.png`) });
+    await page.close();
+  }
+}
+
 await browser.close();
 server.close();
 const failed = results.filter((r) => !r.pass).length;
 console.log(failed ? `\n${failed} check(s) failed` : '\nall behavior checks passed');
+process.exitCode = failed ? 1 : 0;

@@ -57,7 +57,7 @@
     'btn.signingUp': 'Sending…',
     'signup.firstName': 'First name',
     'signup.lastName': 'Last name',
-    'signup.thanks': 'Almost there. Check your email and click the link to confirm.',
+    'signup.thanks': 'Thank you. Your request has been received. New subscriptions require email confirmation. Already subscribed? Use the preference link in your parish email to change your language.',
 
     'announce.regionLabel': 'Parish announcement',
     'announce.dismiss': 'Dismiss this announcement',
@@ -111,7 +111,7 @@
     'signup.firstName': 'Nombre',
     'signup.lastName': 'Apellido',
     'signup.thanks':
-      'Ya casi. Revise su correo y haga clic en el enlace para confirmar.',
+      'Gracias. Hemos recibido su solicitud. Las nuevas suscripciones requieren confirmación por correo. Si ya está suscrito, use el enlace de preferencias en su correo parroquial para cambiar el idioma.',
 
     'announce.regionLabel': 'Aviso parroquial',
     'announce.dismiss': 'Cerrar este aviso',

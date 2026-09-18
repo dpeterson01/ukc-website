@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://ukccatholic.org/</loc></url>
   <url><loc>https://ukccatholic.org/about/</loc></url>
+  <url><loc>https://ukccatholic.org/bulletins/</loc></url>
   <url><loc>https://ukccatholic.org/contact/</loc></url>
   <url><loc>https://ukccatholic.org/email/</loc></url>
   <url><loc>https://ukccatholic.org/formation/</loc></url>
@@ -18,6 +19,7 @@
   <url><loc>https://ukccatholic.org/watch/</loc></url>
   <url><loc>https://ukccatholic.org/es/</loc></url>
   <url><loc>https://ukccatholic.org/es/about/</loc></url>
+  <url><loc>https://ukccatholic.org/es/bulletins/</loc></url>
   <url><loc>https://ukccatholic.org/es/contact/</loc></url>
   <url><loc>https://ukccatholic.org/es/email/</loc></url>
   <url><loc>https://ukccatholic.org/es/formation/</loc></url>

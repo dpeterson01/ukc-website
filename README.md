@@ -35,12 +35,56 @@ New additions (such as `site/forms/`) are written as ordinary HTML, CSS, and van
 
 Approved reader PDFs live at `site/bulletins/<year>/<date>-bulletin.pdf`. The direct-access
 archive at `/bulletins/` reads `site/bulletins/index.json`; `/es/bulletins/` provides the paired
-Spanish view. Both archive pages are currently `noindex` and intentionally absent from the site
-navigation and sitemap while publication is piloted.
+Spanish view. Both pages are linked from the four-item Connect footer, are indexable, and
+appear in the sitemap. Home and livestream pages link to the latest PDF and the recent archive.
+Bulletins do not add an item to the header or mobile drawer. Prayer requests remain available
+through the Contact page; the standalone prayer page is unchanged.
+
+Both archive pages show the four newest distinct published issue dates. The homepage and
+livestream page in each language show only the single newest issue. All six views read the
+same manifest through `assets/bulletin-archive.js`; no scheduled cleanup is needed. An upcoming
+Sunday's issue appears as soon as it is published. Older PDFs and manifest entries are retained.
+Spanish links identify the full PDF as English; only the email edition is planned for translation.
+
+The five legacy issues dated August 16, 23, 30 and September 6, 13, 2026 were imported unchanged
+from the supplied PDFs. File sizes and SHA-256 values were checked against the originals.
+The already-published September 20 issue remains in the archive; importing historical issues
+does not unpublish it. Only four newest cards are displayed, not every stored PDF.
 
 `scripts/publish-bulletin.mjs` is the only supported archive writer. It validates the PDF,
 copies it to the dated public path, and updates the manifest idempotently. The private
 `ukc-bulletin` repository calls it only after bulletin approval.
+
+### Signup language deployment gate
+
+Footer signup sends `Preferred language` as `en` or `es` from the page language. The API defaults
+missing values to English and rejects unsupported values. New double-opt-in invitations write
+the Brevo category attribute `PREFERRED_LANGUAGE`, with `1` for English and `2` for Spanish.
+Existing contacts are read first and left unchanged, including their consent and suppression
+state. Existing subscribers change language through their personalized Brevo preference link;
+public signup is not a profile-update or resubscription endpoint.
+
+Before deploying this API change, provision or verify that exact attribute mapping and grant
+the integration contact-read access. Configure `BREVO_DOI_TEMPLATE_ID_ES` for the Spanish
+confirmation template. `BREVO_DOI_REDIRECT_URL_ES` defaults to `https://ukccatholic.org/es/`;
+the existing English template and redirect settings remain supported. Confirm DOI persistence,
+repeat-signup behavior and preference-form changes with authorized pilot contacts first.
+Account configuration is not provisioned by this code. On 2026-09-18, the separately authorized
+Brevo setup created and verified the category and Spanish DOI template **6**. Configure
+`BREVO_DOI_TEMPLATE_ID_ES=6` at API deployment. The hosted preference form was saved and
+reopened with `LANGUAGE / IDIOMA` below Parish News. The live consent/persistence pilot
+remains pending; the saved form and local tests do not prove recipient behavior.
+
+If lookup or invitation fails, or Spanish confirmation is unconfigured, the office fallback
+retains the language. It must still be processed with proof of consent; it is not permission
+to add a contact directly to a sending audience. The browser returns a generic acknowledgement
+for invitations, existing contacts and office fallback without revealing membership.
+
+Deploy the configured API before the website language payload. Do not deploy the API until
+the Brevo attribute and templates are ready. Local tests use stubbed requests and send no mail.
+
+Checks: `node scripts/test-publish-bulletin.mjs`, `node scripts/verify-i18n.mjs`, the existing
+Playwright `verify-behavior.mjs` runner, and `npm test` from `api/`.
 
 ### `design-system/` — the brand foundation
 The canonical, reusable design system, kept separate from the website's page-level
