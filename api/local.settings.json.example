@@ -11,7 +11,9 @@
     "BREVO_API_KEY": "",
     "BREVO_LIST_ID": "",
     "BREVO_DOI_TEMPLATE_ID": "",
+    "BREVO_DOI_TEMPLATE_ID_ES": "",
     "BREVO_DOI_REDIRECT_URL": "https://ukccatholic.org/",
+    "BREVO_DOI_REDIRECT_URL_ES": "https://ukccatholic.org/es/",
     "YOUTUBE_API_KEY": "",
     "FORMS_DRY_RUN": "true",
     "FINGERPRINT_SECRET": "development-only-secret"

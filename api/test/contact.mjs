@@ -13,9 +13,15 @@ delete process.env.AzureWebJobsStorage;
 
 const sent = [];
 const invites = [];
+const lookups = [];
+let existingContact = { ok: false, status: 404 };
 let brevoAnswers = { ok: true, status: 201, body: '' };
 globalThis.fetch = async (url, init) => {
   if (String(url).includes('brevo.com')) {
+    if (init.method === 'GET') {
+      lookups.push(String(url));
+      return existingContact;
+    }
     invites.push(JSON.parse(init.body));
     return {
       ok: brevoAnswers.ok,
@@ -111,12 +117,14 @@ const signup = await post({
 });
 check('a signup is accepted', signup.status === 200, String(signup.status));
 check('the signup email is titled as one', /Email list signup/.test(sent[0]?.html || ''));
+check('legacy signup fallback includes English preference', /Preferred language[\s\S]*>en</.test(sent[0]?.html || ''));
 check('with no list configured, nothing is sent to brevo', invites.length === 0);
 
 // --- signup, once a brevo list exists ------------------------------------
 process.env.BREVO_API_KEY = 'xkeysib-test';
 process.env.BREVO_LIST_ID = '7';
 process.env.BREVO_DOI_TEMPLATE_ID = '3';
+process.env.BREVO_DOI_TEMPLATE_ID_ES = '4';
 
 const joining = {
   kind: 'signup',
@@ -155,6 +163,51 @@ check('a simple signup receives news from both parishes',
     preference: invites[0]?.attributes?.PARISH_PREFERENCE,
   }));
 check('the office inbox is left out of it', sent.length === 0, String(sent.length));
+check('legacy clients default to English', invites[0]?.attributes?.PREFERRED_LANGUAGE === 1);
+check('English confirmation returns to English site', invites[0]?.redirectionUrl === 'https://ukccatholic.org/');
+
+for (const [language, preference, templateId, redirect] of [
+  ['en', 1, 3, 'https://ukccatholic.org/'],
+  ['es', 2, 4, 'https://ukccatholic.org/es/'],
+]) {
+  invites.length = 0;
+  const result = await post({ ...joining, fields: { ...joining.fields, 'Preferred language': language } });
+  check(`${language} signup is accepted`, result.status === 200);
+  check(`${language} preference reaches Brevo`, invites[0]?.attributes?.PREFERRED_LANGUAGE === preference);
+  check(`${language} confirmation uses localized template and redirect`,
+    invites[0]?.templateId === templateId && invites[0]?.redirectionUrl === redirect);
+}
+invites.length = 0;
+lookups.length = 0;
+for (const language of ['', 'fr', 'ES', ' en ', 2]) {
+  const result = await post({ ...joining, fields: { ...joining.fields, 'Preferred language': language } });
+  check(`invalid language ${JSON.stringify(language)} is refused`, result.status === 400);
+}
+check('invalid languages never reach Brevo', invites.length === 0 && lookups.length === 0);
+
+existingContact = { ok: true, status: 200 };
+sent.length = 0;
+const existingResult = await post({ ...joining, fields: { ...joining.fields, 'Preferred language': 'es' } });
+check('existing contact receives the same generic response', existingResult.status === 200 && existingResult.jsonBody.ok);
+check('repeat signup cannot change preferences or resubscribe', invites.length === 0 && sent.length === 0);
+existingContact = { ok: false, status: 503 };
+await post({ ...joining, fields: { ...joining.fields, 'Preferred language': 'es' } });
+check('failed lookup never risks changing an existing contact', invites.length === 0);
+check('lookup failure preserves Spanish in office fallback', /Preferred language[\s\S]*>es</.test(sent[0]?.html || ''));
+existingContact = { ok: false, status: 404 };
+
+sent.length = 0;
+delete process.env.BREVO_DOI_TEMPLATE_ID_ES;
+await post({ ...joining, fields: { ...joining.fields, 'Preferred language': 'es' } });
+check('missing Spanish configuration never sends English confirmation', invites.length === 0);
+check('missing Spanish configuration preserves signup for the office', sent.length === 1 && /Preferred language[\s\S]*>es</.test(sent[0]?.html || ''));
+process.env.BREVO_DOI_TEMPLATE_ID_ES = '4';
+
+invites.length = 0;
+process.env.BREVO_DOI_REDIRECT_URL_ES = 'https://ukccatholic.org/es/?confirmed=1';
+await post({ ...joining, fields: { ...joining.fields, 'Preferred language': 'es' } });
+check('Spanish confirmation redirect can be configured', invites[0]?.redirectionUrl === process.env.BREVO_DOI_REDIRECT_URL_ES);
+delete process.env.BREVO_DOI_REDIRECT_URL_ES;
 
 invites.length = 0;
 const missingFirstName = await post({
@@ -210,6 +263,7 @@ check('and still reaches the office', sent.length === 1, String(sent.length));
 delete process.env.BREVO_API_KEY;
 delete process.env.BREVO_LIST_ID;
 delete process.env.BREVO_DOI_TEMPLATE_ID;
+delete process.env.BREVO_DOI_TEMPLATE_ID_ES;
 
 // --- cors ----------------------------------------------------------------
 const pre = await contactHandler(req('', 'OPTIONS'), ctx);

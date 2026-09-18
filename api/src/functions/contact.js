@@ -93,6 +93,11 @@ function signupIn(entries) {
   const email = valueIn(entries, 'Email').trim();
   const firstName = valueIn(entries, 'First name').trim();
   const lastName = valueIn(entries, 'Last name').trim();
+  const languageEntry = entries.find(([label]) => label === 'Preferred language');
+  const language = languageEntry ? languageEntry[1] : 'en';
+  if (language !== 'en' && language !== 'es') {
+    throw new Refused('Please choose English or Spanish for your preferred language.');
+  }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     throw new Refused('We need a valid email address to sign you up.');
   }
@@ -102,7 +107,8 @@ function signupIn(entries) {
   if (firstName.length > 100 || lastName.length > 100) {
     throw new Refused('That name is too long.');
   }
-  return { email, firstName, lastName };
+  if (!languageEntry) entries.push(['Preferred language', language]);
+  return { email, firstName, lastName, language };
 }
 
 function body(entries) {
@@ -143,6 +149,7 @@ export async function contactHandler(request, context) {
           replyTo,
           signup.firstName,
           signup.lastName,
+          signup.language,
         );
         context.log(JSON.stringify({ event: 'contact', kind: 'signup', brevo: outcome }));
         return { status: 200, jsonBody: { ok: true }, headers };

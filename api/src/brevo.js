@@ -18,7 +18,8 @@ export const brevoConfigured = (env) => Boolean(
 
 /* Signup is intentionally simple. Everyone starts with the complete parish
  * update stream and can narrow it later through Brevo's profile-update form. */
-export function contactAttributes(firstName, lastName) {
+export function contactAttributes(firstName, lastName, language = 'en') {
+  if (language !== 'en' && language !== 'es') throw new Error('Invalid preferred language');
   const attributes = {
     SIGNUP_SOURCE: 'website footer',
     WEEKLY_BULLETIN: true,
@@ -26,13 +27,26 @@ export function contactAttributes(firstName, lastName) {
     HOLY_DAY_REMINDERS: true,
     PARISH: 'BOTH',
     PARISH_PREFERENCE: 1,
+    PREFERRED_LANGUAGE: language === 'es' ? 2 : 1,
   };
   if (String(firstName || '').trim()) attributes.FIRSTNAME = String(firstName).trim();
   if (String(lastName || '').trim()) attributes.LASTNAME = String(lastName).trim();
   return attributes;
 }
 
-export async function inviteContact(env, email, firstName, lastName) {
+export async function inviteContact(env, email, firstName, lastName, language = 'en') {
+  const attributes = contactAttributes(firstName, lastName, language);
+  const existing = await fetch(`https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`, {
+    method: 'GET',
+    headers: { 'api-key': env.BREVO_API_KEY, accept: 'application/json' },
+  });
+  if (existing.ok) return 'existing contact unchanged';
+  if (existing.status !== 404) throw new Error(`Brevo contact lookup failed (${existing.status})`);
+
+  const templateId = Number(language === 'es' ? env.BREVO_DOI_TEMPLATE_ID_ES : env.BREVO_DOI_TEMPLATE_ID);
+  if (!Number.isSafeInteger(templateId) || templateId <= 0) {
+    throw new Error(`Brevo ${language} confirmation template is not configured`);
+  }
   const res = await fetch(DOUBLE_OPTIN, {
     method: 'POST',
     headers: {
@@ -42,10 +56,12 @@ export async function inviteContact(env, email, firstName, lastName) {
     },
     body: JSON.stringify({
       email,
-      attributes: contactAttributes(firstName, lastName),
+      attributes,
       includeListIds: [Number(env.BREVO_LIST_ID)],
-      templateId: Number(env.BREVO_DOI_TEMPLATE_ID),
-      redirectionUrl: env.BREVO_DOI_REDIRECT_URL || 'https://ukccatholic.org/',
+      templateId,
+      redirectionUrl: language === 'es'
+        ? env.BREVO_DOI_REDIRECT_URL_ES || 'https://ukccatholic.org/es/'
+        : env.BREVO_DOI_REDIRECT_URL || 'https://ukccatholic.org/',
     }),
   });
 
@@ -55,5 +71,5 @@ export async function inviteContact(env, email, firstName, lastName) {
   // Signing up twice is not a mistake the person needs telling about, and a
   // second invitation to an address already on the list would only confuse it.
   if (res.status === 400 && detail.includes('duplicate_parameter')) return 'already on the list';
-  throw new Error(`Brevo responded ${res.status}: ${detail.slice(0, 300)}`);
+  throw new Error(`Brevo invitation failed (${res.status})`);
 }
