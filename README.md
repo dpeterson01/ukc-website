@@ -31,6 +31,17 @@ across the fourteen files, so chrome changes have to be made in each. See `CLAUD
 
 New additions (such as `site/forms/`) are written as ordinary HTML, CSS, and vanilla JS.
 
+### Bulletin archive
+
+Approved reader PDFs live at `site/bulletins/<year>/<date>-bulletin.pdf`. The direct-access
+archive at `/bulletins/` reads `site/bulletins/index.json`; `/es/bulletins/` provides the paired
+Spanish view. Both archive pages are currently `noindex` and intentionally absent from the site
+navigation and sitemap while publication is piloted.
+
+`scripts/publish-bulletin.mjs` is the only supported archive writer. It validates the PDF,
+copies it to the dated public path, and updates the manifest idempotently. The private
+`ukc-bulletin` repository calls it only after bulletin approval.
+
 ### `design-system/` — the brand foundation
 The canonical, reusable design system, kept separate from the website's page-level
 implementation so it stays clean and reusable for other surfaces (bulletins, newsletters,
