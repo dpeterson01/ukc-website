@@ -2,6 +2,38 @@
   "version": 1,
   "issues": [
     {
+      "date": "2026-10-18",
+      "title": "Weekly Parish Bulletin",
+      "path": "/bulletins/2026/2026-10-18-bulletin.pdf",
+      "bytes": 728686,
+      "sha256": "2b6e0d86dbebb8af8617a6449ee22df7443102712889dae59b4bbc4bda0a8fe0",
+      "publishedAt": "2026-10-20T22:53:56.847Z"
+    },
+    {
+      "date": "2026-10-11",
+      "title": "Weekly Parish Bulletin",
+      "path": "/bulletins/2026/2026-10-11-bulletin.pdf",
+      "bytes": 631220,
+      "sha256": "3cde4c763388bc287e7e423db2c3da971bb832e5761cca5f76ad30c1ee075671",
+      "publishedAt": "2026-10-20T22:53:56.796Z"
+    },
+    {
+      "date": "2026-10-04",
+      "title": "Weekly Parish Bulletin",
+      "path": "/bulletins/2026/2026-10-04-bulletin.pdf",
+      "bytes": 613892,
+      "sha256": "905b80c446ae301836e1aee5a1a77a9527d1cc256f6e4d1503281caadb833f3d",
+      "publishedAt": "2026-10-20T22:53:56.744Z"
+    },
+    {
+      "date": "2026-09-27",
+      "title": "Weekly Parish Bulletin",
+      "path": "/bulletins/2026/2026-09-27-bulletin.pdf",
+      "bytes": 644047,
+      "sha256": "a4da0a2c9be0c6fc2def93056d3cff8111c624555f461ca56a183f8d00865beb",
+      "publishedAt": "2026-10-20T22:53:56.687Z"
+    },
+    {
       "date": "2026-09-20",
       "title": "Weekly Parish Bulletin",
       "path": "/bulletins/2026/2026-09-20-bulletin.pdf",
