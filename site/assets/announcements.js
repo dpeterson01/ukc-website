@@ -26,9 +26,9 @@
   'use strict';
 
   root.UKC_ANNOUNCEMENTS = [
-    /* PLACEHOLDER COPY. Not for publishing.
-       [NEEDS CLARIFICATION: door notice text from Derek]
-       [NEEDS CLARIFICATION: Spanish wording, approved by whom?]
+    /* Adapted from Fr. Francisco's 2026-10-30 door notice, shortened to fit the
+       bar. Not signed in his name. Do not publish until he approves.
+       [NEEDS CLARIFICATION: Fr. Francisco approval of the edited wording, EN and ES]
        [NEEDS CLARIFICATION: end date; the bar needs one, the notice runs until
        IC HVAC work is funded and completed. Extend it as needed.] */
     {
@@ -37,12 +37,12 @@
       end: '2027-06-30',
       en: {
         label: 'All Masses at St. John the Baptist',
-        text: 'All Masses are at St. John the Baptist, Cle Elum, until HVAC work at Immaculate Conception is done.',
+        text: 'In Cle Elum, until HVAC work at Immaculate Conception in Roslyn is funded and completed.',
         cta: { text: 'Mass times', href: '/mass/' },
       },
       es: {
         label: 'Todas las Misas en San Juan Bautista',
-        text: 'Todas las Misas son en San Juan Bautista, Cle Elum, hasta terminar la obra de climatización en Inmaculada Concepción.',
+        text: 'En Cle Elum, hasta que se financie y termine la climatización en Inmaculada Concepción, Roslyn.',
         cta: { text: 'Horarios de Misa', href: '/es/mass/' },
       },
     },
