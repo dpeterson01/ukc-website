@@ -156,8 +156,8 @@ check('a simple signup receives every newsletter stream',
   && invites[0]?.attributes?.QUARTERLY_NEWSLETTER === true
   && invites[0]?.attributes?.HOLY_DAY_REMINDERS === true);
 check('a simple signup receives news from both parishes',
-  invites[0]?.attributes?.PARISH === 'BOTH'
-  && invites[0]?.attributes?.PARISH_PREFERENCE === 1,
+  invites[0]?.attributes?.PARISH_PREFERENCE === 1
+  && !('PARISH' in (invites[0]?.attributes || {})),
   JSON.stringify({
     legacy: invites[0]?.attributes?.PARISH,
     preference: invites[0]?.attributes?.PARISH_PREFERENCE,

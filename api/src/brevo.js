@@ -25,7 +25,6 @@ export function contactAttributes(firstName, lastName, language = 'en') {
     WEEKLY_BULLETIN: true,
     QUARTERLY_NEWSLETTER: true,
     HOLY_DAY_REMINDERS: true,
-    PARISH: 'BOTH',
     PARISH_PREFERENCE: 1,
     PREFERRED_LANGUAGE: language === 'es' ? 2 : 1,
   };
