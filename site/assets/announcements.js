@@ -26,6 +26,26 @@
   'use strict';
 
   root.UKC_ANNOUNCEMENTS = [
+    /* PLACEHOLDER COPY. Not for publishing.
+       [NEEDS CLARIFICATION: door notice text from Derek]
+       [NEEDS CLARIFICATION: Spanish wording, approved by whom?]
+       [NEEDS CLARIFICATION: end date; the bar needs one, the notice runs until
+       IC HVAC work is funded and completed. Extend it as needed.] */
+    {
+      id: 'masses-at-sjb-2026',
+      start: '2026-10-30',
+      end: '2027-06-30',
+      en: {
+        label: 'All Masses at St. John the Baptist',
+        text: 'All Masses are at St. John the Baptist, Cle Elum, until HVAC work at Immaculate Conception is done.',
+        cta: { text: 'Mass times', href: '/mass/' },
+      },
+      es: {
+        label: 'Todas las Misas en San Juan Bautista',
+        text: 'Todas las Misas son en San Juan Bautista, Cle Elum, hasta terminar la obra de climatización en Inmaculada Concepción.',
+        cta: { text: 'Horarios de Misa', href: '/es/mass/' },
+      },
+    },
     {
       id: 'assumption-2026',
       start: '2026-08-14',
