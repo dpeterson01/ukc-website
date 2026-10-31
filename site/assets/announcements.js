@@ -27,10 +27,11 @@
 
   root.UKC_ANNOUNCEMENTS = [
     /* Adapted from Fr. Francisco's 2026-10-30 door notice, shortened to fit the
-       bar. Not signed in his name. Do not publish until he approves.
-       [NEEDS CLARIFICATION: Fr. Francisco approval of the edited wording, EN and ES]
-       [NEEDS CLARIFICATION: end date; the bar needs one, the notice runs until
-       IC HVAC work is funded and completed. Extend it as needed.] */
+       bar. Not signed in his name. Derek approved publishing on 2026-10-30
+       after Holli agreed to the wording.
+       [DEFERRED: Fr. Francisco's review of the Spanish text / Derek / not set]
+       [DEFERRED: end date; the bar needs one, the notice runs until IC HVAC work
+       is funded and completed. Extend it as needed. / Derek / before 2027-06-30] */
     {
       id: 'masses-at-sjb-2026',
       start: '2026-10-30',
