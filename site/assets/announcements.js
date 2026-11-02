@@ -31,19 +31,19 @@
        after Holli agreed to the wording.
        [DEFERRED: Fr. Francisco's review of the Spanish text / Derek / not set]
        [DEFERRED: end date; the bar needs one, the notice runs until IC HVAC work
-       is funded and completed. Extend it as needed. / Derek / before 2027-06-30] */
+       is completed. Extend it as needed. / Derek / before 2027-06-30] */
     {
       id: 'masses-at-sjb-2026',
       start: '2026-10-30',
       end: '2027-06-30',
       en: {
         label: 'All Masses at St. John the Baptist',
-        text: 'In Cle Elum, until HVAC work at Immaculate Conception in Roslyn is funded and completed.',
+        text: 'In Cle Elum, until HVAC work at Immaculate Conception in Roslyn is completed.',
         cta: { text: 'Mass times', href: '/mass/' },
       },
       es: {
         label: 'Todas las Misas en San Juan Bautista',
-        text: 'En Cle Elum, hasta que se financie y termine la climatización en Inmaculada Concepción, Roslyn.',
+        text: 'En Cle Elum, hasta que termine la climatización en Inmaculada Concepción, Roslyn.',
         cta: { text: 'Horarios de Misa', href: '/es/mass/' },
       },
     },
