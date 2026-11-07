@@ -419,52 +419,87 @@
 }
 
 /* Staff and council email addresses */
-.feature__email,
-.council__email {
-  overflow-wrap: anywhere;
-}
-
 .feature__email {
   margin: 10px 0 0;
   font-family: var(--font-serif);
   font-size: 16px;
+  overflow-wrap: anywhere;
 }
 
-.feature__email a {
+.feature__email a,
+.person__email a,
+.council-card__email a {
   color: var(--color-navy);
 }
 
-.council {
-  padding: 10px 0;
+.person {
+  padding: 12px 0;
   border-bottom: 1px solid var(--border-hairline);
 }
 
-.council:last-child {
+.person:last-child {
   border-bottom: none;
+  padding-bottom: 0;
 }
 
-.council__name {
+.person__name {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  color: var(--color-charcoal);
+}
+
+.person__role {
+  display: block;
+  margin-top: 2px;
   color: var(--fg-muted);
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
 }
 
-.council__email {
-  margin: 2px 0 0;
+.person__email {
+  margin: 4px 0 0;
   font-family: var(--font-serif);
   font-size: 16px;
+  overflow-wrap: anywhere;
 }
 
-.council__email a {
-  color: var(--color-navy);
+.council-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  align-items: start;
 }
 
-.council__members {
-  margin: 6px 0 0;
-  color: var(--color-charcoal);
+.council-card__email {
+  margin: 0 0 16px;
   font-family: var(--font-serif);
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+
+.council-card__people {
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-hairline);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--color-charcoal);
+}
+
+.council-card__people + .council-card__people {
+  margin-top: 10px;
+  padding-top: 0;
+  border-top: none;
+}
+
+.council-card__people strong {
+  display: block;
+  color: var(--fg-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
 }
