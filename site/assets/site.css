@@ -417,3 +417,54 @@
     gap: 10px;
   }
 }
+
+/* Staff and council email addresses */
+.feature__email,
+.council__email {
+  overflow-wrap: anywhere;
+}
+
+.feature__email {
+  margin: 10px 0 0;
+  font-family: var(--font-serif);
+  font-size: 16px;
+}
+
+.feature__email a {
+  color: var(--color-navy);
+}
+
+.council {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.council:last-child {
+  border-bottom: none;
+}
+
+.council__name {
+  color: var(--fg-muted);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.council__email {
+  margin: 2px 0 0;
+  font-family: var(--font-serif);
+  font-size: 16px;
+}
+
+.council__email a {
+  color: var(--color-navy);
+}
+
+.council__members {
+  margin: 6px 0 0;
+  color: var(--color-charcoal);
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.5;
+}
