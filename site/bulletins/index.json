@@ -2,6 +2,14 @@
   "version": 1,
   "issues": [
     {
+      "date": "2026-11-15",
+      "title": "Weekly Parish Bulletin",
+      "path": "/bulletins/2026/2026-11-15-bulletin.pdf",
+      "bytes": 3164770,
+      "sha256": "c7103c53fd198fa89716328b7dd72bd16551a246b6898323038cea9f743829bc",
+      "publishedAt": "2026-11-14T20:00:07.415Z"
+    },
+    {
       "date": "2026-11-08",
       "title": "Weekly Parish Bulletin",
       "path": "/bulletins/2026/2026-11-08-bulletin.pdf",
