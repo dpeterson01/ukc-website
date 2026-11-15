@@ -503,3 +503,9 @@
   font-weight: 600;
   letter-spacing: 0.06em;
 }
+
+/* Keeps the hero's original spacing now that the reverse shield has real
+   artwork. The spacer takes the shield's footprint without showing it. */
+.hero__shield--spacer {
+  aspect-ratio: 1024 / 1228;
+}
