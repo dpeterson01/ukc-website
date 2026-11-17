@@ -312,26 +312,6 @@
   .utility-bar__contact a[href^='mailto:'] { display: none; }
 }
 
-.bulletin-archive {
-  max-width: 1120px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
-}
-
-.bulletin-archive .bulletin-issue {
-  min-width: 0;
-  margin: 0;
-  padding: 0 0 24px;
-  display: flex;
-  flex-direction: column;
-}
-
-.bulletin-archive .bulletin-issue__body {
-  flex: 1;
-  min-width: 0;
-}
-
 .bulletin-latest {
   display: flex;
   align-items: center;
@@ -363,8 +343,7 @@
   text-decoration: underline;
 }
 
-.bulletin-latest .btn,
-.bulletin-issue__actions .btn {
+.bulletin-latest .btn {
   white-space: normal;
   text-align: center;
 }
@@ -373,8 +352,148 @@
   letter-spacing: 0;
 }
 
+@media (max-width: 760px) {
+  .bulletin-latest {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* Bulletin archive. The markup is written by scripts/build-bulletins.mjs. */
+.bulletin-archive {
+  max-width: 760px;
+  --bulletin-season: var(--color-lit-green);
+}
+
+.bulletin-latest-card--advent, .bulletin-row--advent,
+.bulletin-latest-card--lent, .bulletin-row--lent { --bulletin-season: var(--color-lit-violet); }
+.bulletin-latest-card--christmas, .bulletin-row--christmas,
+.bulletin-latest-card--easter, .bulletin-row--easter { --bulletin-season: var(--color-lit-gold); }
+.bulletin-latest-card--ordinary, .bulletin-row--ordinary { --bulletin-season: var(--color-lit-green); }
+
+.bulletin-latest-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-top: 4px solid var(--bulletin-season);
+  padding: 28px 32px 32px;
+}
+
+.bulletin-latest-card__eyebrow {
+  margin: 0 0 10px;
+}
+
+.bulletin-latest-card__title {
+  margin: 0 0 6px;
+  font-size: 32px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.bulletin-latest-card__date {
+  margin: 0 0 22px;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--fg-muted);
+}
+
+.bulletin-latest-card__pdf {
+  display: inline-block;
+  min-height: 48px;
+  line-height: 1.5;
+  white-space: normal;
+  text-align: center;
+  font-size: 16px;
+}
+
+.bulletin-latest-card__size {
+  font-weight: 400;
+}
+
+.bulletin-latest-card__note {
+  margin: 14px 0 0;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--fg-muted);
+}
+
+.bulletin-signup {
+  margin: 20px 0 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+}
+
+.bulletin-signup a {
+  /* Inline padding widens the tap area without opening up the line. */
+  padding: 10px 0;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.bulletin-group {
+  margin-top: 48px;
+}
+
+.bulletin-group__heading {
+  margin: 0 0 4px;
+  font-size: 26px;
+}
+
+.bulletin-group__year {
+  margin: 24px 0 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--fg-muted);
+}
+
+.bulletin-list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bulletin-row {
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.bulletin-row__link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 48px;
+  padding: 14px 12px 14px 16px;
+  border-left: 3px solid var(--bulletin-season);
+  color: var(--fg-default);
+  text-decoration: none;
+}
+
+.bulletin-row__link:hover {
+  background: var(--bg-surface-alt);
+}
+
+.bulletin-row__title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--link-default);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.bulletin-row__meta {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+.bulletin-archive a:focus-visible {
+  /* Navy-dark rather than the gold focus token: gold on warm white is under 3:1. */
+  outline: 3px solid var(--color-navy-dark);
+  outline-offset: 3px;
+}
+
 .bulletin-archive__status {
-  grid-column: 1 / -1;
   margin: 0;
   padding: 28px 0;
   border-bottom: 1px solid var(--border-hairline);
@@ -383,38 +502,17 @@
   color: var(--fg-muted);
 }
 
-.bulletin-archive .bulletin-issue__cover {
-  background-image: linear-gradient(155deg, rgba(255, 255, 255, 0.05), transparent 55%);
-}
-
-.bulletin-issue__actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px;
-}
-
-.bulletin-issue__details {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  color: var(--fg-muted);
-}
-
 @media (max-width: 760px) {
-  .bulletin-archive {
-    grid-template-columns: minmax(0, 1fr);
+  .bulletin-latest-card {
+    padding: 22px 18px 24px;
   }
 
-  .bulletin-latest {
-    align-items: flex-start;
-    flex-direction: column;
+  .bulletin-latest-card__title {
+    font-size: 26px;
   }
 
-  .bulletin-issue__actions {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 10px;
+  .bulletin-latest-card__pdf {
+    display: block;
   }
 }
 

@@ -47,6 +47,12 @@ jobs:
       - name: Canonicals, titles and indexability
         run: node scripts/verify-seo.mjs
 
+      - name: Bulletin publisher and archive generator
+        run: node scripts/test-publish-bulletin.mjs
+
+      - name: Committed bulletin archive matches the manifest
+        run: node scripts/build-bulletins.mjs --check
+
   api:
     name: Forms API
     runs-on: ubuntu-latest

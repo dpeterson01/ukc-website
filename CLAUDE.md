@@ -128,6 +128,17 @@ the drawer, the conditional fields, and validation.
 Anything added from here on (for example `site/forms/`) should be ordinary HTML, CSS, and
 vanilla JS. No build step, no `package.json`, no `node_modules` in this repo.
 
+## Bulletin archive: one generated region
+
+`site/bulletins/index.html` and `site/es/bulletins/index.html` are hand-edited shells with one
+generated region between `<!-- bulletins:start -->` and `<!-- bulletins:end -->`.
+`node scripts/build-bulletins.mjs` writes that region from `site/bulletins/index.json`, and
+`scripts/publish-bulletin.mjs` reruns it on every weekly publish, so the Saturday job commits the
+HTML with the PDF. It is a script you run, not a deploy-time build: the output is committed static
+HTML. Edit the script, never the region. CI runs `build-bulletins.mjs --check` and fails when the
+committed region is stale. Analytics hooks on those links are described in
+`docs/analytics-events.md`.
+
 ## Fonts
 
 `python3 scripts/optimize-site-fonts.py` converts TTF to woff2 and rewrites `@font-face`. It only
