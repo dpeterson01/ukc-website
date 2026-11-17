@@ -41,6 +41,19 @@
       "season": "ordinary"
     },
     {
+      "date": "2026-10-25",
+      "title": "Weekly Parish Bulletin",
+      "path": "/bulletins/2026/2026-10-25-bulletin.pdf",
+      "bytes": 119665,
+      "sha256": "597c9a3dc3cc223b61e9c931696e97ec72f0af9f023a870dc27ab1acdb89de92",
+      "publishedAt": "2026-11-17T23:56:58.000Z",
+      "liturgicalTitle": {
+        "en": "Thirtieth Sunday in Ordinary Time",
+        "es": "Trigésimo Domingo del Tiempo Ordinario"
+      },
+      "season": "ordinary"
+    },
+    {
       "date": "2026-10-18",
       "title": "Weekly Parish Bulletin",
       "path": "/bulletins/2026/2026-10-18-bulletin.pdf",
