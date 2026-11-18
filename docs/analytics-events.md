@@ -14,16 +14,16 @@ sends the event name with those attributes as properties. Nothing is collected t
 
 | Event | Fires on | Properties |
 |---|---|---|
-| `bulletin_pdf_open` | A bulletin PDF link on `/bulletins/` or `/es/bulletins/` | `locale`, `position`, `issue` |
+| `bulletin_pdf_open` | A bulletin PDF link on the archive or a weekly summary page | `locale`, `position`, `issue` |
 | `bulletin_signup_click` | The email signup link on the archive | `locale`, `position` |
-| `bulletin_summary_open` | Reserved for the weekly summary link (stage 2) | `locale`, `position`, `issue` |
+| `bulletin_summary_open` | A link from the archive to a weekly summary page | `locale`, `position`, `issue` |
 | `bulletin_archive_view` | Reserved for a page view of either archive | `locale` |
 
 ## Property values
 
 - `locale`: `en` or `es`.
-- `position`: `latest`, `recent` (the three weeks after the latest), `older`, or `archive` for the
-  signup link.
+- `position`: `latest`, `recent` (the three weeks after the latest), `older`, `summary` for the PDF
+  button on a weekly summary page, or `archive` for the signup link.
 - `issue`: the bulletin date, `YYYY-MM-DD`.
 
 ## What is never collected

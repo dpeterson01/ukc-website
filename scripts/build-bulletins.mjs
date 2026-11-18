@@ -3,6 +3,9 @@
  * Reads site/bulletins/index.json and replaces the region between the
  * bulletins:start and bulletins:end markers in site/bulletins/index.html and
  * site/es/bulletins/index.html. Everything outside the markers stays hand-edited.
+ * For each entry with summary: true it also writes the dated summary pages,
+ * /bulletins/<date>/ and /es/bulletins/<date>/ (see bulletin-summary-pages.mjs),
+ * and the two bulletin sitemaps that list them.
  * The output is plain static HTML, so the archive works with no JavaScript and
  * with the manifest unreachable. There is no build step at deploy time: the
  * generated HTML is committed, and publish-bulletin.mjs reruns this after every
@@ -14,9 +17,10 @@
  * Dates and sizes are formatted here, not with Intl, so the output is the same
  * on every machine.
  */
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { sitemap, summaryPage, summaryUrl, validateSummary } from './bulletin-summary-pages.mjs';
 
 const defaultSiteRoot = path.resolve(import.meta.dirname, '..', 'site');
 const START = '<!-- bulletins:start -->';
@@ -268,18 +272,47 @@ export function replaceRegion(html, markup, file) {
   return html.slice(0, start) + body + html.slice(end + END.length);
 }
 
+export const summaryFile = (siteRoot, date) => path.join(siteRoot, 'bulletins', date.slice(0, 4), `${date}-summary.json`);
+
 export async function buildBulletins({ siteRoot = defaultSiteRoot, check = false } = {}) {
   const manifest = JSON.parse(await readFile(path.join(siteRoot, 'bulletins', 'index.json'), 'utf8'));
   if (manifest.version !== 1) throw new Error('bulletin manifest must be version 1');
-  const stale = [];
-  const written = [];
+  const outputs = new Map();
+  const shells = {};
   for (const locale of ['en', 'es']) {
     const file = path.join(siteRoot, ...(locale === 'es' ? ['es'] : []), 'bulletins', 'index.html');
-    const html = await readFile(file, 'utf8');
-    const next = replaceRegion(html, archiveMarkup(manifest, locale), file);
-    if (next === html) continue;
+    const html = replaceRegion(await readFile(file, 'utf8'), archiveMarkup(manifest, locale), file);
+    outputs.set(file, html);
+    shells[locale] = html;
+  }
+
+  // Summary pages, oldest first so each knows its neighbours. Only listed weeks link to each other.
+  const withSummary = publishedIssues(manifest.issues).filter((issue) => issue.summary === true).reverse();
+  const linked = withSummary.filter(listed);
+  const format = { date: formatDate, size: formatSize };
+  for (const issue of withSummary) {
+    const summary = validateSummary(JSON.parse(await readFile(summaryFile(siteRoot, issue.date), 'utf8')), issue.date);
+    const at = linked.indexOf(issue);
+    const neighbours = at < 0 ? {} : { previous: linked[at - 1] ?? null, next: linked[at + 1] ?? null };
+    for (const locale of ['en', 'es']) {
+      const file = path.join(siteRoot, ...(locale === 'es' ? ['es'] : []), 'bulletins', issue.date, 'index.html');
+      outputs.set(file, summaryPage({ shell: shells[locale], locale, issue, summary, neighbours, format }));
+    }
+  }
+  for (const locale of ['en', 'es']) {
+    const file = path.join(siteRoot, ...(locale === 'es' ? ['es'] : []), 'bulletins', 'sitemap.xml');
+    outputs.set(file, sitemap([...linked].reverse().map((issue) => summaryUrl(issue.date, locale))));
+  }
+
+  const stale = [];
+  const written = [];
+  for (const [file, next] of outputs) {
+    let current = null;
+    try { current = await readFile(file, 'utf8'); } catch (error) { if (error.code !== 'ENOENT') throw error; }
+    if (next === current) continue;
     if (check) stale.push(file);
     else {
+      await mkdir(path.dirname(file), { recursive: true });
       await writeFile(file, next);
       written.push(file);
     }
@@ -292,10 +325,10 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   try {
     const { stale, written } = await buildBulletins({ check });
     if (check && stale.length) {
-      console.error(`build-bulletins: stale archive HTML, run node scripts/build-bulletins.mjs:\n  ${stale.join('\n  ')}`);
+      console.error(`build-bulletins: stale bulletin pages, run node scripts/build-bulletins.mjs:\n  ${stale.join('\n  ')}`);
       process.exitCode = 1;
     } else {
-      console.log(check ? 'build-bulletins: archive HTML is current' : `build-bulletins: ${written.length} page(s) updated`);
+      console.log(check ? 'build-bulletins: bulletin pages are current' : `build-bulletins: ${written.length} file(s) updated`);
     }
   } catch (error) {
     console.error(`build-bulletins: ${error.message}`);
