@@ -92,6 +92,8 @@ try {
     assert.equal(count(region, /data-event-position="older"/g), 3);
     assert.ok(!region.includes('2026-09-27'), 'a skipped week leaves no card');
     assert.ok(region.includes('id="bulletin-year-2026"'), 'older issues are grouped by year');
+    assert.equal(count(region, /<details class="bulletin-year"/g), 1, 'a year before the latest issue collapses');
+    assert.ok(region.includes(locale === 'es' ? '3 boletines' : '3 bulletins'), 'collapsed year shows its count');
     assert.ok(region.includes(locale === 'es' ? 'Vigésimo quinto Domingo' : 'Twenty-fifth Sunday'), 'liturgical title when known');
     assert.ok(region.includes(locale === 'es' ? 'domingo, 3 de enero de 2027' : 'Sunday, January 3, 2027'), 'date heading when no title');
     assert.ok(region.includes('href="../email/"'), 'one signup link, inside the same language tree');
@@ -99,6 +101,25 @@ try {
     assert.ok(!region.includes('<script'), 'no script in the archive');
     assert.ok(!html.includes('bulletin-archive.js'), 'the archive page needs no JavaScript');
   }
+
+  // Several years: the latest issue's year stays open, earlier years collapse, jump links lead to each.
+  const spread = [];
+  for (const year of [2027, 2026, 2025]) for (const day of ['12-26', '12-19', '06-07', '01-04']) {
+    const date = `${year}-${day}`;
+    spread.push({ date, path: `/bulletins/${year}/${date}-bulletin.pdf`, bytes: 1000 });
+  }
+  const years = archiveMarkup({ version: 1, issues: spread }, 'en');
+  assert.equal(count(years, /<details class="bulletin-year"/g), 2);
+  assert.ok(!/<details[^>]*>\s*<summary><h3[^>]*>2027/.test(years), 'the latest year is not collapsed');
+  assert.ok(years.includes('<a href="#bulletin-year-2025">2025</a>'));
+  assert.ok(years.includes('4 bulletins'));
+
+  // An issue with a summary page links its title there and keeps a direct PDF link.
+  const withSummary = archiveMarkup({ version: 1, issues: spread.map((issue, index) => (index < 2 ? { ...issue, summary: true } : issue)) }, 'es');
+  assert.ok(withSummary.includes('href="2027-12-26/"') && withSummary.includes('Leer el resumen semanal'));
+  assert.ok(withSummary.includes('href="2027-12-19/" data-event="bulletin_summary_open" data-event-position="recent"'));
+  assert.equal(count(withSummary, /href="\/bulletins\/2027\/2027-12-19-bulletin\.pdf"/g), 1, 'the PDF stays one tap away');
+  assert.ok(!years.includes('bulletin_summary_open'), 'no summary link without a summary page');
 
   const empty = archiveMarkup({ version: 1, issues: [] }, 'en');
   assert.ok(empty.includes('No bulletins have been published yet.'));

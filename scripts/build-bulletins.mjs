@@ -32,9 +32,12 @@ const COPY = {
     fallbackTitle: 'Weekly Parish Bulletin',
     latest: 'Latest bulletin',
     open: 'Open full bulletin',
+    read: 'Read the weekly summary',
     pdf: 'PDF',
     previous: 'Previous weeks',
     earlier: 'Earlier bulletins',
+    jump: 'Jump to year',
+    count: (n) => `${n} ${n === 1 ? 'bulletin' : 'bulletins'}`,
     emptyLatest: 'No bulletins have been published yet.',
     signupLead: 'Get the bulletin by email each week.',
     signup: 'Sign up for email',
@@ -49,9 +52,12 @@ const COPY = {
     fallbackTitle: 'Boletín parroquial semanal',
     latest: 'Boletín más reciente',
     open: 'Abrir PDF en inglés',
+    read: 'Leer el resumen semanal',
     pdf: 'PDF en inglés',
     previous: 'Semanas anteriores',
     earlier: 'Boletines anteriores',
+    jump: 'Ir al año',
+    count: (n) => `${n} ${n === 1 ? 'boletín' : 'boletines'}`,
     emptyLatest: 'Todavía no hay boletines publicados.',
     signupLead: 'Reciba el boletín por correo electrónico cada semana.',
     signup: 'Suscribirse por correo',
@@ -106,6 +112,9 @@ function season(issue) {
   return SEASONS.has(issue.season) ? issue.season : 'ordinary';
 }
 
+// A dated summary page exists at /bulletins/<date>/ (and /es/bulletins/<date>/) when the entry says so.
+const summaryHref = (issue) => (issue.summary === true ? `${issue.date}/` : null);
+
 function eventAttributes(event, position, issue, locale) {
   return `data-event="${event}" data-event-position="${position}" data-event-locale="${locale}"`
     + (issue ? ` data-event-issue="${issue.date}"` : '');
@@ -121,7 +130,10 @@ function latestCard(issue, locale) {
     `  <p class="eyebrow bulletin-latest-card__eyebrow">${copy.latest}</p>`,
     `  <h2 class="bulletin-latest-card__title" id="bulletin-latest-title">${escapeHtml(heading)}</h2>`,
     heading === date ? '' : `  <p class="bulletin-latest-card__date"><time datetime="${issue.date}">${date}</time></p>`,
-    `  <a class="btn btn--primary bulletin-latest-card__pdf" href="${issue.path}" ${eventAttributes('bulletin_pdf_open', 'latest', issue, locale)}>${copy.open} <span class="bulletin-latest-card__size">(PDF, ${size})</span></a>`,
+    '  <div class="bulletin-latest-card__actions">',
+    summaryHref(issue) ? `    <a class="btn btn--primary bulletin-latest-card__summary" href="${summaryHref(issue)}" ${eventAttributes('bulletin_summary_open', 'latest', issue, locale)}>${copy.read}</a>` : '',
+    `    <a class="btn ${summaryHref(issue) ? 'btn--secondary' : 'btn--primary'} bulletin-latest-card__pdf" href="${issue.path}" ${eventAttributes('bulletin_pdf_open', 'latest', issue, locale)}>${copy.open} <span class="bulletin-latest-card__size">(PDF, ${size})</span></a>`,
+    '  </div>',
     copy.note ? `  <p class="bulletin-latest-card__note">${copy.note}</p>` : '',
     '</article>',
   ].filter(Boolean).join('\n');
@@ -131,12 +143,26 @@ function row(issue, locale, position) {
   const copy = COPY[locale];
   const date = formatDate(issue.date, locale);
   const heading = title(issue, locale);
+  const summary = summaryHref(issue);
+  const pdf = `${copy.pdf}, ${formatSize(issue.bytes, locale)}`;
+  const dateLine = heading ? `<time datetime="${issue.date}">${date}</time>` : '';
+  if (!summary) {
+    return [
+      `<li class="bulletin-row bulletin-row--${season(issue)}">`,
+      `  <a class="bulletin-row__link" href="${issue.path}" ${eventAttributes('bulletin_pdf_open', position, issue, locale)}>`,
+      `    <span class="bulletin-row__title">${escapeHtml(heading ?? date)}</span>`,
+      `    <span class="bulletin-row__meta">${dateLine ? `${dateLine} · ` : ''}${pdf}</span>`,
+      '  </a>',
+      '</li>',
+    ].join('\n');
+  }
   return [
-    `<li class="bulletin-row bulletin-row--${season(issue)}">`,
-    `  <a class="bulletin-row__link" href="${issue.path}" ${eventAttributes('bulletin_pdf_open', position, issue, locale)}>`,
+    `<li class="bulletin-row bulletin-row--${season(issue)} bulletin-row--summary">`,
+    `  <a class="bulletin-row__link" href="${summary}" ${eventAttributes('bulletin_summary_open', position, issue, locale)}>`,
     `    <span class="bulletin-row__title">${escapeHtml(heading ?? date)}</span>`,
-    `    <span class="bulletin-row__meta">${heading ? `<time datetime="${issue.date}">${date}</time> · ` : ''}${copy.pdf}, ${formatSize(issue.bytes, locale)}</span>`,
+    `    <span class="bulletin-row__meta">${dateLine ? `${dateLine} · ` : ''}${copy.read}</span>`,
     '  </a>',
+    `  <a class="bulletin-row__pdf" href="${issue.path}" ${eventAttributes('bulletin_pdf_open', position, issue, locale)}>${pdf}</a>`,
     '</li>',
   ].join('\n');
 }
@@ -168,18 +194,40 @@ export function archiveMarkup(manifest, locale) {
       '</section>',
     ].join('\n'));
   }
+  // The latest issue's year stays open. Each earlier year collapses into a <details> line, so the page
+  // stays short as the archive grows and still works with no JavaScript. Find-in-page still searches it.
   const older = issues.slice(4);
   if (older.length) {
+    const currentYear = issues[0].date.slice(0, 4);
     const years = [...new Set(older.map((issue) => issue.date.slice(0, 4)))];
+    const list = (year) => [
+      `<ul class="bulletin-list" aria-labelledby="bulletin-year-${year}">`,
+      ...older.filter((issue) => issue.date.startsWith(year)).map((issue) => indent(row(issue, locale, 'older'), 1)),
+      '</ul>',
+    ];
     parts.push([
       '<section class="bulletin-group" aria-labelledby="bulletin-earlier">',
       `  <h2 class="bulletin-group__heading" id="bulletin-earlier">${copy.earlier}</h2>`,
-      ...years.flatMap((year) => [
-        `  <h3 class="bulletin-group__year" id="bulletin-year-${year}">${year}</h3>`,
-        `  <ul class="bulletin-list" aria-labelledby="bulletin-year-${year}">`,
-        ...older.filter((issue) => issue.date.startsWith(year)).map((issue) => indent(row(issue, locale, 'older'), 2)),
-        '  </ul>',
-      ]),
+      ...(years.length > 1 ? [
+        `  <nav class="bulletin-years" aria-label="${copy.jump}">`,
+        `    ${years.map((year) => `<a href="#bulletin-year-${year}">${year}</a>`).join(' ')}`,
+        '  </nav>',
+      ] : []),
+      ...years.flatMap((year) => {
+        const count = older.filter((issue) => issue.date.startsWith(year)).length;
+        if (year === currentYear) {
+          return [
+            `  <h3 class="bulletin-group__year" id="bulletin-year-${year}">${year}</h3>`,
+            ...list(year).map((line) => `  ${line}`),
+          ];
+        }
+        return [
+          `  <details class="bulletin-year" id="bulletin-year-${year}-group">`,
+          `    <summary><h3 class="bulletin-group__year" id="bulletin-year-${year}">${year}</h3> <span class="bulletin-year__count">${copy.count(count)}</span></summary>`,
+          ...list(year).map((line) => `    ${line}`),
+          '  </details>',
+        ];
+      }),
       '</section>',
     ].join('\n'));
   }

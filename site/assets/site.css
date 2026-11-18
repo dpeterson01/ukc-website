@@ -396,6 +396,18 @@
   color: var(--fg-muted);
 }
 
+.bulletin-latest-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.bulletin-latest-card__summary {
+  min-height: 48px;
+  line-height: 1.5;
+  font-size: 16px;
+}
+
 .bulletin-latest-card__pdf {
   display: inline-block;
   min-height: 48px;
@@ -447,6 +459,76 @@
   color: var(--fg-muted);
 }
 
+.bulletin-years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 8px 0 4px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+}
+
+.bulletin-years a {
+  padding: 10px 0;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* Jump links land below the sticky header. */
+.bulletin-year,
+.bulletin-group__year {
+  scroll-margin-top: 96px;
+}
+
+.bulletin-year {
+  margin-top: 16px;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.bulletin-year > summary {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-height: 48px;
+  padding: 12px 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.bulletin-year > summary::-webkit-details-marker {
+  display: none;
+}
+
+.bulletin-year > summary::before {
+  content: "+";
+  width: 1em;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--link-default);
+}
+
+.bulletin-year[open] > summary::before {
+  content: "−";
+}
+
+.bulletin-year > summary:focus-visible {
+  outline: 3px solid var(--color-navy-dark);
+  outline-offset: 3px;
+}
+
+.bulletin-year .bulletin-group__year {
+  display: inline;
+  margin: 0;
+  font-size: 18px;
+  color: var(--link-default);
+}
+
+.bulletin-year__count {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
 .bulletin-list {
   margin: 8px 0 0;
   padding: 0;
@@ -466,6 +548,38 @@
   border-left: 3px solid var(--bulletin-season);
   color: var(--fg-default);
   text-decoration: none;
+}
+
+.bulletin-row--summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 16px;
+}
+
+.bulletin-row--summary {
+  border-left: 3px solid var(--bulletin-season);
+}
+
+.bulletin-row--summary .bulletin-row__link {
+  flex: 1 1 260px;
+  border-left: 0;
+}
+
+@media (max-width: 760px) {
+  .bulletin-row--summary .bulletin-row__pdf {
+    margin-top: -8px;
+    padding-top: 4px;
+  }
+}
+
+.bulletin-row__pdf {
+  padding: 12px 12px 12px 16px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  text-decoration: underline;
+  white-space: nowrap;
 }
 
 .bulletin-row__link:hover {
@@ -511,8 +625,11 @@
     font-size: 26px;
   }
 
+  .bulletin-latest-card__summary,
   .bulletin-latest-card__pdf {
     display: block;
+    width: 100%;
+    text-align: center;
   }
 }
 
