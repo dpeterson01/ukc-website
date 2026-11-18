@@ -99,14 +99,32 @@ export function formatDate(value, locale) {
 }
 
 export function formatSize(bytes, locale) {
-  if (bytes < 1048576) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-  return `${(bytes / 1048576).toFixed(1).replace('.', COPY[locale].decimal)} MB`;
+  // A no-break space keeps the number and unit on one line.
+  if (bytes < 1048576) return `${Math.max(1, Math.round(bytes / 1024))}\u00a0KB`;
+  return `${(bytes / 1048576).toFixed(1).replace('.', COPY[locale].decimal)}\u00a0MB`;
 }
 
-function title(issue, locale) {
-  const value = issue.liturgicalTitle?.[locale];
+function localized(issue, field, locale) {
+  const value = issue[field]?.[locale];
   return typeof value === 'string' && value.trim() ? value.trim() : null;
 }
+
+/* The headline is the week's email subject when there is one, then the Sunday's title, then the date.
+ * The line under it carries whatever the headline did not: the Sunday's title and the date. */
+function heading(issue, locale) {
+  const date = formatDate(issue.date, locale);
+  const headline = localized(issue, 'headline', locale);
+  const sunday = localized(issue, 'liturgicalTitle', locale);
+  const text = headline ?? sunday ?? date;
+  const under = [];
+  if (sunday && text !== sunday) under.push(escapeHtml(sunday));
+  if (text !== date) under.push(`<time datetime="${issue.date}">${date}</time>`);
+  return { text, under };
+}
+
+// Issues from before the current process (summary pages, email subjects) keep their PDFs online
+// at the same URLs, so links in old emails still work, but the archive does not list them.
+const listed = (issue) => issue.listed !== false;
 
 function season(issue) {
   return SEASONS.has(issue.season) ? issue.season : 'ordinary';
@@ -122,14 +140,13 @@ function eventAttributes(event, position, issue, locale) {
 
 function latestCard(issue, locale) {
   const copy = COPY[locale];
-  const date = formatDate(issue.date, locale);
-  const heading = title(issue, locale) ?? date;
+  const { text, under } = heading(issue, locale);
   const size = formatSize(issue.bytes, locale);
   return [
     `<article class="bulletin-latest-card bulletin-latest-card--${season(issue)}" aria-labelledby="bulletin-latest-title">`,
     `  <p class="eyebrow bulletin-latest-card__eyebrow">${copy.latest}</p>`,
-    `  <h2 class="bulletin-latest-card__title" id="bulletin-latest-title">${escapeHtml(heading)}</h2>`,
-    heading === date ? '' : `  <p class="bulletin-latest-card__date"><time datetime="${issue.date}">${date}</time></p>`,
+    `  <h2 class="bulletin-latest-card__title" id="bulletin-latest-title">${escapeHtml(text)}</h2>`,
+    under.length ? `  <p class="bulletin-latest-card__date">${under.join(' · ')}</p>` : '',
     '  <div class="bulletin-latest-card__actions">',
     summaryHref(issue) ? `    <a class="btn btn--primary bulletin-latest-card__summary" href="${summaryHref(issue)}" ${eventAttributes('bulletin_summary_open', 'latest', issue, locale)}>${copy.read}</a>` : '',
     `    <a class="btn ${summaryHref(issue) ? 'btn--secondary' : 'btn--primary'} bulletin-latest-card__pdf" href="${issue.path}" ${eventAttributes('bulletin_pdf_open', 'latest', issue, locale)}>${copy.open} <span class="bulletin-latest-card__size">(PDF, ${size})</span></a>`,
@@ -141,17 +158,15 @@ function latestCard(issue, locale) {
 
 function row(issue, locale, position) {
   const copy = COPY[locale];
-  const date = formatDate(issue.date, locale);
-  const heading = title(issue, locale);
+  const { text, under } = heading(issue, locale);
   const summary = summaryHref(issue);
   const pdf = `${copy.pdf}, ${formatSize(issue.bytes, locale)}`;
-  const dateLine = heading ? `<time datetime="${issue.date}">${date}</time>` : '';
   if (!summary) {
     return [
       `<li class="bulletin-row bulletin-row--${season(issue)}">`,
       `  <a class="bulletin-row__link" href="${issue.path}" ${eventAttributes('bulletin_pdf_open', position, issue, locale)}>`,
-      `    <span class="bulletin-row__title">${escapeHtml(heading ?? date)}</span>`,
-      `    <span class="bulletin-row__meta">${dateLine ? `${dateLine} · ` : ''}${pdf}</span>`,
+      `    <span class="bulletin-row__title">${escapeHtml(text)}</span>`,
+      `    <span class="bulletin-row__meta">${[...under, pdf].join(' · ')}</span>`,
       '  </a>',
       '</li>',
     ].join('\n');
@@ -159,8 +174,8 @@ function row(issue, locale, position) {
   return [
     `<li class="bulletin-row bulletin-row--${season(issue)} bulletin-row--summary">`,
     `  <a class="bulletin-row__link" href="${summary}" ${eventAttributes('bulletin_summary_open', position, issue, locale)}>`,
-    `    <span class="bulletin-row__title">${escapeHtml(heading ?? date)}</span>`,
-    `    <span class="bulletin-row__meta">${dateLine ? `${dateLine} · ` : ''}${copy.read}</span>`,
+    `    <span class="bulletin-row__title">${escapeHtml(text)}</span>`,
+    `    <span class="bulletin-row__meta">${[...under, copy.read].join(' · ')}</span>`,
     '  </a>',
     `  <a class="bulletin-row__pdf" href="${issue.path}" ${eventAttributes('bulletin_pdf_open', position, issue, locale)}>${pdf}</a>`,
     '</li>',
@@ -170,7 +185,7 @@ function row(issue, locale, position) {
 export function archiveMarkup(manifest, locale) {
   if (!COPY[locale]) throw new Error(`unsupported locale ${locale}`);
   const copy = COPY[locale];
-  const issues = publishedIssues(manifest.issues);
+  const issues = publishedIssues(manifest.issues).filter(listed);
   const indent = (text, depth) => text.split('\n').map((line) => (line ? '  '.repeat(depth) + line : line)).join('\n');
   const parts = [];
   if (!issues.length) {

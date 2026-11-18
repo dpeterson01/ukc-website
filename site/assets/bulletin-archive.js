@@ -23,7 +23,7 @@
   function recentIssues(issues) {
     var seen = new Set();
     return issues.filter(function (issue) {
-      if (!issue || typeof issue.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(issue.date)) return false;
+      if (!issue || issue.listed === false || typeof issue.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(issue.date)) return false;
       var date = new Date(issue.date + 'T00:00:00Z');
       if (!Number.isFinite(date.valueOf()) || date.toISOString().slice(0, 10) !== issue.date) return false;
       if (issue.path !== '/bulletins/' + issue.date.slice(0, 4) + '/' + issue.date + '-bulletin.pdf') return false;

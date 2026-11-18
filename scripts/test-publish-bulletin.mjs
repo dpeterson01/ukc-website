@@ -125,6 +125,36 @@ try {
   assert.ok(empty.includes('No bulletins have been published yet.'));
   assert.ok(!empty.includes('bulletin-row'));
 
+  // Headline is the email subject; Spanish falls back to its Sunday title when it has no subject yet.
+  const headlined = [
+    { ...fullArchive.issues[0], date: '2027-01-17', path: '/bulletins/2027/2027-01-17-bulletin.pdf', headline: { en: 'Is your lamp ready?', es: '¿Está lista su lámpara?' }, liturgicalTitle: { en: 'Second Sunday', es: 'Segundo Domingo' } },
+    { ...fullArchive.issues[0], date: '2027-01-10', path: '/bulletins/2027/2027-01-10-bulletin.pdf', headline: { en: 'Grace is not a competition' }, liturgicalTitle: { en: 'Baptism of the Lord', es: 'Bautismo del Señor' } },
+    { ...fullArchive.issues[0], date: '2026-12-27', path: '/bulletins/2026/2026-12-27-bulletin.pdf', listed: false },
+  ];
+  const headEn = archiveMarkup({ version: 1, issues: headlined }, 'en');
+  const headEs = archiveMarkup({ version: 1, issues: headlined }, 'es');
+  assert.ok(headEn.includes('id="bulletin-latest-title">Is your lamp ready?</h2>'));
+  assert.ok(headEn.includes('Second Sunday · <time datetime="2027-01-17">'), 'Sunday title and date sit under the headline');
+  assert.ok(headEn.includes('>Grace is not a competition</span>'));
+  assert.ok(headEs.includes('>Bautismo del Señor</span>'), 'Spanish never shows an English subject');
+  assert.ok(!headEs.includes('Grace is not'));
+  assert.ok(!headEn.includes('2026-12-27'), 'an unlisted issue stays off the archive page');
+  assert.equal(await display({ issues: [{ ...headlined[2], date: '2027-02-07', path: '/bulletins/2027/2027-02-07-bulletin.pdf' }, headlined[1]] }), await display({ issues: [headlined[1]] }), 'the Home strip skips unlisted issues');
+
+  // A republish keeps listed: false and the headline; --headline-es alone is refused.
+  const manifestNow = JSON.parse(await readFile(first.manifestPath, 'utf8'));
+  manifestNow.issues.find((issue) => issue.date === '2026-09-20').listed = false;
+  await writeFile(first.manifestPath, JSON.stringify(manifestNow));
+  await publishBulletin({ ...options, headlineEn: 'Grace is not a competition' });
+  const republished = JSON.parse(await readFile(first.manifestPath, 'utf8')).issues.find((issue) => issue.date === '2026-09-20');
+  assert.equal(republished.listed, false);
+  assert.deepEqual(republished.headline, { en: 'Grace is not a competition' });
+  await publishBulletin({ ...options });
+  assert.deepEqual(JSON.parse(await readFile(first.manifestPath, 'utf8')).issues.find((issue) => issue.date === '2026-09-20').headline, { en: 'Grace is not a competition' });
+  assert.ok(!(await readFile(pages.en, 'utf8')).includes('2026-09-20-bulletin.pdf'), 'unlisted after republish');
+  assert.deepEqual(await readFile(path.join(siteRoot, republished.path)), fixture, 'the unlisted PDF stays online');
+  await assert.rejects(publishBulletin({ ...options, headlineEs: 'x' }), /--headline-es needs --headline-en/);
+
   const hostile = archiveMarkup({ version: 1, issues: [
     null,
     { ...fullArchive.issues[0], date: '2026-02-30' },
@@ -136,9 +166,9 @@ try {
   assert.ok(!hostile.includes('<img'), 'titles are escaped');
   assert.equal(count(hostile, /bulletin-latest-card__pdf/g), 1);
 
-  assert.equal(formatSize(284486, 'en'), '278 KB');
-  assert.equal(formatSize(3164770, 'en'), '3.0 MB');
-  assert.equal(formatSize(3164770, 'es'), '3,0 MB');
+  assert.equal(formatSize(284486, 'en'), '278\u00a0KB');
+  assert.equal(formatSize(3164770, 'en'), '3.0\u00a0MB');
+  assert.equal(formatSize(3164770, 'es'), '3,0\u00a0MB');
 
   // Check mode reports a stale page and changes nothing.
   await writeFile(pages.es, (await readFile(pages.es, 'utf8')).replace('Abrir PDF en inglés', 'stale'));

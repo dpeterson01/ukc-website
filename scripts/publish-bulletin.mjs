@@ -13,7 +13,7 @@ function parseArgs(argv) {
     const key = argv[index];
     const value = argv[index + 1];
     if (!key?.startsWith('--') || value === undefined) {
-      throw new Error('Usage: node scripts/publish-bulletin.mjs --date YYYY-MM-DD --pdf /path/to/bulletin.pdf [--published-at ISO-8601] [--title-en TEXT --title-es TEXT] [--season KEY]');
+      throw new Error('Usage: node scripts/publish-bulletin.mjs --date YYYY-MM-DD --pdf /path/to/bulletin.pdf [--published-at ISO-8601] [--title-en TEXT --title-es TEXT] [--headline-en TEXT [--headline-es TEXT]] [--season KEY]');
     }
     args[key.slice(2)] = value;
   }
@@ -43,11 +43,12 @@ async function readArchive(manifestPath) {
   }
 }
 
-export async function publishBulletin({ date, pdfPath, siteRoot = defaultSiteRoot, publishedAt, titleEn, titleEs, season, log = console }) {
+export async function publishBulletin({ date, pdfPath, siteRoot = defaultSiteRoot, publishedAt, titleEn, titleEs, headlineEn, headlineEs, season, log = console }) {
   validateDate(date);
   if (!pdfPath) throw new Error('PDF path is required');
   if (Boolean(titleEn?.trim()) !== Boolean(titleEs?.trim())) throw new Error('Pass both --title-en and --title-es, or neither');
   if (season !== undefined && !seasons.has(season)) throw new Error(`Invalid season: ${season}`);
+  if (headlineEs?.trim() && !headlineEn?.trim()) throw new Error('--headline-es needs --headline-en');
 
   const source = path.resolve(pdfPath);
   const sourceBytes = await readFile(source);
@@ -76,6 +77,14 @@ export async function publishBulletin({ date, pdfPath, siteRoot = defaultSiteRoo
   // Optional display fields. A rerun without them keeps what the entry already had.
   const liturgicalTitle = titleEn?.trim() ? { en: titleEn.trim(), es: titleEs.trim() } : existing?.liturgicalTitle;
   if (liturgicalTitle) issue.liturgicalTitle = liturgicalTitle;
+  // The headline is the week's email subject. Spanish may lag English; the archive then falls back
+  // to the Spanish Sunday title on the Spanish page.
+  const headline = headlineEn?.trim()
+    ? { en: headlineEn.trim(), ...(headlineEs?.trim() ? { es: headlineEs.trim() } : {}) }
+    : existing?.headline;
+  if (headline) issue.headline = headline;
+  // listed: false keeps an older PDF online but off the archive page. A republish keeps the choice.
+  if (existing?.listed === false) issue.listed = false;
   const issueSeason = season ?? existing?.season;
   if (issueSeason) issue.season = issueSeason;
   archive.issues = [issue, ...archive.issues.filter((entry) => entry.date !== date)]
@@ -109,6 +118,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       publishedAt: args['published-at'],
       titleEn: args['title-en'],
       titleEs: args['title-es'],
+      headlineEn: args['headline-en'],
+      headlineEs: args['headline-es'],
       season: args.season,
     });
     console.log(`Published ${result.issue.path}`);
