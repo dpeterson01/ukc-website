@@ -2,7 +2,9 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildBulletins } from './build-bulletins.mjs';
 
+const seasons = new Set(['advent', 'christmas', 'lent', 'easter', 'ordinary']);
 const defaultSiteRoot = path.resolve(import.meta.dirname, '..', 'site');
 
 function parseArgs(argv) {
@@ -11,7 +13,7 @@ function parseArgs(argv) {
     const key = argv[index];
     const value = argv[index + 1];
     if (!key?.startsWith('--') || value === undefined) {
-      throw new Error('Usage: node scripts/publish-bulletin.mjs --date YYYY-MM-DD --pdf /path/to/bulletin.pdf [--published-at ISO-8601]');
+      throw new Error('Usage: node scripts/publish-bulletin.mjs --date YYYY-MM-DD --pdf /path/to/bulletin.pdf [--published-at ISO-8601] [--title-en TEXT --title-es TEXT] [--headline-en TEXT [--headline-es TEXT]] [--season KEY]');
     }
     args[key.slice(2)] = value;
   }
@@ -41,9 +43,12 @@ async function readArchive(manifestPath) {
   }
 }
 
-export async function publishBulletin({ date, pdfPath, siteRoot = defaultSiteRoot, publishedAt }) {
+export async function publishBulletin({ date, pdfPath, siteRoot = defaultSiteRoot, publishedAt, titleEn, titleEs, headlineEn, headlineEs, season, log = console }) {
   validateDate(date);
   if (!pdfPath) throw new Error('PDF path is required');
+  if (Boolean(titleEn?.trim()) !== Boolean(titleEs?.trim())) throw new Error('Pass both --title-en and --title-es, or neither');
+  if (season !== undefined && !seasons.has(season)) throw new Error(`Invalid season: ${season}`);
+  if (headlineEs?.trim() && !headlineEn?.trim()) throw new Error('--headline-es needs --headline-en');
 
   const source = path.resolve(pdfPath);
   const sourceBytes = await readFile(source);
@@ -69,6 +74,19 @@ export async function publishBulletin({ date, pdfPath, siteRoot = defaultSiteRoo
     sha256: createHash('sha256').update(sourceBytes).digest('hex'),
     publishedAt: timestamp,
   };
+  // Optional display fields. A rerun without them keeps what the entry already had.
+  const liturgicalTitle = titleEn?.trim() ? { en: titleEn.trim(), es: titleEs.trim() } : existing?.liturgicalTitle;
+  if (liturgicalTitle) issue.liturgicalTitle = liturgicalTitle;
+  // The headline is the week's email subject. Spanish may lag English; the archive then falls back
+  // to the Spanish Sunday title on the Spanish page.
+  const headline = headlineEn?.trim()
+    ? { en: headlineEn.trim(), ...(headlineEs?.trim() ? { es: headlineEs.trim() } : {}) }
+    : existing?.headline;
+  if (headline) issue.headline = headline;
+  // listed: false keeps an older PDF online but off the archive page. A republish keeps the choice.
+  if (existing?.listed === false) issue.listed = false;
+  const issueSeason = season ?? existing?.season;
+  if (issueSeason) issue.season = issueSeason;
   archive.issues = [issue, ...archive.issues.filter((entry) => entry.date !== date)]
     .sort((left, right) => right.date.localeCompare(left.date));
 
@@ -78,7 +96,16 @@ export async function publishBulletin({ date, pdfPath, siteRoot = defaultSiteRoo
 
   const destinationStat = await stat(destination);
   if (destinationStat.size !== sourceBytes.length) throw new Error('Published PDF size does not match source');
-  return { destination, manifestPath, issue };
+
+  // The PDF and manifest are what the email links to, so a failed archive rebuild does not fail the
+  // publish. It warns, and verify-bulletins.mjs in CI catches the stale pages on the next push.
+  let archivePages = [];
+  try {
+    archivePages = (await buildBulletins({ siteRoot })).written;
+  } catch (error) {
+    log.warn(`publish-bulletin: WARNING archive pages not rebuilt: ${error.message}`);
+  }
+  return { destination, manifestPath, issue, archivePages };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -89,6 +116,11 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       pdfPath: args.pdf,
       siteRoot: args['site-root'] ? path.resolve(args['site-root']) : defaultSiteRoot,
       publishedAt: args['published-at'],
+      titleEn: args['title-en'],
+      titleEs: args['title-es'],
+      headlineEn: args['headline-en'],
+      headlineEs: args['headline-es'],
+      season: args.season,
     });
     console.log(`Published ${result.issue.path}`);
   } catch (error) {
