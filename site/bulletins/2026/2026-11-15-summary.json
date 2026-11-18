@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "date": "2026-11-15",
+  "season": "ordinary",
+  "nabNotice": "Scripture texts in this work are taken from the New American Bible with Revised New Testament and Revised Psalms and are used by permission of the copyright owner. All Rights Reserved.",
+  "readingsUrl": {
+    "en": "https://bible.usccb.org/bible/readings/111526.cfm",
+    "es": "https://bible.usccb.org/es/bible/lecturas/111526.cfm"
+  },
+  "en": {
+    "headline": "What will you do with your talents?",
+    "title": "Thirty-third Sunday in Ordinary Time",
+    "quote": {
+      "text": "… Well done, my good and faithful servant.",
+      "ref": "Matthew 25:21"
+    },
+    "notice": {
+      "title": "Thanksgiving Day Mass at St. John the Baptist",
+      "body": "Thanksgiving Day Mass is Thursday, November 26, at 9:00 AM at St. John the Baptist in Cle Elum. There is no Mass on Friday, November 27."
+    },
+    "reflection": {
+      "head": "Reflection",
+      "body": [
+        "A talent in Jesus' day was an enormous sum, many years of a laborer's wages. The master in today's Gospel trusts each servant with a fortune, and then he goes away.",
+        "Two servants take a risk and put the money to work. The third is afraid, so he buries it and hands it back untouched. He loses nothing and he gains nothing. Jesus does not praise him for being careful.",
+        "God has trusted each of us with something. Time, a skill, a little money, a kind word, our faith itself. These gifts grow when we use them and shrink when we hide them. This week, take one small risk for the Lord."
+      ],
+      "question": "What gift has God trusted to you that you could put to work this week?"
+    },
+    "announcements": [
+      {
+        "title": "Becoming Catholic (OCIA)",
+        "body": "Curious about the faith? OCIA offers a place to ask questions and explore without commitment. Visit our website to start an inquiry."
+      },
+      {
+        "title": "Book of the Names of the Dead",
+        "body": "During November we pray for the deceased. Add names to the Book of the Names of the Dead at the back of each church. It is a shared way to practice the spiritual work of mercy of praying for the dead. Eternal rest grant unto them, O Lord, and let perpetual light shine upon them. May they rest in peace. Amen."
+      },
+      {
+        "title": "Free Catholic Streaming",
+        "body": "FORMED offers movies, studies, and children's programs free to parishioners of both churches."
+      }
+    ],
+    "formed": {
+      "title": "Opening the Word: 33rd Sunday in Ordinary Time, Year A",
+      "blurb": "A short reflection on the parable of the talents in this Sunday’s Gospel. Watch it together and talk about the gifts God has given your family."
+    },
+    "cta": {
+      "label": "Pledge to the Appeal",
+      "url": "https://yakimadiocese.org/2012/01/02/2021-annual-catholic-appeal/"
+    },
+    "readings": [
+      {
+        "label": "First Reading",
+        "ref": "Proverbs 31:10-13, 19-20, 30-31"
+      },
+      {
+        "label": "Psalm",
+        "ref": "Psalm 128:1-2, 3, 4-5"
+      },
+      {
+        "label": "Second Reading",
+        "ref": "1 Thessalonians 5:1-6"
+      },
+      {
+        "label": "Gospel",
+        "ref": "Matthew 25:14-30 (or Matthew 25:14-15, 19-21)"
+      }
+    ]
+  },
+  "es": {
+    "headline": "¿Qué hará con sus talentos?",
+    "title": "Trigésimo tercer Domingo del Tiempo Ordinario",
+    "quote": {
+      "text": "… Muy bien, siervo bueno y fiel.",
+      "ref": "Mateo 25:21"
+    },
+    "notice": {
+      "title": "Misa del Día de Acción de Gracias en San Juan Bautista",
+      "body": "La Misa del Día de Acción de Gracias es el jueves 26 de noviembre a las 9:00 a. m. en San Juan Bautista, en Cle Elum. No habrá Misa el viernes 27 de noviembre."
+    },
+    "reflection": {
+      "head": "Reflexión",
+      "body": [
+        "En tiempos de Jesús, un talento era una suma enorme, el salario de muchos años de un trabajador. El señor del Evangelio de hoy confía una fortuna a cada uno de sus siervos, y luego se va.",
+        "Dos siervos se arriesgan y ponen el dinero a trabajar. El tercero tiene miedo, así que lo entierra y lo devuelve intacto. No pierde nada y no gana nada. Jesús no lo alaba por ser precavido.",
+        "Dios nos ha confiado algo a cada uno. Tiempo, una habilidad, un poco de dinero, una palabra amable, nuestra fe misma. Estos dones crecen cuando los usamos y se reducen cuando los escondemos. Esta semana, arriésguese un poco por el Señor."
+      ],
+      "question": "¿Qué don le ha confiado Dios que podría poner a trabajar esta semana?"
+    },
+    "announcements": [
+      {
+        "title": "Hacerse católico (OICA)",
+        "body": "¿Tiene curiosidad por la fe? OICA ofrece un lugar para hacer preguntas y explorar sin compromiso. Visite nuestro sitio web para iniciar una solicitud."
+      },
+      {
+        "title": "Libro de los Nombres de los Difuntos",
+        "body": "Durante noviembre rezamos por los difuntos. Agregue nombres al Libro de los Nombres de los Difuntos que está al fondo de cada iglesia. Es una manera compartida de practicar la obra de misericordia espiritual de rezar por los muertos. Concédeles, Señor, el descanso eterno, y brille para ellos la luz perpetua. Descansen en paz. Amén."
+      },
+      {
+        "title": "Transmisión católica gratuita",
+        "body": "FORMED ofrece películas, estudios y programas para niños gratis a los feligreses de ambas parroquias."
+      }
+    ],
+    "formed": {
+      "title": "Abriendo la Palabra: Trigésimo tercer Domingo del Tiempo Ordinario, Año A",
+      "blurb": "Una breve reflexión sobre la parábola de los talentos en el Evangelio de este domingo. Véanla juntos y conversen sobre los dones que Dios le ha dado a su familia."
+    },
+    "cta": {
+      "label": "Haga su promesa a la Campaña",
+      "url": "https://yakimadiocese.org/2012/01/02/2021-annual-catholic-appeal/"
+    },
+    "readings": [
+      {
+        "label": "Primera lectura",
+        "ref": "Proverbios 31:10-13, 19-20, 30-31"
+      },
+      {
+        "label": "Salmo",
+        "ref": "Salmo 128:1-2, 3, 4-5"
+      },
+      {
+        "label": "Segunda lectura",
+        "ref": "1 Tesalonicenses 5:1-6"
+      },
+      {
+        "label": "Evangelio",
+        "ref": "Mateo 25:14-30 (o Mateo 25:14-15, 19-21)"
+      }
+    ],
+    "translationReviewed": false
+  }
+}

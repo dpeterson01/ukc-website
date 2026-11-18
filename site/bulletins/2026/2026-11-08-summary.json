@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "date": "2026-11-08",
+  "season": "ordinary",
+  "nabNotice": "Scripture texts in this work are taken from the New American Bible with Revised New Testament and Revised Psalms and are used by permission of the copyright owner. All Rights Reserved.",
+  "readingsUrl": {
+    "en": "https://bible.usccb.org/bible/readings/110826.cfm",
+    "es": "https://bible.usccb.org/es/bible/lecturas/110826.cfm"
+  },
+  "en": {
+    "headline": "Is your lamp ready?",
+    "title": "Thirty-second Sunday in Ordinary Time",
+    "quote": {
+      "text": "… you know neither the day nor the hour.",
+      "ref": "Matthew 25:13"
+    },
+    "notice": {
+      "title": "All Masses at St. John the Baptist",
+      "body": "All Masses are being celebrated at St. John the Baptist in Cle Elum until the HVAC work at Immaculate Conception in Roslyn is completed. The cold inside Immaculate Conception could pose a health risk, so we are taking this precaution for everyone's well-being. Thank you for your patience and understanding."
+    },
+    "reflection": {
+      "head": "Reflection",
+      "body": [
+        "Anyone who has spent a winter in the mountains knows the power can go out on the coldest night of the year. The people who get through it calmly checked the flashlight batteries in October.",
+        "In today's Gospel, ten bridesmaids wait for a bridegroom who runs late. All ten fall asleep. What separates them is not worry or energy but a little extra oil. Jesus asks us to keep something in reserve for the long wait.",
+        "Oil cannot be borrowed at midnight. Readiness is built slowly, in small ordinary habits. A quiet prayer in the morning. Mass when it would be easier to skip. A kindness done when no one is watching."
+      ],
+      "question": "What small habit keeps your lamp filled this week?"
+    },
+    "announcements": [
+      {
+        "title": "Becoming Catholic (OCIA)",
+        "body": "Curious about the faith? OCIA offers a place to ask questions and explore without commitment. Visit our website to start an inquiry."
+      },
+      {
+        "title": "Book of the Dead",
+        "body": "During November we pray for the deceased. Add names to the Book of the Dead at the back of each church. It is a shared way to practice the spiritual work of mercy of praying for the dead. Eternal rest grant unto them, O Lord, and let perpetual light shine upon them. May they rest in peace. Amen."
+      },
+      {
+        "title": "Free Catholic Streaming",
+        "body": "FORMED offers movies, studies, and children's programs free to parishioners of both churches."
+      }
+    ],
+    "formed": {
+      "title": "Opening the Word: 32nd Sunday in Ordinary Time, Year A",
+      "blurb": "A short homily on the wise and foolish bridesmaids in this Sunday’s Gospel. Watch it together and talk about what it means to be ready."
+    },
+    "cta": {
+      "label": "Pledge to the Appeal",
+      "url": "https://yakimadiocese.org/2012/01/02/2021-annual-catholic-appeal/"
+    },
+    "readings": [
+      {
+        "label": "First Reading",
+        "ref": "Wisdom 6:12-16"
+      },
+      {
+        "label": "Psalm",
+        "ref": "Psalm 63:2, 3-4, 5-6, 7-8"
+      },
+      {
+        "label": "Second Reading",
+        "ref": "1 Thessalonians 4:13-18 (or 1 Thessalonians 4:13-14)"
+      },
+      {
+        "label": "Gospel",
+        "ref": "Matthew 25:1-13"
+      }
+    ]
+  },
+  "es": {
+    "headline": "¿Está lista su lámpara?",
+    "title": "Trigésimo segundo Domingo del Tiempo Ordinario",
+    "quote": {
+      "text": "… no saben ni el día ni la hora.",
+      "ref": "Mateo 25:13"
+    },
+    "notice": {
+      "title": "Todas las Misas en San Juan Bautista",
+      "body": "Todas las Misas se celebran en San Juan Bautista, en Cle Elum, hasta que el trabajo de climatización (HVAC) en La Inmaculada Concepción, en Roslyn, esté terminado. El frío dentro de La Inmaculada Concepción podría representar un riesgo para la salud, por eso tomamos esta precaución por el bienestar de todos. Gracias por su paciencia y comprensión."
+    },
+    "reflection": {
+      "head": "Reflexión",
+      "body": [
+        "Quien ha pasado un invierno en las montañas sabe que la luz puede irse en la noche más fría del año. Las personas que lo superan con calma revisaron las pilas de las linternas en octubre.",
+        "En el Evangelio de hoy, diez vírgenes esperan a un novio que se tarda. Las diez se quedan dormidas. Lo que las distingue no es la preocupación ni la energía, sino un poco de aceite de más. Jesús nos pide guardar algo en reserva para la larga espera.",
+        "El aceite no se puede pedir prestado a medianoche. La preparación se construye despacio, con pequeños hábitos de todos los días. Una oración tranquila en la mañana. La Misa cuando sería más fácil faltar. Una amabilidad hecha cuando nadie nos ve."
+      ],
+      "question": "¿Qué pequeño hábito mantiene llena mi lámpara esta semana?"
+    },
+    "announcements": [
+      {
+        "title": "Hacerse católico (OICA)",
+        "body": "¿Tiene curiosidad por la fe? OICA ofrece un lugar para hacer preguntas y explorar sin compromiso. Visite nuestro sitio web para iniciar una solicitud."
+      },
+      {
+        "title": "Libro de los Difuntos",
+        "body": "Durante noviembre rezamos por los difuntos. Agregue nombres al Libro de los Difuntos que está al fondo de cada iglesia. Es una manera compartida de practicar la obra de misericordia espiritual de rezar por los muertos. Concédeles, Señor, el descanso eterno, y brille para ellos la luz perpetua. Descansen en paz. Amén."
+      },
+      {
+        "title": "Transmisión católica gratuita",
+        "body": "FORMED ofrece películas, estudios y programas para niños gratis a los feligreses de ambas parroquias."
+      }
+    ],
+    "formed": {
+      "title": "Abriendo la Palabra: Trigésimo segundo Domingo del Tiempo Ordinario, Año A",
+      "blurb": "Una breve homilía sobre las vírgenes sabias y las necias en el Evangelio de este domingo. Véanla juntos y conversen sobre lo que significa estar preparados."
+    },
+    "cta": {
+      "label": "Haga su promesa a la Campaña",
+      "url": "https://yakimadiocese.org/2012/01/02/2021-annual-catholic-appeal/"
+    },
+    "readings": [
+      {
+        "label": "Primera lectura",
+        "ref": "Sabiduría 6:12-16"
+      },
+      {
+        "label": "Salmo",
+        "ref": "Salmo 63:2, 3-4, 5-6, 7-8"
+      },
+      {
+        "label": "Segunda lectura",
+        "ref": "1 Tesalonicenses 4:13-18 (o 1 Tesalonicenses 4:13-14)"
+      },
+      {
+        "label": "Evangelio",
+        "ref": "Mateo 25:1-13"
+      }
+    ],
+    "translationReviewed": false
+  }
+}

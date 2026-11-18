@@ -12,11 +12,12 @@
         "en": "Thirty-third Sunday in Ordinary Time",
         "es": "Trigésimo tercer Domingo del Tiempo Ordinario"
       },
-      "season": "ordinary",
       "headline": {
         "en": "What will you do with your talents?",
         "es": "¿Qué hará con sus talentos?"
-      }
+      },
+      "season": "ordinary",
+      "summary": true
     },
     {
       "date": "2026-11-08",
@@ -29,11 +30,12 @@
         "en": "Thirty-second Sunday in Ordinary Time",
         "es": "Trigésimo segundo Domingo del Tiempo Ordinario"
       },
-      "season": "ordinary",
       "headline": {
         "en": "Is your lamp ready?",
         "es": "¿Está lista su lámpara?"
-      }
+      },
+      "season": "ordinary",
+      "summary": true
     },
     {
       "date": "2026-11-01",
@@ -46,11 +48,12 @@
         "en": "Solemnity of All Saints",
         "es": "Solemnidad de Todos los Santos"
       },
-      "season": "ordinary",
       "headline": {
         "en": "Who are the blessed?",
         "es": "¿Quiénes son los bienaventurados?"
-      }
+      },
+      "season": "ordinary",
+      "summary": true
     },
     {
       "date": "2026-10-25",

@@ -81,8 +81,14 @@ for (const absoluteFile of pages) {
   }
 }
 
-const sitemap = fs.readFileSync(path.join(site, 'sitemap.xml'), 'utf8');
-const sitemapUrls = new Set(values(sitemap, /<loc>([^<]+)<\/loc>/g));
+// The main sitemap is hand-edited. The weekly summary pages are listed in two generated bulletin
+// sitemaps (scripts/build-bulletins.mjs), named in robots.txt, so the Saturday publish never edits it.
+const bulletinSitemaps = ['bulletins/sitemap.xml', 'es/bulletins/sitemap.xml'];
+const sitemapUrls = new Set(['sitemap.xml', ...bulletinSitemaps].flatMap((file) => {
+  const full = path.join(site, file);
+  if (file !== 'sitemap.xml' && !fs.existsSync(full)) return [];
+  return values(fs.readFileSync(full, 'utf8'), /<loc>([^<]+)<\/loc>/g);
+}));
 for (const url of indexable) {
   if (!sitemapUrls.has(url)) errors.push(`sitemap.xml: missing ${url}`);
 }
@@ -92,6 +98,11 @@ for (const url of sitemapUrls) {
 
 const robots = fs.readFileSync(path.join(site, 'robots.txt'), 'utf8');
 if (!robots.includes(`Sitemap: ${origin}/sitemap.xml`)) errors.push('robots.txt: sitemap URL is incorrect');
+for (const file of bulletinSitemaps) {
+  if (fs.existsSync(path.join(site, file)) && !robots.includes(`Sitemap: ${origin}/${file}`)) {
+    errors.push(`robots.txt: missing Sitemap: ${origin}/${file}`);
+  }
+}
 if (fs.readFileSync(path.join(site, 'CNAME'), 'utf8').trim() !== 'ukccatholic.org') {
   errors.push('CNAME: custom domain is incorrect');
 }

@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://ukccatholic.org/sitemap.xml
+Sitemap: https://ukccatholic.org/bulletins/sitemap.xml
+Sitemap: https://ukccatholic.org/es/bulletins/sitemap.xml

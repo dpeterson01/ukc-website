@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "date": "2026-11-01",
+  "season": "ordinary",
+  "nabNotice": "Scripture texts in this work are taken from the New American Bible with Revised New Testament and Revised Psalms and are used by permission of the copyright owner. All Rights Reserved.",
+  "readingsUrl": {
+    "en": "https://bible.usccb.org/bible/readings/110126.cfm",
+    "es": "https://bible.usccb.org/es/bible/lecturas/110126.cfm"
+  },
+  "en": {
+    "headline": "Who are the blessed?",
+    "title": "Solemnity of All Saints",
+    "quote": {
+      "text": "Blessed are the clean of heart, for they will see God.",
+      "ref": "Matthew 5:8"
+    },
+    "notice": {
+      "title": "All Masses at St. John the Baptist",
+      "body": "All Masses are being celebrated at St. John the Baptist in Cle Elum until the HVAC work at Immaculate Conception in Roslyn is funded and completed. The cold inside Immaculate Conception could pose a health risk, so we are taking this precaution for everyone's well-being. Thank you for your patience and understanding."
+    },
+    "reflection": {
+      "head": "Praying with This Sunday's Gospel",
+      "body": [
+        "On All Saints, the Church gives us the Beatitudes. Jesus goes up a mountain, sits down, and tells a crowd who is blessed: the poor in spirit, those who mourn, the meek, the merciful, the peacemakers. It is not a list of people who have it all together. It is a list of people who are leaning on God.",
+        "The first reading gives us a glimpse of where that leads: a great multitude from every nation, standing before the throne. Saints are not a special class far from us. They are neighbors who prayed, forgave, showed up, and kept trusting God through hard days, in places like Cle Elum and Roslyn as much as anywhere. Today we remember the saints we know by name and the many we do not. This week, think of one person whose faith helped shape yours. Thank God for them by name, and tell someone who knew them."
+      ],
+      "question": "Whose faith has shaped mine, and how can I thank God for them this week?"
+    },
+    "announcements": [
+      {
+        "title": "Becoming Catholic (OCIA)",
+        "body": "Curious about the faith? OCIA offers a place to ask questions and explore without commitment. Scan the code or visit our website to start an inquiry."
+      },
+      {
+        "title": "Free Catholic Streaming",
+        "body": "FORMED offers movies, studies, and children's programs free to parishioners of both churches."
+      }
+    ],
+    "formed": {
+      "title": "The Happy Paradox of the Beatitudes",
+      "blurb": "A short reflection on why Jesus calls the poor in spirit and the meek blessed. Watch it with your family and talk about which Beatitude surprises you most."
+    },
+    "cta": {
+      "label": "Start an OCIA Inquiry",
+      "url": "https://ukccatholic.org/forms/ocia-participant/"
+    },
+    "readings": [
+      {
+        "label": "First Reading",
+        "ref": "Revelation 7:2-4, 9-14"
+      },
+      {
+        "label": "Psalm",
+        "ref": "Psalm 24:1bc-2, 3-4ab, 5-6"
+      },
+      {
+        "label": "Second Reading",
+        "ref": "1 John 3:1-3"
+      },
+      {
+        "label": "Gospel",
+        "ref": "Matthew 5:1-12a"
+      }
+    ]
+  },
+  "es": {
+    "headline": "¿Quiénes son los bienaventurados?",
+    "title": "Solemnidad de Todos los Santos",
+    "quote": {
+      "text": "Bienaventurados los limpios de corazón, porque ellos verán a Dios.",
+      "ref": "Mateo 5:8"
+    },
+    "notice": {
+      "title": "Todas las Misas en San Juan Bautista",
+      "body": "Todas las Misas se celebran en San Juan Bautista, en Cle Elum, hasta que el trabajo de climatización (HVAC) en La Inmaculada Concepción, en Roslyn, tenga fondos y esté terminado. El frío dentro de La Inmaculada Concepción podría representar un riesgo para la salud, por eso tomamos esta precaución por el bienestar de todos. Gracias por su paciencia y comprensión."
+    },
+    "reflection": {
+      "head": "Orando con el Evangelio de este domingo",
+      "body": [
+        "En la fiesta de Todos los Santos, la Iglesia nos presenta las Bienaventuranzas. Jesús sube a un monte, se sienta y le dice a la multitud quiénes son los bienaventurados: los pobres de espíritu, los que lloran, los mansos, los misericordiosos, los pacificadores. No es una lista de personas que lo tienen todo resuelto. Es una lista de personas que se apoyan en Dios.",
+        "La primera lectura nos deja ver adónde lleva ese camino: una multitud inmensa de todas las naciones, de pie ante el trono. Los santos no son una clase especial lejana a nosotros. Son vecinos que rezaron, perdonaron, se hicieron presentes y siguieron confiando en Dios en los días difíciles, en lugares como Cle Elum y Roslyn tanto como en cualquier otro. Hoy recordamos a los santos que conocemos por nombre y a los muchos que no conocemos. Esta semana, piense en una persona cuya fe ayudó a formar la suya. Dé gracias a Dios por ella por su nombre, y dígaselo a alguien que la conoció."
+      ],
+      "question": "¿La fe de quién ha formado la mía, y cómo puedo dar gracias a Dios por esa persona esta semana?"
+    },
+    "announcements": [
+      {
+        "title": "Hacerse católico (OICA)",
+        "body": "¿Tiene curiosidad por la fe? OICA ofrece un lugar para hacer preguntas y explorar sin compromiso. Escanee el código o visite nuestro sitio web para iniciar una solicitud."
+      },
+      {
+        "title": "Transmisión católica gratuita (FORMED)",
+        "body": "FORMED ofrece películas, estudios y programas para niños gratis a los feligreses de ambas parroquias."
+      }
+    ],
+    "formed": {
+      "title": "La feliz paradoja de las Bienaventuranzas",
+      "blurb": "Una breve reflexión sobre por qué Jesús llama bienaventurados a los pobres de espíritu y a los mansos. Véala en familia y conversen sobre cuál Bienaventuranza les sorprende más."
+    },
+    "cta": {
+      "label": "Iniciar una solicitud para OICA",
+      "url": "https://ukccatholic.org/forms/ocia-participant/"
+    },
+    "readings": [
+      {
+        "label": "Primera lectura",
+        "ref": "Apocalipsis 7:2-4, 9-14"
+      },
+      {
+        "label": "Salmo",
+        "ref": "Salmo 24:1bc-2, 3-4ab, 5-6"
+      },
+      {
+        "label": "Segunda lectura",
+        "ref": "1 Juan 3:1-3"
+      },
+      {
+        "label": "Evangelio",
+        "ref": "Mateo 5:1-12a"
+      }
+    ],
+    "translationReviewed": false
+  }
+}

@@ -2,7 +2,8 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildBulletins } from './build-bulletins.mjs';
+import { buildBulletins, summaryFile } from './build-bulletins.mjs';
+import { validateSummary } from './bulletin-summary-pages.mjs';
 
 const seasons = new Set(['advent', 'christmas', 'lent', 'easter', 'ordinary']);
 const defaultSiteRoot = path.resolve(import.meta.dirname, '..', 'site');
@@ -13,7 +14,7 @@ function parseArgs(argv) {
     const key = argv[index];
     const value = argv[index + 1];
     if (!key?.startsWith('--') || value === undefined) {
-      throw new Error('Usage: node scripts/publish-bulletin.mjs --date YYYY-MM-DD --pdf /path/to/bulletin.pdf [--published-at ISO-8601] [--title-en TEXT --title-es TEXT] [--headline-en TEXT [--headline-es TEXT]] [--season KEY]');
+      throw new Error('Usage: node scripts/publish-bulletin.mjs --date YYYY-MM-DD [--pdf /path/to/bulletin.pdf] [--summary /path/to/web-summary.json] [--published-at ISO-8601] [--title-en TEXT --title-es TEXT] [--headline-en TEXT [--headline-es TEXT]] [--season KEY]');
     }
     args[key.slice(2)] = value;
   }
@@ -43,18 +44,11 @@ async function readArchive(manifestPath) {
   }
 }
 
-export async function publishBulletin({ date, pdfPath, siteRoot = defaultSiteRoot, publishedAt, titleEn, titleEs, headlineEn, headlineEs, season, log = console }) {
+export async function publishBulletin({ date, pdfPath, summaryPath, siteRoot = defaultSiteRoot, publishedAt, titleEn, titleEs, headlineEn, headlineEs, season, log = console }) {
   validateDate(date);
-  if (!pdfPath) throw new Error('PDF path is required');
   if (Boolean(titleEn?.trim()) !== Boolean(titleEs?.trim())) throw new Error('Pass both --title-en and --title-es, or neither');
   if (season !== undefined && !seasons.has(season)) throw new Error(`Invalid season: ${season}`);
   if (headlineEs?.trim() && !headlineEn?.trim()) throw new Error('--headline-es needs --headline-en');
-
-  const source = path.resolve(pdfPath);
-  const sourceBytes = await readFile(source);
-  if (!sourceBytes.subarray(0, 5).equals(Buffer.from('%PDF-'))) {
-    throw new Error(`${source} is not a PDF`);
-  }
 
   const destinationDirectory = path.join(siteRoot, 'bulletins', date.slice(0, 4));
   const destinationName = `${date}-bulletin.pdf`;
@@ -63,6 +57,25 @@ export async function publishBulletin({ date, pdfPath, siteRoot = defaultSiteRoo
   const manifestPath = path.join(siteRoot, 'bulletins', 'index.json');
   const archive = await readArchive(manifestPath);
   const existing = archive.issues.find((issue) => issue.date === date);
+
+  // Without --pdf, the week's PDF must already be published: the run only updates its metadata or summary.
+  if (!pdfPath && !existing) throw new Error('PDF path is required for a week that is not published yet');
+  const source = pdfPath ? path.resolve(pdfPath) : destination;
+  const sourceBytes = await readFile(source);
+  if (!sourceBytes.subarray(0, 5).equals(Buffer.from('%PDF-'))) {
+    throw new Error(`${source} is not a PDF`);
+  }
+
+  // The weekly summary (written by ukc-bulletin from the week's email content). Validated before anything
+  // is written, so a bad file fails the publish instead of leaving a half-built week. Its headline and
+  // Sunday titles fill in whatever the arguments did not give.
+  let summary = null;
+  if (summaryPath) {
+    summary = validateSummary(JSON.parse(await readFile(path.resolve(summaryPath), 'utf8')), date);
+    if (season === undefined && seasons.has(summary.season)) season = summary.season;
+    if (!titleEn?.trim()) { titleEn = summary.en.title; titleEs = summary.es.title; }
+    if (!headlineEn?.trim()) { headlineEn = summary.en.headline; headlineEs = summary.es.headline; }
+  }
   const timestamp = existing?.publishedAt ?? publishedAt ?? new Date().toISOString();
   if (Number.isNaN(new Date(timestamp).valueOf())) throw new Error(`Invalid publication timestamp: ${timestamp}`);
 
@@ -87,11 +100,14 @@ export async function publishBulletin({ date, pdfPath, siteRoot = defaultSiteRoo
   if (existing?.listed === false) issue.listed = false;
   const issueSeason = season ?? existing?.season;
   if (issueSeason) issue.season = issueSeason;
+  // summary: true means /bulletins/<date>/ exists. A republish without --summary keeps the page.
+  if (summary || existing?.summary === true) issue.summary = true;
   archive.issues = [issue, ...archive.issues.filter((entry) => entry.date !== date)]
     .sort((left, right) => right.date.localeCompare(left.date));
 
   await mkdir(destinationDirectory, { recursive: true });
-  await writeFile(destination, sourceBytes);
+  if (source !== destination) await writeFile(destination, sourceBytes);
+  if (summary) await writeFile(summaryFile(siteRoot, date), `${JSON.stringify(summary, null, 2)}\n`);
   await writeFile(manifestPath, `${JSON.stringify(archive, null, 2)}\n`);
 
   const destinationStat = await stat(destination);
@@ -114,6 +130,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     const result = await publishBulletin({
       date: args.date,
       pdfPath: args.pdf,
+      summaryPath: args.summary,
       siteRoot: args['site-root'] ? path.resolve(args['site-root']) : defaultSiteRoot,
       publishedAt: args['published-at'],
       titleEn: args['title-en'],

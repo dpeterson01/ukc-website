@@ -5,6 +5,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import { publishBulletin } from './publish-bulletin.mjs';
 import { archiveMarkup, buildBulletins, formatSize } from './build-bulletins.mjs';
+import { pageDescription } from './bulletin-summary-pages.mjs';
 
 const root = await mkdtemp(path.join(os.tmpdir(), 'ukc-bulletin-publish-'));
 const realSite = new URL('../site/', import.meta.url);
@@ -55,7 +56,8 @@ try {
   await publishBulletin(options);
   assert.equal(await readFile(first.manifestPath, 'utf8'), firstManifest, 'publishing the same issue should be idempotent');
   assert.equal(await readFile(pages.en, 'utf8'), firstPage, 'rebuilding the same archive should be idempotent');
-  assert.deepEqual(first.archivePages.sort(), [pages.en, pages.es].sort());
+  const sitemaps = { en: path.join(siteRoot, 'bulletins', 'sitemap.xml'), es: path.join(siteRoot, 'es', 'bulletins', 'sitemap.xml') };
+  assert.deepEqual(first.archivePages.sort(), [pages.en, pages.es, sitemaps.en, sitemaps.es].sort());
 
   assert.deepEqual(await readFile(first.destination), fixture);
   const archive = JSON.parse(firstManifest);
@@ -154,6 +156,75 @@ try {
   assert.ok(!(await readFile(pages.en, 'utf8')).includes('2026-09-20-bulletin.pdf'), 'unlisted after republish');
   assert.deepEqual(await readFile(path.join(siteRoot, republished.path)), fixture, 'the unlisted PDF stays online');
   await assert.rejects(publishBulletin({ ...options, headlineEs: 'x' }), /--headline-es needs --headline-en/);
+
+  // Weekly summary pages. The fixture is a real summary from the live site, moved to test dates.
+  const realSummary = JSON.parse(await readFile(new URL('bulletins/2026/2026-11-15-summary.json', realSite), 'utf8'));
+  const summaryFor = async (date, change = (x) => x) => {
+    const file = path.join(root, `${date}-summary.json`);
+    await writeFile(file, JSON.stringify(change({ ...structuredClone(realSummary), date })));
+    return file;
+  };
+  const summaryPages = (date) => ({
+    en: path.join(siteRoot, 'bulletins', date, 'index.html'),
+    es: path.join(siteRoot, 'es', 'bulletins', date, 'index.html'),
+  });
+  const before = await readFile(first.manifestPath, 'utf8');
+  await assert.rejects(publishBulletin({ ...options, date: '2026-10-04', pdfPath: undefined, summaryPath: await summaryFor('2026-09-27') }), /date is 2026-09-27/);
+  await assert.rejects(publishBulletin({ ...options, date: '2026-10-04', pdfPath: undefined, summaryPath: await summaryFor('2026-10-04', (x) => ({ ...x, en: { ...x.en, cta: { label: 'Go', url: 'javascript:alert(1)' } } })) }), /https/);
+  await assert.rejects(publishBulletin({ ...options, date: '2026-10-11', pdfPath: undefined, summaryPath: await summaryFor('2026-10-11') }), /PDF path is required/);
+  assert.equal(await readFile(first.manifestPath, 'utf8'), before, 'a refused summary writes nothing');
+
+  for (const date of ['2026-09-13', '2026-10-04']) {
+    await publishBulletin({ ...options, date, pdfPath: undefined, titleEn: undefined, titleEs: undefined, season: undefined, summaryPath: await summaryFor(date) });
+  }
+  const summarized = JSON.parse(await readFile(first.manifestPath, 'utf8')).issues.find((issue) => issue.date === '2026-10-04');
+  assert.equal(summarized.summary, true);
+  assert.deepEqual(summarized.headline, { en: realSummary.en.headline, es: realSummary.es.headline }, 'the headline comes from the summary');
+  assert.deepEqual(summarized.liturgicalTitle, { en: realSummary.en.title, es: realSummary.es.title });
+  assert.deepEqual(await readFile(path.join(siteRoot, summarized.path)), fixture, 'a summary-only run keeps the PDF');
+  assert.ok(JSON.parse(await readFile(path.join(siteRoot, 'bulletins', '2026', '2026-10-04-summary.json'), 'utf8')).en);
+  for (const locale of ['en', 'es']) {
+    const html = await readFile(summaryPages('2026-10-04')[locale], 'utf8');
+    const edition = realSummary[locale];
+    const url = `https://ukccatholic.org/${locale === 'es' ? 'es/' : ''}bulletins/2026-10-04/`;
+    assert.equal(count(html, /<h1>/g), 1);
+    assert.ok(html.includes(`<link rel="canonical" href="${url}">`));
+    assert.ok(html.includes('<link rel="alternate" hreflang="es" href="https://ukccatholic.org/es/bulletins/2026-10-04/">'));
+    assert.ok(html.includes(`<a class="utility-bar__lang" href="${locale === 'es' ? '../../../bulletins/2026-10-04/' : '../../es/bulletins/2026-10-04/'}"`), 'the toggle lands on the other language');
+    assert.ok(html.includes(`href="${locale === 'es' ? '../../../' : '../../'}assets/site.css"`), 'assets resolve one level deeper');
+    assert.ok(html.includes('"@type":"BreadcrumbList"'));
+    assert.ok(html.includes(`href="/bulletins/2026/2026-10-04-bulletin.pdf" data-event="bulletin_pdf_open" data-event-position="summary"`));
+    assert.ok(html.includes('<a href="../">&larr;'), 'back to the archive');
+    assert.ok(html.includes(`>${url.replace('https://', '')}</a>`), 'a visible link to share');
+    assert.ok(html.includes('rel="prev"') && !html.includes('rel="next"'), 'the newest summary links back a week only');
+    assert.equal(html.includes('summary-ai-notice'), locale === 'es', 'the AI notice is on the Spanish page only');
+    assert.equal(html.includes('New American Bible'), locale === 'en', 'the NAB notice is on the English page');
+    assert.ok(html.includes(`<h2 id="summary-reflection">${edition.reflection.head}</h2>`), 'the reflection is on the page');
+    assert.ok(!html.includes('bulletins:start'), 'no archive region on a summary page');
+    const title = html.match(/<title>(.*?)<\/title>/)[1];
+    assert.ok(title.length <= 60, title);
+    const description = html.match(/<meta name="description" content="([^"]*)">/)[1];
+    assert.ok(description.length >= 120 && description.length <= 160, description);
+    assert.ok((await readFile(sitemaps[locale], 'utf8')).includes(`<loc>${url}</loc>`));
+    const archivePage = await readFile(pages[locale], 'utf8');
+    assert.ok(archivePage.includes('href="2026-10-04/"'), 'the archive links the summary');
+  }
+  assert.ok((await readFile(summaryPages('2026-09-13').en, 'utf8')).includes('<a class="summary-weeks__next" href="../2026-10-04/" rel="next">'));
+  // A plain republish keeps the summary page.
+  await publishBulletin({ ...options, date: '2026-10-04', titleEn: undefined, titleEs: undefined, season: undefined });
+  assert.equal(JSON.parse(await readFile(first.manifestPath, 'utf8')).issues.find((issue) => issue.date === '2026-10-04').summary, true);
+  // Father's review recorded: the AI notice drops. Hostile text is escaped.
+  await publishBulletin({ ...options, date: '2026-10-04', pdfPath: undefined, summaryPath: await summaryFor('2026-10-04', (x) => ({ ...x, en: { ...x.en, headline: '<script>alert(1)</script>' }, es: { ...x.es, translationReviewed: true } })) });
+  assert.ok(!(await readFile(summaryPages('2026-10-04').es, 'utf8')).includes('summary-ai-notice'));
+  const escaped = await readFile(summaryPages('2026-10-04').en, 'utf8');
+  assert.ok(!escaped.includes('<script>alert') && escaped.includes('&lt;script&gt;alert(1)&lt;/script&gt;'));
+  assert.ok(!(await readFile(pages.en, 'utf8')).includes('<script>alert'), 'the archive escapes the headline too');
+  await publishBulletin({ ...options, date: '2026-10-04', pdfPath: undefined, summaryPath: await summaryFor('2026-10-04') });
+  // Descriptions stay inside the 120 to 160 characters verify-seo.mjs allows, short or long.
+  for (const body of ['Short.', 'word '.repeat(80), 'x'.repeat(40) + ' ' + 'y'.repeat(100)]) {
+    const text = pageDescription({ headline: 'Is your lamp ready?', reflection: { body: [body] }, announcements: [] }, { descriptionTail: [' Weekly bulletin of St. John the Baptist, Cle Elum, and Immaculate Conception, Roslyn.', ' Readings, reflection and parish news for the week.'] });
+    assert.ok(text.length >= 120 && text.length <= 160, `${text.length}: ${text}`);
+  }
 
   const hostile = archiveMarkup({ version: 1, issues: [
     null,
