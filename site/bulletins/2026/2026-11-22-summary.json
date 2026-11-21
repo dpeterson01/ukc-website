@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "date": "2026-11-22",
+  "season": "ordinary",
+  "nabNotice": "Scripture texts in this work are taken from the New American Bible with Revised New Testament and Revised Psalms and are used by permission of the copyright owner. All Rights Reserved.",
+  "readingsUrl": {
+    "en": "https://bible.usccb.org/bible/readings/112226.cfm",
+    "es": "https://bible.usccb.org/es/bible/lecturas/112226.cfm"
+  },
+  "en": {
+    "headline": "Where do we find the King?",
+    "title": "The Solemnity of Our Lord Jesus Christ, King of the Universe",
+    "quote": {
+      "text": "… whatever you did for one of these least brothers of mine, you did for me.",
+      "ref": "Matthew 25:40"
+    },
+    "notice": {
+      "title": "Thanksgiving Day Mass at St. John the Baptist",
+      "body": "Thanksgiving Day Mass is Thursday, November 26, at 9:00 AM at St. John the Baptist in Cle Elum. There is no Mass on Friday, November 27."
+    },
+    "reflection": {
+      "head": "Reflection",
+      "body": [
+        "Today we celebrate Christ the King, the last Sunday of the Church year. We might picture a king on a throne, far above ordinary people. In today's Gospel the King is found somewhere else.",
+        "When the Son of Man comes in glory, he does not ask how much we owned or how important we were. He asks whether we fed the hungry, welcomed the stranger, clothed the naked, and visited the sick and those in prison. Whatever we did for the least of his brothers and sisters, he says, we did for him.",
+        "Christ reigns from the Cross, and he waits for us in the people we meet each day. A shared meal, a visit, a kind word to someone lonely all serve the King. As the Church year ends and Thanksgiving comes, look for him in one person who needs you this week."
+      ],
+      "question": "Who is one person in need through whom you can serve Christ the King this week?"
+    },
+    "announcements": [
+      {
+        "title": "Becoming Catholic (OCIA)",
+        "body": "Curious about the faith? OCIA offers a place to ask questions and explore without commitment. Visit our website to start an inquiry."
+      },
+      {
+        "title": "Book of the Names of the Dead",
+        "body": "During November we pray for the deceased. Add names to the Book of the Names of the Dead at the back of each church. It is a shared way to practice the spiritual work of mercy of praying for the dead. Eternal rest grant unto them, O Lord, and let perpetual light shine upon them. May they rest in peace. Amen."
+      },
+      {
+        "title": "Church Mission Congress",
+        "body": "Diocese of Yakima online planning follow-up, Wednesday, December 2, 6:00 to 8:30 PM, on Zoom. For parish leaders, catechists, youth ministers, youth and all interested. Register by November 30."
+      }
+    ],
+    "formed": {
+      "title": "Opening the Word: Christ the King, Year A",
+      "blurb": "A short reflection on this Sunday's Gospel of the King who comes in glory. Watch it together and talk about how your family can serve Christ in others."
+    },
+    "cta": {
+      "label": "Read Pope Leo's message",
+      "url": "https://www.vatican.va/content/leo-xiv/en/messages/youth/documents/20261022-messaggio-xli-gmg.html"
+    },
+    "readings": [
+      {
+        "label": "First Reading",
+        "ref": "Ezekiel 34:11-12, 15-17"
+      },
+      {
+        "label": "Psalm",
+        "ref": "Psalm 23:1-2, 2-3, 5-6"
+      },
+      {
+        "label": "Second Reading",
+        "ref": "1 Corinthians 15:20-26, 28"
+      },
+      {
+        "label": "Gospel",
+        "ref": "Matthew 25:31-46"
+      }
+    ]
+  },
+  "es": {
+    "headline": "¿Dónde encontramos al Rey?",
+    "title": "Solemnidad de Nuestro Señor Jesucristo, Rey del Universo",
+    "quote": {
+      "text": "… cuando lo hicieron con el más insignificante de mis hermanos, conmigo lo hicieron.",
+      "ref": "Mateo 25:40"
+    },
+    "notice": {
+      "title": "Misa del Día de Acción de Gracias en San Juan Bautista",
+      "body": "La Misa del Día de Acción de Gracias es el jueves 26 de noviembre a las 9:00 a. m. en San Juan Bautista, en Cle Elum. No habrá Misa el viernes 27 de noviembre."
+    },
+    "reflection": {
+      "head": "Reflexión",
+      "body": [
+        "Hoy celebramos a Cristo Rey, el último domingo del año litúrgico. Quizá imaginamos a un rey en un trono, muy por encima de la gente común. En el Evangelio de hoy, el Rey se encuentra en otro lugar.",
+        "Cuando el Hijo del hombre venga en su gloria, no preguntará cuánto teníamos ni qué tan importantes éramos. Preguntará si dimos de comer al hambriento, si recibimos al forastero, si vestimos al desnudo y si visitamos a los enfermos y a los presos. Lo que hicimos por el más pequeño de sus hermanos y hermanas, nos dice, lo hicimos por él.",
+        "Cristo reina desde la Cruz, y nos espera en las personas que encontramos cada día. Una comida compartida, una visita, una palabra amable a alguien que está solo: todo eso sirve al Rey. Al terminar el año litúrgico y llegar el Día de Acción de Gracias, búsquelo esta semana en una persona que lo necesite."
+      ],
+      "question": "¿En qué persona necesitada puede servir a Cristo Rey esta semana?"
+    },
+    "announcements": [
+      {
+        "title": "Hacerse católico (OICA)",
+        "body": "¿Tiene curiosidad por la fe? OICA ofrece un lugar para hacer preguntas y explorar sin compromiso. Visite nuestro sitio web para iniciar una solicitud."
+      },
+      {
+        "title": "Libro de los Nombres de los Difuntos",
+        "body": "Durante noviembre rezamos por los difuntos. Agregue nombres al Libro de los Nombres de los Difuntos que está al fondo de cada iglesia. Es una manera compartida de practicar la obra de misericordia espiritual de rezar por los muertos. Concédeles, Señor, el descanso eterno, y brille para ellos la luz perpetua. Descansen en paz. Amén."
+      },
+      {
+        "title": "Congreso Misionero de la Iglesia",
+        "body": "Sesión diocesana de seguimiento por Zoom, miércoles 2 de dic., 6:00 a 8:30 p. m. Para líderes, catequistas, ministros de jóvenes, jóvenes y todo interesado. Regístrese antes del 30 de nov."
+      }
+    ],
+    "formed": {
+      "title": "Abriendo la Palabra: Cristo Rey, Año A",
+      "blurb": "Una breve reflexión sobre el Evangelio de este domingo, el del Rey que viene en su gloria. Mírenlo juntos y conversen sobre cómo su familia puede servir a Cristo en los demás."
+    },
+    "cta": {
+      "label": "Lea el mensaje del papa León",
+      "url": "https://www.vatican.va/content/leo-xiv/en/messages/youth/documents/20261022-messaggio-xli-gmg.html"
+    },
+    "readings": [
+      {
+        "label": "Primera lectura",
+        "ref": "Ezequiel 34:11-12, 15-17"
+      },
+      {
+        "label": "Salmo",
+        "ref": "Salmo 23:1-2, 2-3, 5-6"
+      },
+      {
+        "label": "Segunda lectura",
+        "ref": "1 Corintios 15:20-26, 28"
+      },
+      {
+        "label": "Evangelio",
+        "ref": "Mateo 25:31-46"
+      }
+    ],
+    "translationReviewed": false
+  }
+}

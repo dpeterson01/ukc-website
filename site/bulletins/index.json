@@ -2,6 +2,24 @@
   "version": 1,
   "issues": [
     {
+      "date": "2026-11-22",
+      "title": "Weekly Parish Bulletin",
+      "path": "/bulletins/2026/2026-11-22-bulletin.pdf",
+      "bytes": 3008032,
+      "sha256": "851e8b503098d299cb693514e0793b8d02755bf8f04c78477e2eb3170b7aa96a",
+      "publishedAt": "2026-11-21T18:21:42.979Z",
+      "liturgicalTitle": {
+        "en": "The Solemnity of Our Lord Jesus Christ, King of the Universe",
+        "es": "Solemnidad de Nuestro Señor Jesucristo, Rey del Universo"
+      },
+      "headline": {
+        "en": "Where do we find the King?",
+        "es": "¿Dónde encontramos al Rey?"
+      },
+      "season": "ordinary",
+      "summary": true
+    },
+    {
       "date": "2026-11-15",
       "title": "Weekly Parish Bulletin",
       "path": "/bulletins/2026/2026-11-15-bulletin.pdf",
