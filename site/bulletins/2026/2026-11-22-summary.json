@@ -29,16 +29,16 @@
     },
     "announcements": [
       {
-        "title": "Becoming Catholic (OCIA)",
-        "body": "Curious about the faith? OCIA offers a place to ask questions and explore without commitment. Visit our website to start an inquiry."
-      },
-      {
         "title": "Book of the Names of the Dead",
         "body": "During November we pray for the deceased. Add names to the Book of the Names of the Dead at the back of each church. It is a shared way to practice the spiritual work of mercy of praying for the dead. Eternal rest grant unto them, O Lord, and let perpetual light shine upon them. May they rest in peace. Amen."
       },
       {
         "title": "Church Mission Congress",
         "body": "Diocese of Yakima online planning follow-up, Wednesday, December 2, 6:00 to 8:30 PM, on Zoom. For parish leaders, catechists, youth ministers, youth and all interested. Register by November 30."
+      },
+      {
+        "title": "In Our Prayers",
+        "body": "We hold Alan and the entire Petrich family close in our prayers and hearts during this time of loss. May the Lord comfort them with His peace and surround them with the love of family, friends, and our parish community. We also pray for Leonard Rushton, who passed away last Sunday, and for his family."
       }
     ],
     "formed": {
@@ -90,16 +90,16 @@
     },
     "announcements": [
       {
-        "title": "Hacerse católico (OICA)",
-        "body": "¿Tiene curiosidad por la fe? OICA ofrece un lugar para hacer preguntas y explorar sin compromiso. Visite nuestro sitio web para iniciar una solicitud."
-      },
-      {
         "title": "Libro de los Nombres de los Difuntos",
         "body": "Durante noviembre rezamos por los difuntos. Agregue nombres al Libro de los Nombres de los Difuntos que está al fondo de cada iglesia. Es una manera compartida de practicar la obra de misericordia espiritual de rezar por los muertos. Concédeles, Señor, el descanso eterno, y brille para ellos la luz perpetua. Descansen en paz. Amén."
       },
       {
         "title": "Congreso Misionero de la Iglesia",
         "body": "Sesión diocesana de seguimiento por Zoom, miércoles 2 de dic., 6:00 a 8:30 p. m. Para líderes, catequistas, ministros de jóvenes, jóvenes y todo interesado. Regístrese antes del 30 de nov."
+      },
+      {
+        "title": "En nuestras oraciones",
+        "body": "Acompañamos a Alan y a toda la familia Petrich en nuestras oraciones en este tiempo de pérdida. Que el Señor los consuele con su paz y los rodee del amor de su familia, amigos y comunidad parroquial. También rezamos por Leonard Rushton, quien falleció el domingo pasado, y por su familia."
       }
     ],
     "formed": {
@@ -128,6 +128,6 @@
         "ref": "Mateo 25:31-46"
       }
     ],
-    "translationReviewed": false
+    "translationReviewed": true
   }
 }
